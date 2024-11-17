@@ -1,4 +1,4 @@
-# React Native Expo Redux Template
+# Well Done App
 [![NPM Version](https://img.shields.io/npm/v/react-native-expo-redux-template)](https://www.npmjs.com/package/react-native-expo-redux-template)
 [![Build Expo OTA](https://github.com/hpccbk/react-native-expo-redux-template/actions/workflows/update.yml/badge.svg)](https://github.com/hpccbk/react-native-expo-redux-template/actions/workflows/update.yml)
 
