@@ -1,7 +1,6 @@
 import React from "react";
 import { i18n, LocalizationKey } from "@/Localization";
-import { View, Text, StyleSheet } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { Button } from "native-base";
 import { RootScreens } from "..";
 
@@ -9,21 +8,13 @@ export const Welcome = (props: {
   onNavigate: (string: RootScreens) => void;
 }) => {
   return (
-    <View style={styles.container}>
-      <Text>{i18n.t(LocalizationKey.WELCOME)}</Text>
-      <StatusBar style="auto" />
-      <Button onPress={() => props.onNavigate(RootScreens.MAIN)}>
-        {i18n.t(LocalizationKey.START)}
-      </Button>
-    </View>
+    <ImageBackground source={require('assets/bg1.png')}>
+      <View className="flex items-center justify-end w-full h-full">
+        <Text className='text-xl text-white font-bold'>{i18n.t(LocalizationKey.WELCOME)}</Text>
+        <Button onPress={() => props.onNavigate(RootScreens.MAIN)}>
+          {i18n.t(LocalizationKey.START)}
+        </Button>
+      </View>
+    </ImageBackground>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
