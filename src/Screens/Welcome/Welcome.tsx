@@ -10,7 +10,7 @@ export const Welcome = (props: {
   return (
     <ImageBackground source={require('assets/bg1.png')}>
       <View className="flex items-center justify-end w-full h-full">
-        <Text className='text-xl text-white font-bold'>{i18n.t(LocalizationKey.WELCOME)}</Text>
+        <Text className='text-xl text-white font-bold'>Hello</Text>
         <Button onPress={() => props.onNavigate(RootScreens.MAIN)}>
           {i18n.t(LocalizationKey.START)}
         </Button>
