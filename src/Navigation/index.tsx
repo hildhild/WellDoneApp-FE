@@ -5,12 +5,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { MainNavigator } from "./Main";
 import { WelcomeContainer } from "@/Screens/Welcome";
 import { RootScreens } from "@/Screens";
-import { LogInContainer } from "@/Screens/LogIn/LogInContainer";
+import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
   [RootScreens.WELCOME]: undefined;
   [RootScreens.LOGIN]: undefined;
+  [RootScreens.SIGNUP]: undefined;
+  [RootScreens.FORGOT_PASSWORD]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();

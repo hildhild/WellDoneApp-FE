@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import Svg, {
   SvgProps,
   Path,
@@ -6,15 +6,10 @@ import Svg, {
   Pattern,
   Use,
   Image,
-} from "react-native-svg"
-import { memo } from "react"
+} from "react-native-svg";
+import { memo } from "react";
 const LogoWellDone = (props: SvgProps) => (
-  <Svg
-    width={270}
-    height={179}
-    fill="none"
-    {...props}
-  >
+  <Svg width={270} height={179} fill="none" {...props}>
     <Path fill="url(#a)" d="M0 0h270v179H0z" />
     <Defs>
       <Pattern
@@ -33,5 +28,5 @@ const LogoWellDone = (props: SvgProps) => (
       />
     </Defs>
   </Svg>
-)
-export default memo(LogoWellDone)
+);
+export default memo(LogoWellDone);
