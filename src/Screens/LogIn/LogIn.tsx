@@ -1,7 +1,7 @@
 import React, { memo } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-import HeaderBackground from "assets/LogIn/HeaderBackground";
-import LogoWellDone from "assets/LogoWellDone";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import HeaderBackground from "assets/icons/LogIn/HeaderBackground";
+import LogoWellDone from "assets/icons/LogoWellDone";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 const LogIn = () => {
