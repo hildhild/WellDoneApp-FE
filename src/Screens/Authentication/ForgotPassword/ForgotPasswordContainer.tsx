@@ -18,7 +18,7 @@ export const ForgotPasswordContainer = ({
 }: ForgotPasswordScreenNavigatorProps) => {
   const handleForgotPassword = (formData: ForgotPasswordForm) => {
     console.log("Received form data in ForgotPasswordContainer:", formData);
-    // navigation.navigate(RootScreens.MAIN);
+    navigation.navigate(RootScreens.RESET_PASSWORD);
   };
 
   const onNavigate = (screen: RootScreens) => {

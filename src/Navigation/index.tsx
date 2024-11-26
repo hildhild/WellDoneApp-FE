@@ -8,12 +8,14 @@ import { RootScreens } from "@/Screens";
 import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
 import { SignUpContainer } from "@/Screens/Authentication/SignUp/SignUpContainer";
 import { ForgotPasswordContainer } from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
+import ResetPasswordContainer from "@/Screens/Authentication/ResetPassword/ResetPasswordContainer";
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
   [RootScreens.WELCOME]: undefined;
   [RootScreens.LOGIN]: undefined;
   [RootScreens.SIGNUP]: undefined;
   [RootScreens.FORGOT_PASSWORD]: undefined;
+  [RootScreens.RESET_PASSWORD]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -49,6 +51,11 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.FORGOT_PASSWORD}
           component={ForgotPasswordContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.RESET_PASSWORD}
+          component={ResetPasswordContainer}
           options={{}}
         />
       </RootStack.Navigator>
