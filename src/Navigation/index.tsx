@@ -6,7 +6,8 @@ import { MainNavigator } from "./Main";
 import { WelcomeContainer } from "@/Screens/Welcome";
 import { RootScreens } from "@/Screens";
 import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
-
+import { SignUpContainer } from "@/Screens/Authentication/SignUp/SignUpContainer";
+import { ForgotPasswordContainer } from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
   [RootScreens.WELCOME]: undefined;
@@ -22,7 +23,10 @@ const ApplicationNavigator = () => {
   return (
     <NavigationContainer>
       <StatusBar />
-      <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName={RootScreens.LOGIN}>
+      <RootStack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName={RootScreens.LOGIN}
+      >
         <RootStack.Screen
           name={RootScreens.WELCOME}
           component={WelcomeContainer}
@@ -35,6 +39,16 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.LOGIN}
           component={LogInContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.SIGNUP}
+          component={SignUpContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.FORGOT_PASSWORD}
+          component={ForgotPasswordContainer}
           options={{}}
         />
       </RootStack.Navigator>
