@@ -3,12 +3,12 @@ import { StatusBar } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { MainNavigator } from "./Main";
-import { WelcomeContainer } from "@/Screens/Welcome";
-import { RootScreens } from "@/Screens";
 import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
 import { SignUpContainer } from "@/Screens/Authentication/SignUp/SignUpContainer";
 import { ForgotPasswordContainer } from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
 import ResetPasswordContainer from "@/Screens/Authentication/ResetPassword/ResetPasswordContainer";
+import { RootScreens, Onboarding1Container, Onboarding2Container, Onboarding3Container } from "@/Screens";
+
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
   [RootScreens.WELCOME]: undefined;
@@ -16,6 +16,10 @@ export type RootStackParamList = {
   [RootScreens.SIGNUP]: undefined;
   [RootScreens.FORGOT_PASSWORD]: undefined;
   [RootScreens.RESET_PASSWORD]: undefined;
+  [RootScreens.ONBOARDING1]: undefined;
+  [RootScreens.ONBOARDING2]: undefined;
+  [RootScreens.ONBOARDING3]: undefined;
+
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -30,8 +34,16 @@ const ApplicationNavigator = () => {
         initialRouteName={RootScreens.LOGIN}
       >
         <RootStack.Screen
-          name={RootScreens.WELCOME}
-          component={WelcomeContainer}
+          name={RootScreens.ONBOARDING1}
+          component={Onboarding1Container}
+        />
+        <RootStack.Screen
+          name={RootScreens.ONBOARDING2}
+          component={Onboarding2Container}
+        />
+        <RootStack.Screen
+          name={RootScreens.ONBOARDING3}
+          component={Onboarding3Container}
         />
         <RootStack.Screen
           name={RootScreens.MAIN}
