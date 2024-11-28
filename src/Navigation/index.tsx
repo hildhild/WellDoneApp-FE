@@ -31,7 +31,7 @@ const ApplicationNavigator = () => {
       <StatusBar />
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={RootScreens.LOGIN}
+        initialRouteName={RootScreens.ONBOARDING1}
       >
         <RootStack.Screen
           name={RootScreens.ONBOARDING1}
