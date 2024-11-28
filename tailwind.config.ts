@@ -87,8 +87,4 @@ const config: Config = {
   plugins: [],
 };
 
-<<<<<<< HEAD
 export default config;
-=======
-export default config;
->>>>>>> master
