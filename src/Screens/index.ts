@@ -7,6 +7,11 @@ import { Onboarding5Container } from "./Onboarding5";
 
 export enum RootScreens {
   MAIN = "Main",
+  WELCOME = "Welcome",
+  LOGIN = "Login",
+  SIGNUP = "SignUp",
+  FORGOT_PASSWORD = "ForgotPassword",
+  RESET_PASSWORD = "ResetPassword",
   ONBOARDING1 = "Onboarding1",
   ONBOARDING2 = "Onboarding2",
   ONBOARDING3 = "Onboarding3",
