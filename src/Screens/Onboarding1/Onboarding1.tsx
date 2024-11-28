@@ -14,11 +14,6 @@ export const Onboarding1 = (props: {
             className="w-[400px] h-[400px] object-cover"
             source={require('assets/light-logo.png')}
           />
-          
-          {/* <Text className='text-xl text-white font-bold'>Hello</Text>
-          <Button onPress={() => props.onNavigate(RootScreens.MAIN)}>
-            {i18n.t(LocalizationKey.START)}
-          </Button> */}
       </ImageBackground>
     </Pressable>
     
