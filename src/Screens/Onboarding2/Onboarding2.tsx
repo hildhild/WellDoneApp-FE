@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { i18n, LocalizationKey } from "@/Localization";
-import { View, Text, StyleSheet, ImageBackground, Image, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ImageBackground, Image, Pressable, TouchableOpacity, Modal } from "react-native";
 import { Button } from "native-base";
 import { RootScreens } from "..";
 import AppIntroSlider from 'react-native-app-intro-slider';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 type Slide = {
   key: string;
@@ -36,6 +37,8 @@ const slides: Slide[] = [
 export const Onboarding2 = (props: {
   onNavigate: (string: RootScreens) => void;
 }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   const renderSlide = ({ item }: { item: Slide }) => (
     <View className="flex items-center justify-center w-[100vw] h-[100vh] bg-white">
         <Image
@@ -48,19 +51,19 @@ export const Onboarding2 = (props: {
   );
 
   const renderDoneButton = () => (
-      <TouchableOpacity style={styles.doneButton}>
-          <Text style={styles.buttonText}>Bắt đầu</Text>
-      </TouchableOpacity>
+    <TouchableOpacity className="rounded-full bg-lime-600 w-[40px] h-[40px] flex items-center justify-center" onPress={() => props.onNavigate(RootScreens.ONBOARDING3)}>
+      <Icon name="chevron-right" size={10} color="#fff" />
+    </TouchableOpacity>
   );
 
   const renderNextButton = () => (
-      <TouchableOpacity style={styles.nextButton}>
-          <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
+    <View className="rounded-full bg-lime-600 w-[40px] h-[40px] flex items-center justify-center">
+        <Icon name="chevron-right" size={10} color="#fff" />
+    </View>
   );
 
   const renderSkipButton = () => (
-    <TouchableOpacity className="bg-white p-[10px]">
+    <TouchableOpacity className="bg-white px-[10px] py-[15px]" onPress={() => setModalVisible(true)}>
       <Text className="text-lime-600 font-bold">Bỏ qua</Text>
     </TouchableOpacity>
   );
@@ -78,35 +81,45 @@ export const Onboarding2 = (props: {
     //     {i18n.t(LocalizationKey.START)}
     //   </Button>
     // </View>
-    <AppIntroSlider
-      data={slides}
-      renderItem={renderSlide}
-      // onDone={() => navigation.replace('Home')} // Navigate to Home screen
-      renderDoneButton={renderDoneButton}
-      renderNextButton={renderNextButton}
-      showSkipButton={true}
-      // onSkip={() => navigation.replace('Home')} // Skip to Home screen
-      activeDotStyle={styles.activeDot}
-      renderSkipButton={renderSkipButton}
-    />
+    <>
+      <AppIntroSlider
+        data={slides}
+        renderItem={renderSlide}
+        renderDoneButton={renderDoneButton}
+        renderNextButton={renderNextButton}
+        showSkipButton={true}
+        activeDotStyle={styles.activeDot}
+        renderSkipButton={renderSkipButton}
+      />
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          // onRequestClose={() => {
+          //   Alert.alert('Modal has been closed.');
+          //   setModalVisible(!modalVisible);
+          // }}
+          >
+          <View className="flex justify-center items-center w-full h-full">
+            <View className="bg-neutral-300 rounded-3xl px-[40px] py-[30px]">
+              <Text className="text-xl font-bold text-center mb-4">Bạn có muốn bỏ qua không?</Text>
+              <View className="flex flex-row justify-between">
+                <Button className="w-[80px] !rounded-full !bg-[#DC2626]" onPress={() => setModalVisible(false)}>
+                  <Text className="text-white font-semibold">Không</Text>
+                </Button>
+                <Button className="w-[80px] !rounded-full !bg-lime-600" onPress={() => { setModalVisible(false); props.onNavigate(RootScreens.ONBOARDING3); }}>
+                  <Text className="text-white font-semibold">Có</Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+    </>
+    
   );
 };
 
 const styles = StyleSheet.create({
-  doneButton: {
-      backgroundColor: '#000',
-      padding: 10,
-      borderRadius: 5,
-  },
-  nextButton: {
-      backgroundColor: '#000',
-      padding: 10,
-      borderRadius: 5,
-  },
-  buttonText: {
-      color: '#fff',
-      fontWeight: 'bold',
-  },
   activeDot: {
     backgroundColor: '#737373', // Custom active pagination dot color
     width: 32,
