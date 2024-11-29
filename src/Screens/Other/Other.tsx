@@ -1,11 +1,8 @@
 import React from "react";
 import { i18n, LocalizationKey } from "@/Localization";
 import { View, Text, StyleSheet, ImageBackground, Image, Pressable } from "react-native";
-import { Button } from "native-base";
 import { RootScreens } from "..";
-import { Navbar } from "@/Components";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
 
 type MenuItem = {
   iconName: string;
@@ -90,8 +87,6 @@ export const Other = (props: {
     ],
   ]
 
-  const navigate = useNavigation()
-
   return (
     <View className="bg-neutral-300 w-full h-full relative">
       <View className="bg-white w-full h-24 pb-4 flex justify-end items-center">
@@ -108,7 +103,6 @@ export const Other = (props: {
           <View className="bg-neutral-300 h-5"></View>
         </View>)
       }
-      {/* <Navbar page="Khác" onNavigate={props.onNavigate}/> */}
     </View>
     
   );

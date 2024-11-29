@@ -4,14 +4,13 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "..";
 
-type Onboarding3ScreenNavigatorProps = NativeStackScreenProps<
-  RootStackParamList,
-  RootScreens.ONBOARDING3
+type OtherScreenNavigatorProps = NativeStackScreenProps<
+  RootStackParamList
 >;
 
 export const OtherContainer = ({
   navigation,
-}: Onboarding3ScreenNavigatorProps) => {
+}: OtherScreenNavigatorProps) => {
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
