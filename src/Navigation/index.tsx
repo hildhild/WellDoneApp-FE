@@ -7,7 +7,7 @@ import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
 import { SignUpContainer } from "@/Screens/Authentication/SignUp/SignUpContainer";
 import { ForgotPasswordContainer } from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
 import ResetPasswordContainer from "@/Screens/Authentication/ResetPassword/ResetPasswordContainer";
-import { RootScreens, Onboarding1Container, Onboarding2Container, Onboarding3Container } from "@/Screens";
+import { RootScreens, Onboarding1Container, Onboarding2Container, Onboarding3Container, OtherContainer, ProjectContainer, DashboardContainer, GroupContainer } from "@/Screens";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -19,7 +19,6 @@ export type RootStackParamList = {
   [RootScreens.ONBOARDING1]: undefined;
   [RootScreens.ONBOARDING2]: undefined;
   [RootScreens.ONBOARDING3]: undefined;
-
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
