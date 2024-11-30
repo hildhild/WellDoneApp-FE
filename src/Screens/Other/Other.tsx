@@ -18,7 +18,7 @@ export const Other = (props: {
       {
         iconName: "user",
         title: "Tài khoản",
-        navigateTo: RootScreens.MAIN
+        navigateTo: RootScreens.ACCOUNT
 
       },
       {
