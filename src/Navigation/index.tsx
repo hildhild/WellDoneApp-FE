@@ -7,7 +7,8 @@ import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
 import { SignUpContainer } from "@/Screens/Authentication/SignUp/SignUpContainer";
 import { ForgotPasswordContainer } from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
 import ResetPasswordContainer from "@/Screens/Authentication/ResetPassword/ResetPasswordContainer";
-import { RootScreens, Onboarding1Container, Onboarding2Container, Onboarding3Container, OtherContainer, ProjectContainer, DashboardContainer, GroupContainer } from "@/Screens";
+import { RootScreens, Onboarding1Container, Onboarding2Container, Onboarding3Container, OtherContainer, ProjectContainer, DashboardContainer, GroupContainer, AccountContainer } from "@/Screens";
+import ToastManager from "toastify-react-native";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -19,14 +20,25 @@ export type RootStackParamList = {
   [RootScreens.ONBOARDING1]: undefined;
   [RootScreens.ONBOARDING2]: undefined;
   [RootScreens.ONBOARDING3]: undefined;
+  [RootScreens.ACCOUNT]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
+
+const getTabBarStyle = (route: any) => {
+  const routeName = route.state?.routes[route.state.index]?.name ?? "";
+  if (routeName === "Account") {
+    return { display: "flex" }; // Hiển thị tab bar
+  }
+  return { display: "none" }; // Ẩn tab bar
+};
+
 
 // @refresh reset
 const ApplicationNavigator = () => {
   return (
     <NavigationContainer>
+      <ToastManager width="auto" style={{ paddingRight: 20 }}/>
       <StatusBar />
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}
@@ -67,6 +79,11 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.RESET_PASSWORD}
           component={ResetPasswordContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.ACCOUNT}
+          component={AccountContainer}
           options={{}}
         />
       </RootStack.Navigator>
