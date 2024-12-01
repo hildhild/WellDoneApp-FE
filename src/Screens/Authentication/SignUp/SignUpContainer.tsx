@@ -26,11 +26,6 @@ const SignUpContainer = ({ navigation }: SignUpScreenNavigatorProps) => {
 
   const handleSignUp = useCallback(
     async (formData: SignUpForm) => {
-      if (formData.password !== formData.confirmPassword) {
-        console.log("Passwords do not match.");
-        return;
-      }
-
       const signUpData = {
         name: formData.username,
         email: formData.email,
@@ -38,17 +33,13 @@ const SignUpContainer = ({ navigation }: SignUpScreenNavigatorProps) => {
       };
       try {
         const response = await signUp(signUpData).unwrap();
-        console.log(response);
         if (response) {
           dispatch(
             setUser({
               email: formData.email,
             })
           );
-          console.log(response);
           onNavigate(RootScreens.VERIFY_MAIL);
-        } else {
-          console.log("Error:", response);
         }
       } catch (err) {
         console.log("An error occurred:", err);

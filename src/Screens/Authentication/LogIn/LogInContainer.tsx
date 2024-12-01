@@ -26,10 +26,7 @@ export const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         password: formData.password,
       }).unwrap();
       if (response) {
-        console.log("Logged in successfully");
         onNavigate(RootScreens.MAIN);
-      } else {
-        console.log("Invalid credentials");
       }
     } catch (err) {
       console.log("Error logging in:", err);

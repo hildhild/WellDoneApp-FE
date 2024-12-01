@@ -40,11 +40,6 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
   ] = useResendVerifyEmailMutation();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!email) {
-      navigation.navigate(RootScreens.SIGNUP);
-    }
-  }, [email, navigation]);
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
@@ -53,7 +48,6 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
       if (email) {
         const response = await verifyEmail({ email, code }).unwrap();
         if (response) {
-          console.log("Email verified. User registered successfully");
           dispatch(setUser({ email: "" }));
           onNavigate(RootScreens.LOGIN);
         } else {
@@ -76,8 +70,6 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
         if (response) {
           console.log("Verification code resent");
         }
-      } else {
-        console.log("Email is null");
       }
     } catch (err) {
       console.log("Error resending verification code:", err);

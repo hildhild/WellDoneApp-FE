@@ -54,7 +54,7 @@ const Verification: React.FC<VerificationProps> = ({
         disabled={code.length !== 6 || isLoading}
       >
         <Text className="text-white text-lg font-bold text-center">
-          {isLoading ? "Verifying..." : "Verify Code"}
+          {isLoading ? "Loading..." : "Verify Code"}
         </Text>
       </TouchableOpacity>
 

@@ -31,11 +31,8 @@ const ForgotPasswordContainer = ({
           email: formData.email,
         }).unwrap();
         if (response) {
-          console.log("Email sent successfully");
           dispatch(setUser({ email: formData.email }));
           onNavigate(RootScreens.RESET_PASSWORD);
-        } else {
-          console.log("Error sending email:", response);
         }
       } catch (err) {
         console.log("An error occurred:", error);
