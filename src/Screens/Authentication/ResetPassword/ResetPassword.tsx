@@ -1,21 +1,18 @@
-import { Response } from "@/Services";
+import VerifyCodeInput from "@/Components/VerifyCodeInput";
+import { RootScreens } from "@/Screens";
+import { PASSWORD_PATTERN } from "@/Utils/constant";
 import { getErrorMessage } from "@/Utils/Funtions/render";
-import { SerializedError } from "@reduxjs/toolkit";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import React, { FC, memo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
-import { RootScreens } from "../../";
-import { ResetPasswordForm } from "./ResetPasswordContainer";
-
 interface ResetPasswordProps {
   onNavigate: (screen: RootScreens) => void;
-  onResetPassword: (formData: ResetPasswordForm) => void;
+  onResetPassword: (formData: any) => void;
   isLoading: boolean;
   isError: boolean;
-  error: FetchBaseQueryError | SerializedError | Response | undefined;
+  error: any;
 }
 
 const ResetPassword: FC<ResetPasswordProps> = ({
@@ -26,14 +23,13 @@ const ResetPassword: FC<ResetPasswordProps> = ({
   error,
 }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
-
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ResetPasswordForm>();
+  } = useForm();
 
-  const onSubmit = (data: ResetPasswordForm) => {
+  const onSubmit = (data: any) => {
     onResetPassword(data);
   };
 
@@ -44,8 +40,19 @@ const ResetPassword: FC<ResetPasswordProps> = ({
       </Text>
 
       <Controller
-        control={control}
-        name="password"
+          control={control}
+          name="password"
+          rules={{
+            required: "Mật khẩu là bắt buộc",
+            pattern: {
+              value: PASSWORD_PATTERN,
+              message: "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
+            },
+            minLength: {
+              value: 6,
+              message: "Mật khẩu phải có ít nhất 6 ký tự",
+            },
+          }}
         render={({ field: { onChange, value } }) => (
           <View className="flex-row items-center bg-neutral-200 rounded-lg px-4 py-3 mb-4">
             <AntDesign name="lock" size={16} color="black" />
@@ -71,11 +78,18 @@ const ResetPassword: FC<ResetPasswordProps> = ({
         )}
       />
       {errors.password && (
-        <Text className="text-danger-400">{errors.password.message}</Text>
+        <Text className="text-danger-400">
+          {errors.password?.message?.toString()}
+        </Text>
       )}
       <Controller
         control={control}
         name="confirmPassword"
+        rules={{
+          required: "Xác nhận mật khẩu là bắt buộc",
+          validate: (value, formValues) =>
+            value === formValues.password || "Mật khẩu xác nhận không khớp",
+        }}
         render={({ field: { onChange, value } }) => (
           <View className="flex-row items-center bg-neutral-200 rounded-lg px-4 py-3 mb-4">
             <AntDesign name="lock" size={16} color="black" />
@@ -100,37 +114,25 @@ const ResetPassword: FC<ResetPasswordProps> = ({
       />
       {errors.confirmPassword && (
         <Text className="text-danger-400">
-          {errors.confirmPassword.message}
+          {errors.confirmPassword.message?.toString()}
         </Text>
       )}
       <Text className="text-neutral-600 text-body-base-regular mb-8">
         Nhập mã xác thực đã được gửi đến email của bạn
       </Text>
+
       <Controller
         control={control}
         name="code"
         render={({ field: { onChange, value } }) => (
-          <View className="flex-row justify-between w-full max-w-xs mb-6">
-            {new Array(6).fill("").map((_, index) => (
-              <TextInput
-                key={index}
-                value={value ? value[index] : ""}
-                onChangeText={(inputValue) => {
-                  const newCode = value ? value.split("") : [];
-                  newCode[index] = inputValue;
-                  onChange(newCode.join(""));
-                }}
-                maxLength={1}
-                keyboardType="numeric"
-                className="h-14 w-14 border-2 border-neutral-300 rounded-md text-center text-xl font-bold"
-              />
-            ))}
-          </View>
+          <VerifyCodeInput code={value || ""} setCode={onChange} />
         )}
       />
+
       {isError && (
         <Text className="text-danger-400 mb-4">{getErrorMessage(error)}</Text>
       )}
+
       <View className="flex-row mt-6 w-full">
         <TouchableOpacity
           className="bg-neutral-100 border-neutral-400 rounded-lg px-6 py-3 flex-1 mr-3 max-w-[112px] !border"

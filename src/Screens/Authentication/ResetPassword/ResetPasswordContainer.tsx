@@ -26,11 +26,6 @@ const ResetPasswordContainer = ({
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
-  useEffect(() => {
-    if (!email) {
-      navigation.navigate(RootScreens.FORGOT_PASSWORD);
-    }
-  }, [email, navigation]);
 
   const handleResetPassword = useCallback(
     async (formData: ResetPasswordForm) => {
@@ -42,13 +37,8 @@ const ResetPasswordContainer = ({
             code: formData.code,
           }).unwrap();
           if (response) {
-            console.log("Password reset successfully");
             onNavigate(RootScreens.LOGIN);
-          } else {
-            console.log("Invalid code");
           }
-        } else {
-          console.log("Email is null");
         }
       } catch (err) {
         console.log("An error occurred:", err);

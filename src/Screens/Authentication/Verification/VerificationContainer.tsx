@@ -43,6 +43,11 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
+  useEffect(() => {
+    if (code.length === 6) {
+      handleVerifyCode(); 
+    }
+  }, [code]); 
   const handleVerifyCode = async () => {
     try {
       if (email) {
@@ -50,11 +55,7 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
         if (response) {
           dispatch(setUser({ email: "" }));
           onNavigate(RootScreens.LOGIN);
-        } else {
-          console.log("Invalid code");
         }
-      } else {
-        console.log("Email is null");
       }
     } catch (err) {
       console.log("Error verifying email:", err);

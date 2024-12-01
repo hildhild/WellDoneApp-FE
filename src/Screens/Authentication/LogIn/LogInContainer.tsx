@@ -36,10 +36,10 @@ export const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   return (
     <LogIn
       onNavigate={onNavigate}
+      onLogIn={handleLogIn}
       isLoading={isLoading}
       isError={isError}
       error={error}
-      onLogIn={handleLogIn}
     />
   );
 };

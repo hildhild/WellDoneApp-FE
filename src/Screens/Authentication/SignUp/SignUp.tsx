@@ -1,6 +1,6 @@
 import { RootScreens } from "@/Screens";
 import { Response } from "@/Services";
-import { EMAIL_PATTERN } from "@/Utils/constant";
+import { EMAIL_PATTERN, PASSWORD_PATTERN } from "@/Utils/constant";
 import { getErrorMessage } from "@/Utils/Funtions/render";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -124,6 +124,10 @@ const SignUp: FC<SignUpProps> = ({
           name="password"
           rules={{
             required: "Mật khẩu là bắt buộc",
+            pattern: {
+              value: PASSWORD_PATTERN,
+              message: "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
+            },
             minLength: {
               value: 6,
               message: "Mật khẩu phải có ít nhất 6 ký tự",
