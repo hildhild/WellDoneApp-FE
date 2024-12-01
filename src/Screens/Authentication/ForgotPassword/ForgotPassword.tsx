@@ -1,23 +1,36 @@
+import { RootScreens } from "@/Screens";
+import { Response } from "@/Services";
+import { EMAIL_PATTERN } from "@/Utils/constant";
+import { getErrorMessage } from "@/Utils/Funtions/render";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import React, { FC, memo } from "react";
-import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Controller, useForm } from "react-hook-form";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { ForgotPasswordForm } from "./ForgotPasswordContainer";
-import { RootScreens } from "@/Screens";
 interface ForgotPasswordProps {
   onNavigate: (screen: RootScreens) => void;
   onForgotPassword: (formData: ForgotPasswordForm) => void;
+  isLoading: boolean;
+  isError: boolean;
+  error: FetchBaseQueryError | SerializedError | Response | undefined;
 }
 
 const ForgotPassword: FC<ForgotPasswordProps> = ({
   onNavigate,
   onForgotPassword,
+  isLoading,
+  isError,
+  error,
 }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ForgotPasswordForm>();
+  } = useForm<ForgotPasswordForm>({
+    mode: "onSubmit",
+  });
 
   const onSubmit = (data: any) => {
     onForgotPassword(data);
@@ -34,11 +47,18 @@ const ForgotPassword: FC<ForgotPasswordProps> = ({
         <Controller
           control={control}
           name="email"
+          rules={{
+            required: "Email là bắt buộc",
+            pattern: {
+              value: EMAIL_PATTERN,
+              message: "Email không hợp lệ",
+            },
+          }}
           render={({ field: { onChange, value } }) => (
             <View className="flex-row items-center bg-neutral-200 rounded-lg px-4 py-3 mb-4">
               <AntDesign name="mail" size={16} color="black" />
               <TextInput
-                placeholder="Nhập email đã đăng ký"
+                placeholder="Email"
                 className="flex-1 text-neutral-700 text-body-base-regular"
                 value={value}
                 onChangeText={onChange}
@@ -46,23 +66,32 @@ const ForgotPassword: FC<ForgotPasswordProps> = ({
             </View>
           )}
         />
+        {errors.email && (
+          <Text className="text-danger-400">{errors.email.message}</Text>
+        )}
       </View>
       <View className="flex-row mt-6 w-full">
         <TouchableOpacity
           className="bg-neutral-100 border-neutral-400 rounded-lg px-6 py-3 flex-1 mr-3 max-w-[112px] !border"
           onPress={() => onNavigate(RootScreens.LOGIN)}
         >
-          <Text className="text-gray-400 text-body-base-bold text-center">Hủy</Text>
+          <Text className="text-gray-400 text-body-base-bold text-center">
+            Hủy
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           className="bg-primary-600 rounded-lg px-6 py-3 flex-1 max-w-[225px]"
-          onPress={handleSubmit(onForgotPassword)}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isLoading}
         >
           <Text className="text-neutral-100 text-body-base-bold text-center">
-            Lấy lại mật khẩu
+            {isLoading ? "Đang gửi reset code..." : "Lấy lại mật khẩu"}
           </Text>
         </TouchableOpacity>
+        {isError && (
+          <Text className="text-danger-400 mb-4">{getErrorMessage(error)}</Text>
+        )}
       </View>
     </View>
   );

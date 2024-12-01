@@ -1,24 +1,39 @@
 import { RootScreens } from "@/Screens";
+import { Response } from "@/Services";
+import { EMAIL_PATTERN, PASSWORD_PATTERN } from "@/Utils/constant";
+import { getErrorMessage } from "@/Utils/Funtions/render";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import HeaderBackground from "assets/icons/LogIn/HeaderBackground";
-import LogoWellDone from "assets/icons/LogoWellDone";
 import React, { FC, memo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
 import { LogInForm } from "./LogInContainer";
+
 interface LogInProps {
   onNavigate: (screen: RootScreens) => void;
   onLogIn: (formData: LogInForm) => void;
+  isLoading: boolean;
+  isError: boolean;
+  error: FetchBaseQueryError | SerializedError | Response | undefined;
 }
-const LogIn: FC<LogInProps> = ({ onNavigate, onLogIn }) => {
+const LogIn: FC<LogInProps> = ({
+  onNavigate,
+  onLogIn,
+  isLoading,
+  isError,
+  error,
+}) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LogInForm>();
-
+  } = useForm<LogInForm>({
+    mode: "onSubmit",
+  });
   const onSubmit = (data: any) => {
     onLogIn(data);
   };
@@ -26,7 +41,10 @@ const LogIn: FC<LogInProps> = ({ onNavigate, onLogIn }) => {
   return (
     <View className="flex-1 bg-white items-center px-5 pt-12">
       <HeaderBackground className="w-32 h-32 mb-8" />
-      <LogoWellDone className="w-32 h-32 mb-8" />
+      <Image
+        className="w-64 h-64"
+        source={require("assets/dark-logo.png")}
+      />
       <Text className="text-center text-neutral-700 text-body-base-medium mb-8">
         Đăng nhập vào tài khoản WellDone của bạn
       </Text>
@@ -34,12 +52,19 @@ const LogIn: FC<LogInProps> = ({ onNavigate, onLogIn }) => {
       <View className="w-full mb-4">
         <Controller
           control={control}
-          name="username"
+          name="email"
+          rules={{
+            required: "Email là bắt buộc",
+            pattern: {
+              value: EMAIL_PATTERN,
+              message: "Email không hợp lệ",
+            },
+          }}
           render={({ field: { onChange, value } }) => (
             <View className="flex-row items-center bg-neutral-200 rounded-lg px-4 py-3 mb-4">
-              <AntDesign name="user" size={16} color="black" />
+              <AntDesign name="mail" size={16} color="black" />
               <TextInput
-                placeholder="Tên tài khoản"
+                placeholder="Email"
                 className="flex-1 text-neutral-700 text-body-base-regular"
                 value={value}
                 onChangeText={onChange}
@@ -47,13 +72,26 @@ const LogIn: FC<LogInProps> = ({ onNavigate, onLogIn }) => {
             </View>
           )}
         />
+        {errors.email && (
+          <Text className="text-danger-400">{errors.email.message}</Text>
+        )}
         <Controller
           control={control}
           name="password"
+          rules={{
+            required: "Mật khẩu là bắt buộc",
+            pattern: {
+              value: PASSWORD_PATTERN,
+              message: "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
+            },
+            minLength: {
+              value: 6,
+              message: "Mật khẩu phải có ít nhất 6 ký tự",
+            },
+          }}
           render={({ field: { onChange, value } }) => (
             <View className="flex-row items-center bg-neutral-200 rounded-lg px-4 py-3 mb-4">
               <AntDesign name="lock" size={16} color="black" />
-
               <TextInput
                 placeholder="Mật khẩu"
                 secureTextEntry={!passwordVisible}
@@ -61,7 +99,6 @@ const LogIn: FC<LogInProps> = ({ onNavigate, onLogIn }) => {
                 value={value}
                 onChangeText={onChange}
               />
-
               <TouchableOpacity
                 onPress={() => setPasswordVisible(!passwordVisible)}
               >
@@ -74,6 +111,9 @@ const LogIn: FC<LogInProps> = ({ onNavigate, onLogIn }) => {
             </View>
           )}
         />
+        {errors.password && (
+          <Text className="text-danger-400">{errors.password.message}</Text>
+        )}
       </View>
 
       <TouchableOpacity className="self-end mb-5">
@@ -88,11 +128,16 @@ const LogIn: FC<LogInProps> = ({ onNavigate, onLogIn }) => {
       <TouchableOpacity
         className="bg-primary-600 rounded-lg w-52 h-14 py-2 px-4 mb-5 justify-center"
         onPress={handleSubmit(onSubmit)}
+        disabled={isLoading}
       >
         <Text className="text-center text-neutral-100 font-bold text-body-base-bold">
-          Đăng nhập
+          {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
         </Text>
       </TouchableOpacity>
+
+      {isError && (
+        <Text className="text-danger-400 mb-4">{getErrorMessage(error)}</Text>
+      )}
 
       <View className="flex-row">
         <Text className="text-neutral-700 text-body-base-medium">

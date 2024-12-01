@@ -1,23 +1,24 @@
 import { API } from "@/Services/base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import {
-  persistReducer,
-  persistStore,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from "redux-persist";
-import { homeReducers, themeReducers } from "./reducers";
+import { homeReducers, themeReducers, userReducers } from "./reducers";
 
 const reducers = combineReducers({
   api: API.reducer,
   theme: themeReducers,
   home: homeReducers,
+  user: userReducers,
 });
 
 const persistConfig = {
@@ -41,7 +42,6 @@ const store = configureStore({
     //   const createDebugger = require("redux-flipper").default;
     //   middlewares.push(createDebugger());
     // }
-
     return middlewares;
   },
 });
@@ -50,4 +50,6 @@ const persistor = persistStore(store);
 
 setupListeners(store.dispatch);
 
-export { store, persistor };
+export type RootState = ReturnType<typeof store.getState>;
+
+export { persistor, store };
