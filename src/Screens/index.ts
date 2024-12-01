@@ -1,11 +1,11 @@
+import { DashboardContainer } from "./Dashboard";
+import { GroupContainer } from "./Group";
 import { HomeContainer } from "./Home";
 import { Onboarding1Container } from "./Onboarding1";
 import { Onboarding2Container } from "./Onboarding2";
 import { Onboarding3Container } from "./Onboarding3";
-import { ProjectContainer } from "./Project";
-import { DashboardContainer } from "./Dashboard";
-import { GroupContainer } from "./Group";
 import { OtherContainer } from "./Other";
+import { ProjectContainer } from "./Project";
 
 export enum RootScreens {
   MAIN = "Main",
@@ -17,6 +17,7 @@ export enum RootScreens {
   ONBOARDING1 = "Onboarding1",
   ONBOARDING2 = "Onboarding2",
   ONBOARDING3 = "Onboarding3",
+  VERIFY_MAIL = "VerifyMail",
 }
 
-export {HomeContainer, Onboarding1Container, Onboarding2Container, Onboarding3Container, ProjectContainer, DashboardContainer, GroupContainer, OtherContainer}
+export { DashboardContainer, GroupContainer, HomeContainer, Onboarding1Container, Onboarding2Container, Onboarding3Container, OtherContainer, ProjectContainer };

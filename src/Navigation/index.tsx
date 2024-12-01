@@ -1,13 +1,19 @@
+import {
+  Onboarding1Container,
+  Onboarding2Container,
+  Onboarding3Container,
+  RootScreens,
+} from "@/Screens";
+import ForgotPasswordContainer from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
+import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
+import ResetPasswordContainer from "@/Screens/Authentication/ResetPassword/ResetPasswordContainer";
+import SignUpContainer from "@/Screens/Authentication/SignUp/SignUpContainer";
+import VerificationContainer from "@/Screens/Authentication/Verification/VerificationContainer";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StatusBar } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
 import { MainNavigator } from "./Main";
-import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
-import { SignUpContainer } from "@/Screens/Authentication/SignUp/SignUpContainer";
-import { ForgotPasswordContainer } from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
-import ResetPasswordContainer from "@/Screens/Authentication/ResetPassword/ResetPasswordContainer";
-import { RootScreens, Onboarding1Container, Onboarding2Container, Onboarding3Container, OtherContainer, ProjectContainer, DashboardContainer, GroupContainer } from "@/Screens";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -19,6 +25,7 @@ export type RootStackParamList = {
   [RootScreens.ONBOARDING1]: undefined;
   [RootScreens.ONBOARDING2]: undefined;
   [RootScreens.ONBOARDING3]: undefined;
+  [RootScreens.VERIFY_MAIL]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -67,6 +74,11 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.RESET_PASSWORD}
           component={ResetPasswordContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.VERIFY_MAIL}
+          component={VerificationContainer}
           options={{}}
         />
       </RootStack.Navigator>
