@@ -5,6 +5,7 @@ import { Button } from "native-base";
 import { RootScreens } from "..";
 import AppIntroSlider from 'react-native-app-intro-slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Slide = {
   key: string;
@@ -38,6 +39,10 @@ export const Onboarding2 = (props: {
   onNavigate: (string: RootScreens) => void;
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const handleFinish = async () => {
+    await AsyncStorage.setItem("onboardingCompleted", "true");
+    props.onNavigate(RootScreens.ONBOARDING3);
+  };
 
   const renderSlide = ({ item }: { item: Slide }) => (
     <View className="flex items-center justify-center w-[100vw] h-[100vh] bg-white">
@@ -51,7 +56,7 @@ export const Onboarding2 = (props: {
   );
 
   const renderDoneButton = () => (
-    <TouchableOpacity className="rounded-full bg-lime-600 w-[40px] h-[40px] flex items-center justify-center" onPress={() => props.onNavigate(RootScreens.ONBOARDING3)}>
+    <TouchableOpacity className="rounded-full bg-lime-600 w-[40px] h-[40px] flex items-center justify-center" onPress={handleFinish}>
       <Icon name="chevron-right" size={10} color="#fff" />
     </TouchableOpacity>
   );
@@ -107,7 +112,7 @@ export const Onboarding2 = (props: {
                 <Button className="w-[80px] !rounded-full !bg-[#DC2626]" onPress={() => setModalVisible(false)}>
                   <Text className="text-white font-semibold">Không</Text>
                 </Button>
-                <Button className="w-[80px] !rounded-full !bg-lime-600" onPress={() => { setModalVisible(false); props.onNavigate(RootScreens.ONBOARDING3); }}>
+                <Button className="w-[80px] !rounded-full !bg-lime-600" onPress={() => { setModalVisible(false); handleFinish(); }}>
                   <Text className="text-white font-semibold">Có</Text>
                 </Button>
               </View>
