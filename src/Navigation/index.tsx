@@ -16,10 +16,11 @@ import SignUpContainer from "@/Screens/Authentication/SignUp/SignUpContainer";
 import VerificationContainer from "@/Screens/Authentication/Verification/VerificationContainer";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import ToastManager from "toastify-react-native";
 import { MainNavigator } from "./Main";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -47,22 +48,41 @@ const getTabBarStyle = (route: any) => {
 
 // @refresh reset
 const ApplicationNavigator = () => {
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      const completed = await AsyncStorage.getItem("onboardingCompleted");
+      if (completed === "true") {
+        setIsOnboardingCompleted(true);
+      }
+    };
+    checkOnboarding();
+  }, []);
+
   return (
     <NavigationContainer>
       <ToastManager width="auto" style={{ paddingRight: 20 }} />
       <StatusBar />
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={RootScreens.ONBOARDING1}
+        initialRouteName={isOnboardingCompleted ? RootScreens.ONBOARDING3 : RootScreens.ONBOARDING1}
       >
-        <RootStack.Screen
-          name={RootScreens.ONBOARDING1}
-          component={Onboarding1Container}
-        />
-        <RootStack.Screen
-          name={RootScreens.ONBOARDING2}
-          component={Onboarding2Container}
-        />
+        {
+          !isOnboardingCompleted 
+          &&
+          <>
+            <RootStack.Screen
+              name={RootScreens.ONBOARDING1}
+              component={Onboarding1Container}
+            />
+            <RootStack.Screen
+              name={RootScreens.ONBOARDING2}
+              component={Onboarding2Container}
+            />
+          </>
+        }
+        
         <RootStack.Screen
           name={RootScreens.ONBOARDING3}
           component={Onboarding3Container}
