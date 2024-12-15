@@ -1,7 +1,6 @@
 import { RootScreens } from "@/Screens";
 import { Response } from "@/Services";
 import { EMAIL_PATTERN } from "@/Utils/constant";
-import { getErrorMessage } from "@/Utils/Funtions/render";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import React, { FC, memo } from "react";
@@ -89,9 +88,6 @@ const ForgotPassword: FC<ForgotPasswordProps> = ({
             {isLoading ? "Đang gửi reset code..." : "Lấy lại mật khẩu"}
           </Text>
         </TouchableOpacity>
-        {isError && (
-          <Text className="text-danger-400 mb-4">{getErrorMessage(error)}</Text>
-        )}
       </View>
     </View>
   );

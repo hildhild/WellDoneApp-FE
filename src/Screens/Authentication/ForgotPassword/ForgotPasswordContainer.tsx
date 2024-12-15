@@ -6,6 +6,8 @@ import React, { memo, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { RootScreens } from "../..";
 import ForgotPassword from "./ForgotPassword";
+import { Toast } from "toastify-react-native";
+import { renderSuccessMessageResponse } from "@/Utils/Funtions/render";
 export interface ForgotPasswordForm {
   email: string;
 }
@@ -32,10 +34,11 @@ const ForgotPasswordContainer = ({
         }).unwrap();
         if (response) {
           dispatch(setUser({ email: formData.email }));
+          Toast.success(renderSuccessMessageResponse(response.message), "center")
           onNavigate(RootScreens.RESET_PASSWORD);
         }
       } catch (err) {
-        console.log("An error occurred:", error);
+        Toast.error(String(err), "center")
       }
     },
     [forgotPassword, navigation]

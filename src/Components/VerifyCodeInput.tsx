@@ -42,7 +42,7 @@ const VerifyCodeInput: FC<VerifyCodeInputProps> = ({ code, setCode, onCodeComple
           maxLength={1}
           keyboardType="numeric"
           ref={(ref) => (inputRefs.current[index] = ref)}
-          className="h-14 w-14 border-2 border-neutral-300 rounded-md text-center text-xl font-bold"
+          className="h-14 w-14 border-2 border-neutral-300 rounded-md text-center text-body-small-regular font-bold"
         />
       ))}
     </View>
