@@ -1,11 +1,14 @@
-import { RootStackParamList } from '@/Navigation';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
-import { RootScreens } from '../..';
-import LogIn from './LogIn';
+import { RootStackParamList } from "@/Navigation";
+import { ErrorHandle, useLogInMutation } from "@/Services";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { memo } from "react";
+import { RootScreens } from "../..";
+import LogIn from "./LogIn";
+import { Toast } from "toastify-react-native";
+import { renderErrorMessageResponse, renderSuccessMessageResponse } from "@/Utils/Funtions/render";
 
 export interface LogInForm {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -13,18 +16,40 @@ type LogInScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
   RootScreens.LOGIN
 >;
-export const LogInContainer = ({
-    navigation,
-  }: LogInScreenNavigatorProps) => {
+const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
+  const [logIn, { isLoading, isError, error }] = useLogInMutation();
+  const onNavigate = (screen: RootScreens) => {
+    navigation.navigate(screen);
+  };
+  const handleLogIn = async (formData: LogInForm) => {
+    try {
+      const response = await logIn({
+        email: formData.email,
+        password: formData.password,
+      }).unwrap();
+      if ("access_token" in response) {
+        Toast.success(renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸"))
+        onNavigate(RootScreens.MAIN);
+      }
+    } catch (err) {
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          renderErrorMessageResponse(String(errorData.data.message)),
+          "top"
+        );
+      }
+    }
+  };
 
-    const handleLogIn = (formData: LogInForm) => {
-      console.log("Received form data in LogInContainer:", formData);
-      navigation.navigate(RootScreens.MAIN);
-    };
-
-    const onNavigate = (screen: RootScreens) => {
-      navigation.navigate(screen);
-    };
-
-    return <LogIn onNavigate = {onNavigate} onLogIn={handleLogIn} />;
-}
+  return (
+    <LogIn
+      onNavigate={onNavigate}
+      onLogIn={handleLogIn}
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+    />
+  );
+};
+export default memo(LogInContainer);

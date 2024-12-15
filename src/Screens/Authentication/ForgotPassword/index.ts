@@ -1,0 +1,1 @@
+import * as ForgotPasswordContainer from './ForgotPasswordContainer';
