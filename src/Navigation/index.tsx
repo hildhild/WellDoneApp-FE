@@ -16,7 +16,8 @@ import SignUpContainer from "@/Screens/Authentication/SignUp/SignUpContainer";
 import VerificationContainer from "@/Screens/Authentication/Verification/VerificationContainer";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import * as SecureStore from "expo-secure-store";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import ToastManager from "toastify-react-native";
 import { MainNavigator } from "./Main";
@@ -47,13 +48,33 @@ const getTabBarStyle = (route: any) => {
 
 // @refresh reset
 const ApplicationNavigator = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const accessToken = await SecureStore.getItemAsync("access_token");
+      if (accessToken) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuthentication();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
       <ToastManager width="auto" style={{ paddingRight: 20 }} />
       <StatusBar />
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={RootScreens.ONBOARDING1}
+        initialRouteName={
+          isAuthenticated ? RootScreens.MAIN : RootScreens.ONBOARDING1
+        }
       >
         <RootStack.Screen
           name={RootScreens.ONBOARDING1}
@@ -108,3 +129,4 @@ const ApplicationNavigator = () => {
 };
 
 export { ApplicationNavigator };
+
