@@ -1,6 +1,7 @@
 import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "@/Screens";
 import {
+  ErrorHandle,
   useResendVerifyEmailMutation,
   useVerifyEmailMutation,
 } from "@/Services/users";
@@ -10,6 +11,11 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Verification from "./Verification";
+import { Toast } from "toastify-react-native";
+import {
+  renderErrorMessageResponse,
+  renderSuccessMessageResponse,
+} from "@/Utils/Funtions/render";
 
 type VerifyMailScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
@@ -45,20 +51,30 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
   };
   useEffect(() => {
     if (code.length === 6) {
-      handleVerifyCode(); 
+      handleVerifyCode();
     }
-  }, [code]); 
+  }, [code]);
   const handleVerifyCode = async () => {
     try {
       if (email) {
-        const response = await verifyEmail({ email, code }).unwrap();
-        if (response) {
+        const response = await verifyEmail({
+          email,
+          code,
+        }).unwrap();
+        if ("user" in response) {
           dispatch(setUser({ email: "" }));
+          Toast.success(renderSuccessMessageResponse(response.message), "top");
           onNavigate(RootScreens.LOGIN);
-        }
+        } else Toast.error(renderErrorMessageResponse(response.message), "top");
       }
     } catch (err) {
-      console.log("Error verifying email:", err);
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          renderErrorMessageResponse(String(errorData.data.message)),
+          "top"
+        );
+      }
     }
   };
 
@@ -68,12 +84,20 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
         const response = await resendVerifyEmail({
           email: email,
         }).unwrap();
-        if (response) {
-          console.log("Verification code resent");
+        if ("verificationEmailSent" in response) {
+          Toast.success(renderSuccessMessageResponse(response.message), "top");
+        } else {
+          Toast.error(renderErrorMessageResponse(response.message), "top");
         }
       }
     } catch (err) {
-      console.log("Error resending verification code:", err);
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          renderErrorMessageResponse(String(errorData.data.message)),
+          "top"
+        );
+      }
     }
   };
 

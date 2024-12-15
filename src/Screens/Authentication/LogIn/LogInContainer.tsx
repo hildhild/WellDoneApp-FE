@@ -1,7 +1,10 @@
 import { RootStackParamList } from "@/Navigation";
-import { useLogInMutation } from "@/Services";
+import { ErrorHandle, useLogInMutation } from "@/Services";
+import { renderErrorMessageResponse, renderSuccessMessageResponse } from "@/Utils/Funtions/render";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React from "react";
+import * as SecureStore from "expo-secure-store"; // Import SecureStore
+import React, { memo } from "react";
+import { Toast } from "toastify-react-native";
 import { RootScreens } from "../..";
 import LogIn from "./LogIn";
 
@@ -10,26 +13,33 @@ export interface LogInForm {
   password: string;
 }
 
-type LogInScreenNavigatorProps = NativeStackScreenProps<
-  RootStackParamList,
-  RootScreens.LOGIN
->;
-export const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
+type LogInScreenNavigatorProps = NativeStackScreenProps<RootStackParamList, RootScreens.LOGIN>;
+
+const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [logIn, { isLoading, isError, error }] = useLogInMutation();
+
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
+
   const handleLogIn = async (formData: LogInForm) => {
     try {
       const response = await logIn({
         email: formData.email,
         password: formData.password,
       }).unwrap();
-      if (response) {
+      if ("access_token" in response) {
+        await SecureStore.setItemAsync("access_token", response.access_token);
+        await SecureStore.setItemAsync("user", JSON.stringify(response.user));
+
+        Toast.success(renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸"));
         onNavigate(RootScreens.MAIN);
       }
     } catch (err) {
-      console.log("Error logging in:", err);
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(renderErrorMessageResponse(String(errorData.data.message)), "top");
+      }
     }
   };
 
@@ -43,3 +53,5 @@ export const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
     />
   );
 };
+
+export default memo(LogInContainer);
