@@ -1,9 +1,11 @@
 import { RootStackParamList } from "@/Navigation";
-import { useLogInMutation } from "@/Services";
+import { ErrorHandle, useLogInMutation } from "@/Services";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React from "react";
+import React, { memo } from "react";
 import { RootScreens } from "../..";
 import LogIn from "./LogIn";
+import { Toast } from "toastify-react-native";
+import { renderErrorMessageResponse, renderSuccessMessageResponse } from "@/Utils/Funtions/render";
 
 export interface LogInForm {
   email: string;
@@ -14,7 +16,7 @@ type LogInScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
   RootScreens.LOGIN
 >;
-export const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
+const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [logIn, { isLoading, isError, error }] = useLogInMutation();
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
@@ -25,11 +27,18 @@ export const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         email: formData.email,
         password: formData.password,
       }).unwrap();
-      if (response) {
+      if ("access_token" in response) {
+        Toast.success(renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸"))
         onNavigate(RootScreens.MAIN);
       }
     } catch (err) {
-      console.log("Error logging in:", err);
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          renderErrorMessageResponse(String(errorData.data.message)),
+          "top"
+        );
+      }
     }
   };
 
@@ -43,3 +52,4 @@ export const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
     />
   );
 };
+export default memo(LogInContainer);

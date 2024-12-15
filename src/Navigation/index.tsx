@@ -10,7 +10,7 @@ import {
   RootScreens,
 } from "@/Screens";
 import ForgotPasswordContainer from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
-import { LogInContainer } from "@/Screens/Authentication/LogIn/LogInContainer";
+import LogInContainer from "@/Screens/Authentication/LogIn/LogInContainer";
 import ResetPasswordContainer from "@/Screens/Authentication/ResetPassword/ResetPasswordContainer";
 import SignUpContainer from "@/Screens/Authentication/SignUp/SignUpContainer";
 import VerificationContainer from "@/Screens/Authentication/Verification/VerificationContainer";

@@ -39,12 +39,67 @@ export interface Data {
   message: string
   statusCode: number
 }
+////
 
-export interface SignUpResponse extends Response {}
-export interface VerifyEmailResponse extends Response {}
-export interface ResendVerifyEmailResponse extends Response {}
-export interface ForgotPasswordResponse extends Response {}
-export interface ResetPasswordResponse extends Response {}
+export interface ErrorHandle {
+  data: {
+    error: string;             
+    message: string[];           
+    statusCode: number;        
+  };
+  status: number;   
+}
+
+export interface ErrorResponse{
+  message: string
+  error: string
+  statusCode: number
+}
+
+export interface SignUpResponse {
+    message: string
+    verificationEmailSent: boolean
+    user: UserSignUpInformation
+}
+  
+export interface UserSignUpInformation {
+  name: string
+  email: string
+  isEmailVerified: boolean
+  verificationCodeExpiresAt: string
+  dateofbirth: string
+  group_id: string
+  joined_at: string
+  role: string
+  passwordResetCode: string
+  passwordResetCodeExpiresAt: string
+  id: number
+  createdAt: string
+  updatedAt: string
+  isActive: boolean
+  status: string
+}
+export interface VerifyEmailResponse {
+  message: string
+  user: UserVerifyEmailResponse
+}
+export interface UserVerifyEmailResponse {
+  id: number
+  email: string
+  name: string
+  isEmailVerified: boolean
+}
+
+export interface ResendVerifyEmailResponse {
+  message: string
+  verificationEmailSent: boolean
+}
+export interface ForgotPasswordResponse{
+  message: string
+}
+export interface ResetPasswordResponse{
+  message: string 
+}
 
 export interface SignUpRequest {
   name: string;
@@ -64,17 +119,22 @@ export interface LogInRequest {
   email: string;
   password: string;
 }
-export interface UserInformation {
-  id: number;
-  email: string;
-  name: string;
-  isEmailVerified: boolean;
+
+export interface LogInResponseError {
+  message: string
+  statusCode: number
+}
+export interface LogInResponse {
+  access_token: string
+  expires_at: string
+  user: UserInformation
 }
 
-export interface LogInResponse extends Response {
-  access_token: string;
-  expires_at: string;
-  user: UserInformation;
+export interface UserInformation {
+  id: number
+  email: string
+  name: string
+  isEmailVerified: boolean
 }
 
 export interface ForgotPasswordRequest {
@@ -87,14 +147,14 @@ export interface ResetPasswordRequest {
 }
 const userApi = API.injectEndpoints({
   endpoints: (build) => ({
-    signUp: build.mutation<SignUpResponse, SignUpRequest>({
+    signUp: build.mutation<SignUpResponse | ErrorResponse, SignUpRequest>({
       query: (signUpData) => ({
         url: "/auth/signup",
         method: "POST",
         body: signUpData,
       }),
     }),
-    verifyEmail: build.mutation<VerifyEmailResponse, VerifyEmailRequest>({
+    verifyEmail: build.mutation<VerifyEmailResponse | ErrorResponse, VerifyEmailRequest>({
       query: (verifyData) => ({
         url: "/auth/verify-email",
         method: "POST",
@@ -102,7 +162,7 @@ const userApi = API.injectEndpoints({
       }),
     }),
     resendVerifyEmail: build.mutation<
-      ResendVerifyEmailResponse,
+      ResendVerifyEmailResponse | ErrorResponse,
       ResendVerifyEmailRequest
     >({
       query: (email) => ({
@@ -111,7 +171,7 @@ const userApi = API.injectEndpoints({
         body: email,
       }),
     }),
-    logIn: build.mutation<LogInResponse, LogInRequest>({
+    logIn: build.mutation<LogInResponse | LogInResponseError, LogInRequest>({
       query: (logInData) => ({
         url: "/auth/login",
         method: "POST",

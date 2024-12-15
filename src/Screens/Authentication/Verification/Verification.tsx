@@ -1,7 +1,6 @@
 import VerifyCodeInput from "@/Components/VerifyCodeInput";
 import { RootScreens } from "@/Screens";
 import { Response } from "@/Services";
-import { getErrorMessage } from "@/Utils/Funtions/render";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import React from "react";
@@ -56,12 +55,6 @@ const Verification: React.FC<VerificationProps> = ({
       <TouchableOpacity onPress={onResendCode} className="mt-4">
         <Text className="text-primary-600 text-sm">Gửi lại Code</Text>
       </TouchableOpacity>
-
-      {isError && (
-        <Text className="text-danger-400 mt-4 text-sm">
-          {getErrorMessage(error)}
-        </Text>
-      )}
     </View>
   );
 };

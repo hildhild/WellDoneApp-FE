@@ -1,7 +1,6 @@
 import VerifyCodeInput from "@/Components/VerifyCodeInput";
 import { RootScreens } from "@/Screens";
 import { PASSWORD_PATTERN } from "@/Utils/constant";
-import { getErrorMessage } from "@/Utils/Funtions/render";
 import React, { FC, memo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -128,10 +127,6 @@ const ResetPassword: FC<ResetPasswordProps> = ({
           <VerifyCodeInput code={value || ""} setCode={onChange} />
         )}
       />
-
-      {isError && (
-        <Text className="text-danger-400 mb-4">{getErrorMessage(error)}</Text>
-      )}
 
       <View className="flex-row mt-6 w-full">
         <TouchableOpacity
