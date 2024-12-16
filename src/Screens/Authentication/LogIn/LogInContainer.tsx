@@ -6,6 +6,9 @@ import { RootScreens } from "../..";
 import LogIn from "./LogIn";
 import { Toast } from "toastify-react-native";
 import { renderErrorMessageResponse, renderSuccessMessageResponse } from "@/Utils/Funtions/render";
+import { useDispatch } from "react-redux";
+import { setProfile, setToken } from "@/Store/reducers";
+import { useGetProfileMutation } from "@/Services/profile";
 
 export interface LogInForm {
   email: string;
@@ -18,6 +21,8 @@ type LogInScreenNavigatorProps = NativeStackScreenProps<
 >;
 const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [logIn, { isLoading, isError, error }] = useLogInMutation();
+  const [getProfile] = useGetProfileMutation();
+  const dispatch = useDispatch();
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
@@ -30,6 +35,11 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
       if ("access_token" in response) {
         Toast.success(renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸"))
         onNavigate(RootScreens.MAIN);
+        dispatch(setToken(response.access_token));
+        const profileResponse = await getProfile(response.access_token).unwrap();
+        if ("name" in profileResponse) {
+          dispatch(setProfile({name: profileResponse.name, dateOfBirth: profileResponse.dateofbirth, email: profileResponse.email}))
+        }
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {

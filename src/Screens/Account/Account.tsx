@@ -9,6 +9,7 @@ import { Controller } from "react-hook-form";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
 import { Toast } from "toastify-react-native";
+import { useSelector } from "react-redux";
 
 
 export const Account = (props: {
@@ -18,6 +19,7 @@ export const Account = (props: {
   const [editable, setEditable] = useState<boolean>(false);
   const [isChangePassword, setIsChangePassword] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+  const profile = useSelector((state: any) => state.profile)
 
   const handleEditProfile = () => {
     setEditable(!editable);
@@ -48,8 +50,8 @@ export const Account = (props: {
             className="w-[100px] h-[100px] object-cover rounded-full border-[1px] border-black mb-3"
             source={require('assets/dark-logo.png')}
           />
-          <Text className="font-bold text-xl">Lê Đình Huy</Text>
-          <Text className="text-[#ababab] text-lg">huy.ledinh@hcmut.edu.vn</Text>
+          <Text className="font-bold text-xl">{profile.name}</Text>
+          <Text className="text-[#ababab] text-lg">{profile.email}</Text>
           <View className="w-full mb-4">
               <Text className="mb-3 font-semibold text-neutral-500">Họ và tên:</Text>
               <View className="flex-row items-center bg-lime-100 rounded-lg p-4 mb-4">
@@ -57,17 +59,17 @@ export const Account = (props: {
                   placeholder="Họ và tên"
                   editable={editable}
                   className="flex-1 text-neutral-700 text-body-base-regular"
-                  // value={value}
+                  value={profile.name}
                   // onChangeText={onChange}
                 />
               </View>
-              <Text className="mb-3 font-semibold text-neutral-500">Tên tài khoản:</Text>
+              <Text className="mb-3 font-semibold text-neutral-500">Ngày sinh:</Text>
               <View className="flex-row items-center bg-lime-100 rounded-lg p-4 mb-4">
                 <TextInput
-                  placeholder="Tên tài khoản"
+                  placeholder="Ngày sinh"
                   editable={editable}
                   className="flex-1 text-neutral-700 text-body-base-regular"
-                  // value={value}
+                  value={profile.dateOfBirth}
                   // onChangeText={onChange}
                 />
               </View>
@@ -77,7 +79,7 @@ export const Account = (props: {
                   placeholder="Email"
                   editable={editable}
                   className="flex-1 text-neutral-700 text-body-base-regular"
-                  // value={value}
+                  value={profile.email}
                   // onChangeText={onChange}
                 />
               </View>

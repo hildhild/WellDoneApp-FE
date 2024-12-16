@@ -12,19 +12,20 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
-import { homeReducers, themeReducers, userReducers } from "./reducers";
+import { homeReducers, themeReducers, userReducers, profileReducers } from "./reducers";
 
 const reducers = combineReducers({
   api: API.reducer,
   theme: themeReducers,
   home: homeReducers,
   user: userReducers,
+  profile: profileReducers
 });
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["theme"],
+  whitelist: ["profile"],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
