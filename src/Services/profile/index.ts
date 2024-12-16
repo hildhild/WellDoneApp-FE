@@ -61,6 +61,36 @@ export interface SignUpResponse {
     verificationEmailSent: boolean
     user: UserSignUpInformation
 }
+
+export interface GetProfileResponse {
+  id: number,
+  name: string,
+  dateofbirth: string,
+  email: string,
+  group_id: any,
+  joined_at: any,
+  role: any,
+  updatedAt: string
+}
+
+export interface UpdateProfileResponse {
+  id: number,
+  name: string,
+  dateofbirth: string,
+  email: string,
+  group_id: any,
+  joined_at: any,
+  role: any,
+  updatedAt: string
+}
+
+export interface UpdateProfileRequest {
+  data: {
+    name: string,
+    dateOfBirth: string,
+  }
+  token: string
+}
   
 export interface UserSignUpInformation {
   name: string
@@ -145,63 +175,31 @@ export interface ResetPasswordRequest {
   code: string;
   newPassword: string;
 }
-const userApi = API.injectEndpoints({
+const profileApi = API.injectEndpoints({
   endpoints: (build) => ({
-    signUp: build.mutation<SignUpResponse | ErrorResponse, SignUpRequest>({
-      query: (signUpData) => ({
-        url: "/auth/signup",
-        method: "POST",
-        body: signUpData,
+    getProfile: build.mutation<GetProfileResponse | ErrorResponse, string>({
+      query: (token) => ({
+        url: "/auth/profile",
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }),
     }),
-    verifyEmail: build.mutation<VerifyEmailResponse | ErrorResponse, VerifyEmailRequest>({
-      query: (verifyData) => ({
-        url: "/auth/verify-email",
-        method: "POST",
-        body: verifyData,
+    updateProfile: build.mutation<UpdateProfileResponse | ErrorResponse, UpdateProfileRequest>({
+      query: (updateData) => ({
+        url: "/auth/updateProfile",
+        method: "PATCH",
+        body: updateData.data,
+        headers: {
+          Authorization: `Bearer ${updateData.token}`,
+        },
       }),
-    }),
-    resendVerifyEmail: build.mutation<ResendVerifyEmailResponse | ErrorResponse, ResendVerifyEmailRequest>({
-      query: (email) => ({
-        url: "/auth/resend-verification",
-        method: "POST",
-        body: email,
-      }),
-    }),
-    logIn: build.mutation<LogInResponse | LogInResponseError, LogInRequest>({
-      query: (logInData) => ({
-        url: "/auth/login",
-        method: "POST",
-        body: logInData,
-      }),
-    }),
-    forgotPassword: build.mutation<ForgotPasswordResponse, ForgotPasswordRequest>({
-      query: (forgotPasswordData) => ({
-        url: "/auth/forgot-password",
-        method: "POST",
-        body: forgotPasswordData,
-      }),
-    }),
-    resetPassword: build.mutation<ResetPasswordResponse, ResetPasswordRequest>({
-      query: (resetPasswordData) => ({
-        url: "/auth/reset-password",
-        method: "POST",
-        body: resetPasswordData,
-      }),
-    }),
-    getUser: build.query<User, string>({
-      query: (id) => `users/${id}`,
     }),
   }),
   overrideExisting: true,
 });
 
 export const {
-  useSignUpMutation,
-  useVerifyEmailMutation,
-  useResendVerifyEmailMutation,
-  useLogInMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-  useLazyGetUserQuery,
-} = userApi;
+  useGetProfileMutation,
+} = profileApi;

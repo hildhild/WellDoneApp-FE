@@ -21,6 +21,7 @@ import { StatusBar } from "react-native";
 import ToastManager from "toastify-react-native";
 import { MainNavigator } from "./Main";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -49,6 +50,7 @@ const getTabBarStyle = (route: any) => {
 // @refresh reset
 const ApplicationNavigator = () => {
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean>(false);
+  const accessToken = useSelector((state: any) => state.profile.token)
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -66,7 +68,7 @@ const ApplicationNavigator = () => {
       <StatusBar />
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={isOnboardingCompleted ? RootScreens.ONBOARDING3 : RootScreens.ONBOARDING1}
+        initialRouteName={isOnboardingCompleted ? RootScreens.ONBOARDING3 : accessToken ? RootScreens.MAIN : RootScreens.ONBOARDING1}
       >
         {
           !isOnboardingCompleted 
