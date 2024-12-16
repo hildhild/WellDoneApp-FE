@@ -1,9 +1,15 @@
 import { RootStackParamList } from "@/Navigation";
 import { ErrorHandle, useLogInMutation } from "@/Services";
-import { renderErrorMessageResponse, renderSuccessMessageResponse } from "@/Utils/Funtions/render";
+import { useGetProfileMutation } from "@/Services/profile";
+import { setProfile, setToken } from "@/Store/reducers";
+import {
+  renderErrorMessageResponse,
+  renderSuccessMessageResponse,
+} from "@/Utils/Funtions/render";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import * as SecureStore from "expo-secure-store"; // Import SecureStore
 import React, { memo } from "react";
+import { useDispatch } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "../..";
 import LogIn from "./LogIn";
@@ -13,11 +19,15 @@ export interface LogInForm {
   password: string;
 }
 
-type LogInScreenNavigatorProps = NativeStackScreenProps<RootStackParamList, RootScreens.LOGIN>;
+type LogInScreenNavigatorProps = NativeStackScreenProps<
+  RootStackParamList,
+  RootScreens.LOGIN
+>;
 
 const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [logIn, { isLoading, isError, error }] = useLogInMutation();
-
+  const [getProfile] = useGetProfileMutation();
+  const dispatch = useDispatch();
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
@@ -29,16 +39,31 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         password: formData.password,
       }).unwrap();
       if ("access_token" in response) {
-        await SecureStore.setItemAsync("access_token", response.access_token);
-        await SecureStore.setItemAsync("user", JSON.stringify(response.user));
-
-        Toast.success(renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸"));
+        Toast.success(
+          renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸")
+        );
         onNavigate(RootScreens.MAIN);
+        dispatch(setToken(response.access_token));
+        const profileResponse = await getProfile(
+          response.access_token
+        ).unwrap();
+        if ("name" in profileResponse) {
+          dispatch(
+            setProfile({
+              name: profileResponse.name,
+              dateOfBirth: profileResponse.dateofbirth,
+              email: profileResponse.email,
+            })
+          );
+        }
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as ErrorHandle;
-        Toast.error(renderErrorMessageResponse(String(errorData.data.message)), "top");
+        Toast.error(
+          renderErrorMessageResponse(String(errorData.data.message)),
+          "top"
+        );
       }
     }
   };

@@ -16,11 +16,12 @@ import SignUpContainer from "@/Screens/Authentication/SignUp/SignUpContainer";
 import VerificationContainer from "@/Screens/Authentication/Verification/VerificationContainer";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import ToastManager from "toastify-react-native";
 import { MainNavigator } from "./Main";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -48,23 +49,18 @@ const getTabBarStyle = (route: any) => {
 
 // @refresh reset
 const ApplicationNavigator = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean>(false);
+  const accessToken = useSelector((state: any) => state.profile.token)
 
   useEffect(() => {
-    const checkAuthentication = async () => {
-      const accessToken = await SecureStore.getItemAsync("access_token");
-      if (accessToken) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
+    const checkOnboarding = async () => {
+      const completed = await AsyncStorage.getItem("onboardingCompleted");
+      if (completed === "true") {
+        setIsOnboardingCompleted(true);
       }
     };
-    checkAuthentication();
+    checkOnboarding();
   }, []);
-
-  if (isAuthenticated === null) {
-    return null;
-  }
 
   return (
     <NavigationContainer>
@@ -72,18 +68,23 @@ const ApplicationNavigator = () => {
       <StatusBar />
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={
-          isAuthenticated ? RootScreens.MAIN : RootScreens.ONBOARDING1
-        }
+        initialRouteName={isOnboardingCompleted ? RootScreens.ONBOARDING3 : accessToken ? RootScreens.MAIN : RootScreens.ONBOARDING1}
       >
-        <RootStack.Screen
-          name={RootScreens.ONBOARDING1}
-          component={Onboarding1Container}
-        />
-        <RootStack.Screen
-          name={RootScreens.ONBOARDING2}
-          component={Onboarding2Container}
-        />
+        {
+          !isOnboardingCompleted 
+          &&
+          <>
+            <RootStack.Screen
+              name={RootScreens.ONBOARDING1}
+              component={Onboarding1Container}
+            />
+            <RootStack.Screen
+              name={RootScreens.ONBOARDING2}
+              component={Onboarding2Container}
+            />
+          </>
+        }
+        
         <RootStack.Screen
           name={RootScreens.ONBOARDING3}
           component={Onboarding3Container}
