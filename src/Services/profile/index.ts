@@ -51,15 +51,9 @@ export interface ErrorHandle {
 }
 
 export interface ErrorResponse{
-  message: string
+  message: string 
   error: string
   statusCode: number
-}
-
-export interface SignUpResponse {
-    message: string
-    verificationEmailSent: boolean
-    user: UserSignUpInformation
 }
 
 export interface GetProfileResponse {
@@ -87,94 +81,21 @@ export interface UpdateProfileResponse {
 export interface UpdateProfileRequest {
   data: {
     name: string,
-    dateOfBirth: string,
-  }
+    dateofbirth: string,
+  },
   token: string
 }
-  
-export interface UserSignUpInformation {
-  name: string
-  email: string
-  isEmailVerified: boolean
-  verificationCodeExpiresAt: string
-  dateofbirth: string
-  group_id: string
-  joined_at: string
-  role: string
-  passwordResetCode: string
-  passwordResetCodeExpiresAt: string
-  id: number
-  createdAt: string
-  updatedAt: string
-  isActive: boolean
-  status: string
-}
-export interface VerifyEmailResponse {
-  message: string
-  user: UserVerifyEmailResponse
-}
-export interface UserVerifyEmailResponse {
-  id: number
-  email: string
-  name: string
-  isEmailVerified: boolean
+
+export interface ChangePasswordResponse {}
+
+export interface ChangePasswordRequest {
+  data: {
+    password: string,
+    newPassword: string,
+  },
+  token: string
 }
 
-export interface ResendVerifyEmailResponse {
-  message: string
-  verificationEmailSent: boolean
-}
-export interface ForgotPasswordResponse{
-  message: string
-}
-export interface ResetPasswordResponse{
-  message: string 
-}
-
-export interface SignUpRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
-export interface VerifyEmailRequest {
-  email: string;
-  code: string;
-}
-
-export interface ResendVerifyEmailRequest {
-  email: string;
-}
-export interface LogInRequest {
-  email: string;
-  password: string;
-}
-
-export interface LogInResponseError {
-  message: string
-  statusCode: number
-}
-export interface LogInResponse {
-  access_token: string
-  expires_at: string
-  user: UserInformation
-}
-
-export interface UserInformation {
-  id: number
-  email: string
-  name: string
-  isEmailVerified: boolean
-}
-
-export interface ForgotPasswordRequest {
-  email: string;
-}
-export interface ResetPasswordRequest {
-  email: string;
-  code: string;
-  newPassword: string;
-}
 const profileApi = API.injectEndpoints({
   endpoints: (build) => ({
     getProfile: build.mutation<GetProfileResponse | ErrorResponse, string>({
@@ -196,10 +117,22 @@ const profileApi = API.injectEndpoints({
         },
       }),
     }),
+    changePassword: build.mutation<undefined | ErrorResponse, ChangePasswordRequest>({
+      query: (changePasswordData) => ({
+        url: "/auth/reset-password",
+        method: "PATCH",
+        body: changePasswordData.data,
+        headers: {
+          Authorization: `Bearer ${changePasswordData.token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
   useGetProfileMutation,
+  useUpdateProfileMutation,
+  useChangePasswordMutation
 } = profileApi;

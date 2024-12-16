@@ -41,6 +41,20 @@ export const renderErrorMessageResponse = (
     return "Mã xác thực đã hết hạn hoặc không tồn tại ~ Vui lòng thử lại.";
   } else if (responseString === "newPassword is not strong enough") {
     return "Mật khẩu mới không đủ mạnh. Hãy nhập mật khẩu khác~";
+  } else if (responseString === "Password is incorrect") {
+    return "Nhập sai mật khẩu hiện tại";
+  } else if (
+    (Array.isArray(responseString) &&
+      "password must be longer than or equal to 8 characters" in responseString) ||
+    responseString === "password must be longer than or equal to 8 characters"
+  ) {
+    return "Mật khẩu phải tối thiểu 8 ký tự";
+  } else if (
+    (Array.isArray(responseString) &&
+      "newPassword is not strong enough" in responseString) ||
+    responseString === "newPassword is not strong enough"
+  ) {
+    return "Mật khẩu mới không đủ mạnh";
   } else {
     return "Đã xảy ra lỗi, vui lòng thử lại!";
   }
