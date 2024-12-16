@@ -1,14 +1,18 @@
 import { RootStackParamList } from "@/Navigation";
 import { ErrorHandle, useLogInMutation } from "@/Services";
+import { useGetProfileMutation } from "@/Services/profile";
+import { setProfile, setToken } from "@/Store/reducers";
+import {
+  renderErrorMessageResponse,
+  renderSuccessMessageResponse,
+} from "@/Utils/Funtions/render";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { memo } from "react";
+import { useDispatch } from "react-redux";
+import { Toast } from "toastify-react-native";
 import { RootScreens } from "../..";
 import LogIn from "./LogIn";
-import { Toast } from "toastify-react-native";
-import { renderErrorMessageResponse, renderSuccessMessageResponse } from "@/Utils/Funtions/render";
-import { useDispatch } from "react-redux";
-import { setProfile, setToken } from "@/Store/reducers";
-import { useGetProfileMutation } from "@/Services/profile";
 
 export interface LogInForm {
   email: string;
@@ -19,6 +23,7 @@ type LogInScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
   RootScreens.LOGIN
 >;
+
 const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [logIn, { isLoading, isError, error }] = useLogInMutation();
   const [getProfile] = useGetProfileMutation();
@@ -26,6 +31,7 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
+
   const handleLogIn = async (formData: LogInForm) => {
     try {
       const response = await logIn({
@@ -33,12 +39,22 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         password: formData.password,
       }).unwrap();
       if ("access_token" in response) {
-        Toast.success(renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸"))
+        Toast.success(
+          renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸")
+        );
         onNavigate(RootScreens.MAIN);
         dispatch(setToken(response.access_token));
-        const profileResponse = await getProfile(response.access_token).unwrap();
+        const profileResponse = await getProfile(
+          response.access_token
+        ).unwrap();
         if ("name" in profileResponse) {
-          dispatch(setProfile({name: profileResponse.name, dateOfBirth: profileResponse.dateofbirth, email: profileResponse.email}))
+          dispatch(
+            setProfile({
+              name: profileResponse.name,
+              dateOfBirth: profileResponse.dateofbirth,
+              email: profileResponse.email,
+            })
+          );
         }
       }
     } catch (err) {
@@ -62,4 +78,5 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
     />
   );
 };
+
 export default memo(LogInContainer);
