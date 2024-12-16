@@ -38,7 +38,7 @@ const slides: Slide[] = [
 export const Onboarding2 = (props: {
   onNavigate: (string: RootScreens) => void;
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const handleFinish = async () => {
     await AsyncStorage.setItem("onboardingCompleted", "true");
     props.onNavigate(RootScreens.ONBOARDING3);
@@ -118,7 +118,7 @@ export const Onboarding2 = (props: {
               </View>
             </View>
           </View>
-        </Modal>
+      </Modal>
     </>
     
   );
