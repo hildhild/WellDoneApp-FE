@@ -4,51 +4,58 @@ import { View, Image, Text } from "react-native";
 interface AvatarStackProps {
   users: { name: string; avatar: string }[];
   maxVisible?: number;
+  display?: "col" | "row";
 }
 
-const AvatarStack: React.FC<AvatarStackProps> = ({ users, maxVisible = 3 }) => {
+const AvatarStack: React.FC<AvatarStackProps> = ({
+  users,
+  maxVisible = 3,
+  display = "col",
+}) => {
   const visibleUsers = users.slice(0, maxVisible);
   const remainingCount = Math.max(0, users.length - maxVisible);
 
   return (
-    <View className="flex flex-col items-center space-y-[-3] bg-neutral-100 rounded-full p-2">
+    <View
+      className={`p-2 bg-neutral-100 rounded-full ${
+        display === "col"
+          ? "flex-col items-center space-y-[-7]"
+          : "flex-row items-center space-x-[-7]"
+      }`}
+    >
       {visibleUsers.map((user, index) => (
         <View
           key={index}
-          className="rounded-full bg-white border-2 border-neutral-100"
+          className="bg-white border-2 border-neutral-100 rounded-full"
           style={{
             width: 32,
             height: 32,
-            marginTop: index > 0 ? -7 : 0,
             zIndex: visibleUsers.length + index,
           }}
         >
           <Image
             className="w-full h-full rounded-full"
-            source={
-              typeof user.avatar === "string"
-                ? { uri: user.avatar }
-                : user.avatar
-            }
+            source={typeof user.avatar === "string" ? { uri: user.avatar } : user.avatar}
           />
         </View>
       ))}
 
-      <View
-        className="rounded-full bg-neutral-100 flex items-center justify-center"
-        style={{ width: 32, height: 32, marginTop: -7 }}
-      >
-        <Text className="text-neutral-900 text-xs">...</Text>
-      </View>
       {remainingCount > 0 && (
-        <View
-          className="rounded-full bg-neutral-900 border border-white flex items-center justify-center"
-          style={{ width: 32, height: 32, marginTop: -7 }}
-        >
-          <Text className="text-neutral-100 text-xs">
-            {`${remainingCount}+`}
-          </Text>
-        </View>
+        <>
+          <View
+            className="bg-neutral-100 rounded-full flex items-center justify-center"
+            style={{ width: 32, height: 32, marginTop: -7 }}
+          >
+            <Text className="text-neutral-900 text-xs">...</Text>
+          </View>
+
+          <View
+            className="bg-neutral-900 border-white rounded-full flex items-center justify-center"
+            style={{ width: 32, height: 32, marginTop: -7 }}
+          >
+            <Text className="text-neutral-100 text-xs">{`${remainingCount}+`}</Text>
+          </View>
+        </>
       )}
     </View>
   );

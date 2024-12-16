@@ -1,6 +1,6 @@
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
-import { ProjectDetail } from "@/Services/projects";
+import { IProjectDetail } from "@/Services/projects";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
 import React from "react";
@@ -13,7 +13,7 @@ import FeedItemContainer from "./FeedItem/FeedItemContainer";
 
 export interface IHomeProps {
   onNavigate: (screen: RootScreens) => void;
-  data: ProjectDetail | undefined;
+  data: IProjectDetail | undefined;
   isLoading: boolean;
 }
 
@@ -102,7 +102,7 @@ export const Home = (props: IHomeProps) => {
                       width: 155,
                     }}
                     className="bg-neutral-100 px-4 py-2 rounded-3xl mb-4 flex-row justify-between"
-                    onPress={() => {}}
+                    onPress={() => props.onNavigate(RootScreens.PROJECTDETAIL)}
                   >
                     <Text className="text-center text-neutral-900 text-body-base-regular ">
                       Open Project

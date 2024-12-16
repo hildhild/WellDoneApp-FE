@@ -21,6 +21,7 @@ export enum RootScreens {
   VERIFY_MAIL = "VerifyMail",
   ACCOUNT = "Account",
   NOTIFICATION = "Notification",
+  PROJECTDETAIL = "ProjectDetail",
 }
 
 export {

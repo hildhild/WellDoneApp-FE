@@ -1,17 +1,20 @@
 import { API } from "..";
+import { Status } from "@/Utils/constant";
 
-export interface GetDetailProjectResponse extends ProjectDetail {}
+export interface GetDetailProjectResponse extends IProjectDetail {}
 export interface GetDetailProjectRequest {
   projectId: number;
   getRecentProject?: boolean;
 }
-export interface ProjectDetail {
+
+export interface IProjectDetail {
   id: number;
   name: string;
   members: ProjectMember[];
   description: string;
   documents: ProjectDocument[];
   tasks: ProjectTask[];
+  status: Status;
 }
 
 export interface ProjectMember {
@@ -39,6 +42,7 @@ export interface ProjectTask {
   description: string;
   task_diary: TaskDiary;
   comments: TaskComment[];
+  sum_hours: number;
 }
 
 export interface TaskMember extends ProjectMember {}
