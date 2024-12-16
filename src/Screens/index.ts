@@ -20,6 +20,7 @@ export enum RootScreens {
   ONBOARDING3 = "Onboarding3",
   VERIFY_MAIL = "VerifyMail",
   ACCOUNT = "Account",
+  NOTIFICATION = "Notification",
 }
 
 export {

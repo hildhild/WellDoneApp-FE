@@ -22,6 +22,7 @@ import ToastManager from "toastify-react-native";
 import { MainNavigator } from "./Main";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
+import NotificationContainer from "@/Screens/Notification/NotificationContainer";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -35,6 +36,7 @@ export type RootStackParamList = {
   [RootScreens.ONBOARDING3]: undefined;
   [RootScreens.VERIFY_MAIL]: undefined;
   [RootScreens.ACCOUNT]: undefined;
+  [RootScreens.NOTIFICATION]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -124,9 +126,15 @@ const ApplicationNavigator = () => {
           component={AccountContainer}
           options={{}}
         />
+        <RootStack.Screen
+          name={RootScreens.NOTIFICATION}
+          component={NotificationContainer}
+          options={{}}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );
 };
 
 export { ApplicationNavigator };
+
