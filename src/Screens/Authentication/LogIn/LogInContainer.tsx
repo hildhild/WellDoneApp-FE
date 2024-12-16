@@ -2,7 +2,7 @@ import { RootStackParamList } from "@/Navigation";
 import { ErrorHandle, useLogInMutation } from "@/Services";
 import { renderErrorMessageResponse, renderSuccessMessageResponse } from "@/Utils/Funtions/render";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import * as SecureStore from "expo-secure-store"; // Import SecureStore
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { memo } from "react";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "../..";
@@ -29,8 +29,8 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         password: formData.password,
       }).unwrap();
       if ("access_token" in response) {
-        await SecureStore.setItemAsync("access_token", response.access_token);
-        await SecureStore.setItemAsync("user", JSON.stringify(response.user));
+        await AsyncStorage.setItem("access_token", response.access_token);// SecureStore.setItemAsync("access_token", response.access_token);
+        await AsyncStorage.setItem("user", JSON.stringify(response.user)); //SecureStore.setItemAsync("user", JSON.stringify(response.user));
 
         Toast.success(renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸"));
         onNavigate(RootScreens.MAIN);
