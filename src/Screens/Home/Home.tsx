@@ -1,16 +1,15 @@
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
-import { User } from "@/Services";
 import { ProjectDetail } from "@/Services/projects";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import * as Progress from "react-native-progress";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootScreens } from "..";
 import FeedItemContainer from "./FeedItem/FeedItemContainer";
-import * as Progress from "react-native-progress";
 
 export interface IHomeProps {
   onNavigate: (screen: RootScreens) => void;
@@ -56,7 +55,10 @@ export const Home = (props: IHomeProps) => {
           <View className="bg-white rounded-lg mb-8">
             <View className="flex-row justify-between">
               <Text className="text-heading4 font-bold mb-4 p-4">Bảng tin</Text>
-              <TouchableOpacity className="mt-4">
+              <TouchableOpacity
+                className="mt-4"
+                onPress={() => props.onNavigate(RootScreens.NOTIFICATION)}
+              >
                 <MaterialCommunityIcons
                   name="arrow-top-right-thin-circle-outline"
                   size={32}
@@ -65,15 +67,17 @@ export const Home = (props: IHomeProps) => {
               </TouchableOpacity>
             </View>
             <View className="flex-row justify-between">
-              <FeedItemContainer />
+              <FeedItemContainer onNavigate={props.onNavigate} />
             </View>
           </View>
 
           <View className="rounded-lg mb-8">
-            <Text className="text-heading4 font-bold mb-4 p-4">
-              Dự án gần đây
-            </Text>
+            <Text className="text-heading4 font-bold p-4">Dự án gần đây</Text>
             <View className="p-4 flex-row items-center rounded-2xl border border-neutral-300 bg-neutral-900">
+              <Image
+                source={require("assets/Group Rectangle.png")}
+                className="absolute top-2 right-2 w-32 h-32"
+              />
               <View className="flex-1">
                 <Text className="text-warning-100 font-bold text-body-large-semibold mb-4 p-4">
                   {data?.name}
