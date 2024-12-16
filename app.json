@@ -34,8 +34,7 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-localization",
-      "expo-secure-store"
+      "expo-localization"
     ],
     "runtimeVersion": {
       "policy": "sdkVersion"
