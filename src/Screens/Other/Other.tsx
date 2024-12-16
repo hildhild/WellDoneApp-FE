@@ -32,7 +32,7 @@ export const Other = (props: {
       {
         iconName: "bell",
         title: "Thông báo",
-        pressFunc: () => props.onNavigate(RootScreens.MAIN)
+        pressFunc: () => props.onNavigate(RootScreens.NOTIFICATION)
       },
     ],
     [
