@@ -1,4 +1,3 @@
-// ProjectCard.jsx
 import React, { memo } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import AvatarStack from "@/Components/AvatarStack";

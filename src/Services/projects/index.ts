@@ -1,26 +1,33 @@
 import { API } from "..";
-import { Status } from "@/Utils/constant";
+import { DocumentType, Priority, Status } from "@/Utils/constant";
 
 export interface GetDetailProjectResponse extends IProjectDetail {}
+
+export interface GetProjectListRequest {
+  userId: string;
+  searchProjectNameQuery?: string;
+}
 export interface GetDetailProjectRequest {
-  projectId: number;
+  projectId: string;
   getRecentProject?: boolean;
 }
-export type IProjectList = IProjectListItem[]
+export type IProjectList = IProjectListItem[];
 
 export interface IProjectListItem {
-  id: string
-  name: string
-  start_date: string
-  end_date: string
-  status: string
-  description: string
-  progress: number
-  sum_hours_until_now: number
-  members: ProjectMember[]
+  id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  status: Status;
+  description: string;
+  progress: number;
+  sum_hours_until_now: number;
+  members: ProjectMember[];
 }
+
+export type GetProjectListResponse = IProjectList;
 export interface IProjectDetail {
-  id: number;
+  id: string;
   name: string;
   members: ProjectMember[];
   description: string;
@@ -30,7 +37,7 @@ export interface IProjectDetail {
 }
 
 export interface ProjectMember {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: string;
@@ -38,62 +45,54 @@ export interface ProjectMember {
 }
 
 export interface ProjectDocument {
-  id: number;
+  id: string;
   name: string;
-  type: string;
+  type: DocumentType;
   url: string;
 }
 
 export interface ProjectTask {
-  id: number;
+  id: string;
   name: string;
-  priority: string;
-  status: string;
+  priority: Priority;
+  status: Status;
   task_code: string;
   members: TaskMember[];
-  description: string;
-  task_diary: TaskDiary;
-  comments: TaskComment[];
   sum_hours: number;
 }
 
 export interface TaskMember extends ProjectMember {}
 
-export interface TaskDiary {
-  created_at: string;
-  last_accessed: string;
-}
-
-export interface TaskComment {
-  id: number;
-  message: string;
-  poster_id: number;
-  poster_name: string;
-  created_at: string;
-  replies: TaskCommentReply[];
-}
-
-export interface TaskCommentReply {
-  id: number;
-  message: string;
-  poster_id: number;
-  poster_name: string;
-  created_at: string;
-}
-
 const projectApi = API.injectEndpoints({
   endpoints: (build) => ({
+    getProjectList: build.mutation<
+      GetProjectListResponse,
+      GetProjectListRequest
+    >({
+      query: (projectListData) => ({
+        url: "/projects/",
+        method: "POST",
+        body: projectListData,
+      }),
+    }),
     getDetailProject: build.mutation<
       GetDetailProjectResponse,
       GetDetailProjectRequest
     >({
       query: (detailProjectData) => ({
-        url: "/projects/",
+        url: "/projects/project/",
         method: "POST",
         body: detailProjectData,
+      }),
+    }),
+    deleteProject: build.mutation<boolean, string>({
+      query: (projectId) => ({
+        url: "/projects/" + projectId,
+        method: "DELETE",
       }),
     }),
   }),
 });
 
-export const { useGetDetailProjectMutation } = projectApi;
+export const { useGetDetailProjectMutation, useGetProjectListMutation, useDeleteProjectMutation} =
+  projectApi;

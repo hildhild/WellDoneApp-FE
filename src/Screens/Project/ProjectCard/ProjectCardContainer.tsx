@@ -5,7 +5,7 @@ import React, { FC, memo } from 'react';
 import { Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 import ProjectCard from './ProjectCard';
-
+import { useDeleteProjectMutation } from '@/Services/projects';
 interface IProjectCardContainerProps {
   project: IProjectListItem;
   bgColor: string;
@@ -14,7 +14,7 @@ interface IProjectCardContainerProps {
 
 const ProjectCardContainer: FC<IProjectCardContainerProps> = ({ project, bgColor, onNavigate }) => {
   const dispatch = useDispatch();
-
+const [deleteProject, { isLoading }] = useDeleteProjectMutation();
   const handleDelete = (projectId: string) => {
     Alert.alert(
       "Confirm Delete",
@@ -27,6 +27,7 @@ const ProjectCardContainer: FC<IProjectCardContainerProps> = ({ project, bgColor
         {
           text: "OK",
           onPress: () => {
+            //const deleteProjectResponse = deleteProject(project.id);
             console.log(`Project ${projectId} deleted.`);
           },
         },

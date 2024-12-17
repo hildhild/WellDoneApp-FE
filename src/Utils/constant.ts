@@ -15,41 +15,42 @@ export const PASSWORD_PATTERN =
 
 export type Status = "completed" | "in_progress" | "new";
 export type DocumentType = "csv" | "doc" | "docx" | "pdf" | "png" | "ppt" | "pptx" | "xls" | "xlsx" | "zip" | "jpg" ;
+export type Priority = "High" | "Medium" | "Low";
 
 export const data: IProjectDetail = {
-  id: 1,
+  id: "1",
   name: "Green sky Website Dev",
   members: [
     {
-      id: 101,
+      id: "101",
       name: "John Doe",
       email: "john.doe@example.com",
       role: "Project Manager",
       avatar: require("assets/Switch.png"),
     },
     {
-      id: 102,
+      id: "102",
       name: "Jane Smith",
       email: "jane.smith@example.com",
       role: "Developer",
       avatar: require("assets/Switch.png"),
     },
     {
-      id: 103,
+      id: "103",
       name: "Alice Johnson",
       email: "alice.johnson@example.com",
       role: "Designer",
       avatar: require("assets/Switch.png"),
     },
     {
-      id: 104,
+      id: "104",
       name: "Bob Brown",
       email: "bob.brown@example.com",
       role: "Tester",
       avatar: require("assets/Switch.png"),
     },
     {
-      id: 105,
+      id: "105",
       name: "Charlie Davis",
       email: "charlie.davis@example.com",
       role: "Developer",
@@ -59,13 +60,13 @@ export const data: IProjectDetail = {
   description: "A sample project to demonstrate JSON structure.",
   documents: [
     {
-      id: 201,
+      id: "201",
       name: "Project Plan",
       type: "pdf",
       url: "http://example.com/project-plan.pdf",
     },
     {
-      id: 202,
+      id: "202",
       name: "Requirements Document",
       type: "docx",
       url: "http://example.com/requirements.docx",
@@ -73,49 +74,18 @@ export const data: IProjectDetail = {
   ],
   tasks: [
     {
-      id: 301,
+      id: "301",
       name: "Develop Feature A",
       priority: "High",
       status: "in_progress",
       task_code: "FA-123",
       members: [
         {
-          id: 102,
+          id: "102",
           name: "Jane Smith",
           email: "jane.smith@example.com",
           role: "Developer",
           avatar: require("assets/Switch.png"),
-        },
-      ],
-      description: "Develop the initial version of Feature A.",
-      task_diary: {
-        created_at: "2024-12-10T08:00:00Z",
-        last_accessed: "2024-12-15T14:30:00Z",
-      },
-      comments: [
-        {
-          id: 401,
-          message: "Task started, initial setup completed.",
-          poster_id: 102,
-          poster_name: "Jane Smith",
-          created_at: "2024-12-10T09:00:00Z",
-          replies: [
-            {
-              id: 501,
-              message: "Good progress, keep going!",
-              poster_id: 101,
-              poster_name: "John Doe",
-              created_at: "2024-12-11T10:00:00Z",
-            },
-          ],
-        },
-        {
-          id: 402,
-          message: "Feature A implemented, testing next.",
-          poster_id: 102,
-          poster_name: "Jane Smith",
-          created_at: "2024-12-14T16:00:00Z",
-          replies: [],
         },
       ],
       sum_hours: 24,
@@ -164,35 +134,35 @@ export const ProjectList: IProjectList = [
     "end_date": "2024-12-31",
     "members": [
       {
-        "id": 1,
+        "id": "1",
         "name": "Alice Johnson",
         "email": "alice.johnson@example.com",
         "role": "Project Manager",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 2,
+        "id": "2",
         "name": "Bob Smith",
         "email": "bob.smith@example.com",
         "role": "Developer",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 3,
+        "id": "3",
         "name": "Charlie Brown",
         "email": "charlie.brown@example.com",
         "role": "Designer",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 4,
+        "id": "4",
         "name": "David Lee",
         "email": "david.lee@example.com",
         "role": "QA",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 5,
+        "id": "5",
         "name": "Eva White",
         "email": "eva.white@example.com",
         "role": "Developer",
@@ -337,35 +307,35 @@ export const ProjectList: IProjectList = [
     "sum_hours_until_now": 320,
     "members": [
       {
-        "id": 6,
+        "id": "6",
         "name": "Grace King",
         "email": "grace.king@example.com",
         "role": "Project Manager",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 7,
+        "id": "7",
         "name": "Hank Ford",
         "email": "hank.ford@example.com",
         "role": "Developer",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 8,
+        "id": "8",
         "name": "Ivy Lee",
         "email": "ivy.lee@example.com",
         "role": "Designer",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 9,
+        "id": "9",
         "name": "Jack Miller",
         "email": "jack.miller@example.com",
         "role": "QA",
         "avatar": require("assets/Switch.png") 
       },
       {
-        "id": 10,
+        "id": "10",
         "name": "Liam Scott",
         "email": "liam.scott@example.com",
         "role": "Developer",
@@ -487,35 +457,35 @@ export const ProjectList: IProjectList = [
     "end_date": "2024-09-30",
     "members": [
       {
-        "id": 11,
+        "id": "11",
         "name": "Mona Harris",
         "email": "mona.harris@example.com",
         "role": "Project Manager",
         "avatar": "https://example.com/avatars/mona.jpg"
       },
       {
-        "id": 12,
+        "id": "12",
         "name": "Nina Clark",
         "email": "nina.clark@example.com",
         "role": "Developer",
         "avatar": "https://example.com/avatars/nina.jpg"
       },
       {
-        "id": 13,
+        "id": "13",
         "name": "Oscar Taylor",
         "email": "oscar.taylor@example.com",
         "role": "Designer",
         "avatar": "https://example.com/avatars/oscar.jpg"
       },
       {
-        "id": 14,
+        "id": "14",
         "name": "Paul Green",
         "email": "paul.green@example.com",
         "role": "QA",
         "avatar": "https://example.com/avatars/paul.jpg"
       },
       {
-        "id": 15,
+        "id": "15",
         "name": "Quinn Adams",
         "email": "quinn.adams@example.com",
         "role": "Developer",

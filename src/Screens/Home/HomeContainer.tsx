@@ -1,5 +1,4 @@
 import { RootStackParamList } from "@/Navigation";
-import { useLazyGetUserQuery } from "@/Services";
 import { data } from "@/Utils/constant";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback } from "react";
