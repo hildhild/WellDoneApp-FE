@@ -6,7 +6,19 @@ export interface GetDetailProjectRequest {
   projectId: number;
   getRecentProject?: boolean;
 }
+export type IProjectList = IProjectListItem[]
 
+export interface IProjectListItem {
+  id: string
+  name: string
+  start_date: string
+  end_date: string
+  status: string
+  description: string
+  progress: number
+  sum_hours_until_now: number
+  members: ProjectMember[]
+}
 export interface IProjectDetail {
   id: number;
   name: string;

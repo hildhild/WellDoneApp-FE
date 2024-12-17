@@ -12,7 +12,7 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
-import { homeReducers, themeReducers, userReducers, profileReducers, notificationReducers } from "./reducers";
+import { homeReducers, themeReducers, userReducers, profileReducers, notificationReducers, projectReducers } from "./reducers";
 
 const reducers = combineReducers({
   api: API.reducer,
@@ -21,6 +21,7 @@ const reducers = combineReducers({
   user: userReducers,
   profile: profileReducers,
   notification: notificationReducers,
+  project: projectReducers
 });
 
 const persistConfig = {

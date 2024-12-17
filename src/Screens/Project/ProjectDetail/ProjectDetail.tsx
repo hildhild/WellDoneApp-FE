@@ -1,5 +1,5 @@
 import AvatarStack from "@/Components/AvatarStack";
-import { IProjectDetail } from "@/Services/projects";
+import { IProjectDetail, IProjectListItem } from "@/Services/projects";
 import {
   renderDocumentTypeIcon,
   renderPriorityIcon,
