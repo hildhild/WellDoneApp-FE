@@ -1,4 +1,5 @@
 import { Navbar } from "./Navbar";
 import AvatarRow from "./AvatarRow";
+import SemiCircleProgress from "./SemiCircleProgress";
 
-export {Navbar, AvatarRow}
+export {Navbar, AvatarRow, SemiCircleProgress}

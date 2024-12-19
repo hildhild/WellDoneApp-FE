@@ -50,7 +50,7 @@ const Navbar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 // @refresh reset
 export const MainNavigator = () => {
   return (
-    <Tab.Navigator tabBar={(props: BottomTabBarProps) => <Navbar {...props} />} screenOptions={{ headerShown: false }}>
+    <Tab.Navigator tabBar={(props: BottomTabBarProps) => <Navbar {...props} />} screenOptions={{ headerShown: false }} initialRouteName="home" >
       <Tab.Screen name="home" component={HomeContainer} />
       <Tab.Screen name="folder" component={ProjectContainer} />
       <Tab.Screen name="dashboard" component={DashboardContainer} />
