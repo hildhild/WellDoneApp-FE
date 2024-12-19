@@ -823,6 +823,14 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
+"@callstack/react-theme-provider@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/@callstack/react-theme-provider/-/react-theme-provider-3.0.9.tgz#01035fa1231f1fffc1a806be1b55eb82716e80c1"
+  integrity sha512-tTQ0uDSCL0ypeMa8T/E9wAZRGKWj8kXP7+6RYgPTfOPs9N07C9xM8P02GJ3feETap4Ux5S69D9nteq9mEj86NA==
+  dependencies:
+    deepmerge "^3.2.0"
+    hoist-non-react-statics "^3.3.0"
+
 "@expo/bunyan@^4.0.0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@expo/bunyan/-/bunyan-4.0.1.tgz#ab9e17e36c71c704a0ce72168378a487368da736"
@@ -2393,6 +2401,23 @@
     redux-thunk "^2.4.2"
     reselect "^4.1.8"
 
+"@rneui/base@^4.0.0-rc.8":
+  version "4.0.0-rc.8"
+  resolved "https://registry.yarnpkg.com/@rneui/base/-/base-4.0.0-rc.8.tgz#6fbf9b3049a9207d47c3c53b70c0f68f3627a170"
+  integrity sha512-teJ6bUki+TQ+r+abefEWYb2wRUaMgRhp1oxtKa84UfDqTiCF0ItyJ0L8FhMb6AAkTOkWC34301T7j3H4df6ueA==
+  dependencies:
+    "@types/react-native-vector-icons" "^6.4.10"
+    color "^3.2.1"
+    deepmerge "^4.2.2"
+    hoist-non-react-statics "^3.3.2"
+    react-native-ratings "^8.1.0"
+    react-native-size-matters "^0.4.0"
+
+"@rneui/themed@^4.0.0-rc.8":
+  version "4.0.0-rc.8"
+  resolved "https://registry.yarnpkg.com/@rneui/themed/-/themed-4.0.0-rc.8.tgz#5c0e1aaa3d190ead88936693c5cef50ec404cd05"
+  integrity sha512-8L/XOrL9OK/r+/iBLvx63TbIdZOXF8SIjN9eArMYm6kRbMr8m4BitXllDN8nBhBsSPNYvL6EAgjk+i2MfY4sBA==
+
 "@segment/loosely-validate-event@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@segment/loosely-validate-event/-/loosely-validate-event-2.0.0.tgz#87dfc979e5b4e7b82c5f1d8b722dfd5d77644681"
@@ -2659,7 +2684,7 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.7.tgz#50ae4353eaaddc04044279812f52c8c65857dbcb"
   integrity sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==
 
-"@types/react-native-vector-icons@^6.4.18":
+"@types/react-native-vector-icons@^6.4.10", "@types/react-native-vector-icons@^6.4.18":
   version "6.4.18"
   resolved "https://registry.yarnpkg.com/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.18.tgz#18671c617b9d0958747bc959903470dde91a8c79"
   integrity sha512-YGlNWb+k5laTBHd7+uZowB9DpIK3SXUneZqAiKQaj1jnJCZM0x71GDim5JCTMi4IFkhc9m8H/Gm28T5BjyivUw==
@@ -3713,7 +3738,7 @@ clsx@^2.0.0:
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.1.1.tgz#eed397c9fd8bd882bfb18deab7102049a2f32999"
   integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
-color-convert@^1.9.0:
+color-convert@^1.9.0, color-convert@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
   integrity sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==
@@ -3737,13 +3762,21 @@ color-name@^1.0.0, color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-color-string@^1.9.0:
+color-string@^1.6.0, color-string@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.9.1.tgz#4467f9146f036f855b764dfb5bf8582bf342c7a4"
   integrity sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==
   dependencies:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
+
+color@^3.1.2, color@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/color/-/color-3.2.1.tgz#3544dc198caf4490c3ecc9a790b54fe9ff45e164"
+  integrity sha512-aBl7dZI9ENN6fUGC7mWpMTPNHmWUSNan9tuWN6ahh5ZLNk9baLJOnSMlrQkHcrfFgz2/RigjUVAjdx36VcemKA==
+  dependencies:
+    color-convert "^1.9.3"
+    color-string "^1.6.0"
 
 color@^4.2.3:
   version "4.2.3"
@@ -4144,7 +4177,12 @@ deep-extend@^0.6.0:
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
 
-deepmerge@^4.3.1:
+deepmerge@^3.2.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-3.3.0.tgz#d3c47fd6f3a93d517b14426b0628a17b0125f5f7"
+  integrity sha512-GRQOafGHwMHpjPx9iCvTgpu9NojZ49q794EEL94JVEw6VaeA8XTUyBKvAkOOjBX9oJNiV6G3P+T+tihFjo2TqA==
+
+deepmerge@^4.2.2, deepmerge@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.1.tgz#44b5f2147cd3b00d4b56137685966f26fd25dd4a"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
@@ -6266,7 +6304,7 @@ lodash.uniqueid@^4.0.1:
   resolved "https://registry.yarnpkg.com/lodash.uniqueid/-/lodash.uniqueid-4.0.1.tgz#3268f26a7c88e4f4b1758d679271814e31fa5b26"
   integrity sha512-GQQWaIeGlL6DIIr06kj1j6sSmBxyNMwI8kaX9aKpHR/XsMTiaXDVPNPAkiboOTK9OJpTJF/dXT3xYoFQnj386Q==
 
-lodash@*, lodash@^4.17.20, lodash@^4.17.21:
+lodash@*, lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -7233,6 +7271,11 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+paths-js@^0.4.10:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/paths-js/-/paths-js-0.4.11.tgz#b2a9d5f94ee9949aa8fee945f78a12abff44599e"
+  integrity sha512-3mqcLomDBXOo7Fo+UlaenG6f71bk1ZezPQy2JCmYHy2W2k5VKpP+Jbin9H0bjXynelTbglCqdFhSEkeIkKTYUA==
+
 picocolors@^1.0.0, picocolors@^1.1.0, picocolors@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
@@ -7309,6 +7352,11 @@ pngjs@^3.3.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
   integrity sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==
+
+point-in-polygon@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/point-in-polygon/-/point-in-polygon-1.1.0.tgz#b0af2616c01bdee341cbf2894df643387ca03357"
+  integrity sha512-3ojrFwjnnw8Q9242TzgXuTD+eKiutbzyslcq1ydfu82Db2y+Ogbmyrkpv0Hgj31qwT3lbS9+QAAO/pIQM35XRw==
 
 postcss-calc@^8.2.3:
   version "8.2.4"
@@ -7799,6 +7847,15 @@ react-native-app-intro-slider@^4.0.4:
   resolved "https://registry.yarnpkg.com/react-native-app-intro-slider/-/react-native-app-intro-slider-4.0.4.tgz#fa5cda7057db62c448ac975ffd2ba0cff94cc8d8"
   integrity sha512-Zkjaol6X3BbZkHUpVDj2LjdidpS6rCgKi0fx80xgGKa0pHxBRd4swWTv2bHnnvu5k1/HXwYk0mY2TbK+2jHl5w==
 
+react-native-chart-kit@^6.12.0:
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/react-native-chart-kit/-/react-native-chart-kit-6.12.0.tgz#187a4987a668a85b7e93588c248ed2c33b3a06f6"
+  integrity sha512-nZLGyCFzZ7zmX0KjYeeSV1HKuPhl1wOMlTAqa0JhlyW62qV/1ZPXHgT8o9s8mkFaGxdqbspOeuaa6I9jUQDgnA==
+  dependencies:
+    lodash "^4.17.13"
+    paths-js "^0.4.10"
+    point-in-polygon "^1.0.1"
+
 react-native-css-interop@0.1.22:
   version "0.1.22"
   resolved "https://registry.yarnpkg.com/react-native-css-interop/-/react-native-css-interop-0.1.22.tgz#70cc6ca7a8f14126e123e44a19ceed74dd2a167a"
@@ -7824,12 +7881,28 @@ react-native-modal@^13.0.1:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
 
+react-native-paper@^5.12.5:
+  version "5.12.5"
+  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.12.5.tgz#e255c47f7bf2deb2dd90eaf3831473ef33e400b8"
+  integrity sha512-Qpqd1g9PClmjGj/Dkr1htAwt8cTZ3SCHVmhttxRuG/QML7KzHm5ArLNgR7vz5dW1EwJqTmyl/3gd6gnrtw90mw==
+  dependencies:
+    "@callstack/react-theme-provider" "^3.0.9"
+    color "^3.1.2"
+    use-latest-callback "^0.1.5"
+
 react-native-progress@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-5.0.1.tgz#4e15258b5661c49bad74554352326ca540bb7c58"
   integrity sha512-TYfJ4auAe5vubDma2yfFvt7ktSI+UCfysqJnkdHEcLXqAitRFOozgF/cLgN5VNi/iLdaf3ga1ETi2RF4jVZ/+g==
   dependencies:
     prop-types "^15.7.2"
+
+react-native-ratings@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-8.1.0.tgz#3fa9ad29128dc3a88e59518ba151e61c59dd0647"
+  integrity sha512-+QOJ4G3NjVkI1D+tk4EGx1dCvVfbD2nQdkrj9cXrcAoEiwmbep4z4bZbCKmWMpQ5h2dqbxABU8/eBnbDmvAc3g==
+  dependencies:
+    lodash "^4.17.15"
 
 react-native-reanimated@^3.16.1:
   version "3.16.5"
@@ -7868,7 +7941,12 @@ react-native-screens@~4.1.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-svg@^15.8.0:
+react-native-size-matters@^0.4.0:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-size-matters/-/react-native-size-matters-0.4.2.tgz#4348bdd6fc47383f60326d58ad69870c998a5f9a"
+  integrity sha512-DKE3f/sdcozd24oASgkP1iGg+YU3HoajRa5k3a4wkRzpiqREq8SGX12Y5zBgAt/8IivLQoTMYkyQu1/Giuy+zQ==
+
+react-native-svg@^15.10.1:
   version "15.10.1"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-15.10.1.tgz#5df51fca80cb1912648d058b67903f05eac0b8a6"
   integrity sha512-Hqz/doQciVFK/Df2v+wsW96oY5jxlta7rZ31KQYo78dlgvAHEaGr6paEOAMvlIruw7EHNQ0Vc1ZmJPJF2kfIPQ==
@@ -9235,6 +9313,11 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
+
+use-latest-callback@^0.1.5:
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/use-latest-callback/-/use-latest-callback-0.1.11.tgz#e073fcbba792cc95ac661d96bc13b6041956cfe1"
+  integrity sha512-8nhb73STSD/z3GTHklvNjL8F9wMOo0bj0AFnulpIYuFTm6aQlT3ZcNbXF2YurKImIY8+kpSFSDHZZyQmurGrhw==
 
 use-latest-callback@^0.2.1:
   version "0.2.3"

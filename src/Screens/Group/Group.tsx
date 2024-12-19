@@ -60,46 +60,8 @@ export const Group = (props: IGroupProps) => {
                 />
               </View>
               <View className="flex flex-row gap-[6%]">
-                <View className="w-[47%]">
-                  <Pressable className="w-full flex justify-center items-center bg-[#A0D683] p-3 rounded-xl"><Text className="text-[#2C6E35] text-lg font-semibold">Chi tiết</Text></Pressable>
-                </View>
-                <View className="w-[47%]">
-                  <Pressable className="w-full flex justify-center items-center bg-[#A0D683] p-3 rounded-xl"><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
-                </View>
-              </View>
-            </View>
-            <View className="bg-[#DCFCE7] rounded-xl p-5 mb-32">
-              <View className="flex flex-row mb-5 items-center">
-                <View className="w-[40%]">
-                  <Image
-                    className="w-[60px] h-[60px] object-cover rounded-full border-[1px] border-black"
-                    source={require('assets/dark-logo.png')}
-                  />
-                </View>
-                <View className="w-[60%]">
-                  <Text className="text-[#2C6E35] font-semibold mb-3">Đang thực hiện: 12</Text>
-                  <Text className="text-[#2C6E35] font-semibold">Thành viên: 8</Text>
-                </View>
-              </View>
-              <Text className="font-semibold text-2xl mb-4">Frontend Team</Text>
-              <Text className="text-xl font-extralight mb-3">Our team is responsible for implementing the user interface (UI) of web applications.</Text>
-              <View className="mb-4">
-                <AvatarRow
-                  users={
-                    data?.members?.map((member) => ({
-                      name: member.name,
-                      avatar: member.avatar,
-                    })) || []
-                  }
-                />
-              </View>
-              <View className="flex flex-row gap-[6%]">
-                <View className="w-[47%]">
-                  <Pressable className="w-full flex justify-center items-center bg-[#A0D683] p-3 rounded-xl"><Text className="text-[#2C6E35] text-lg font-semibold">Chi tiết</Text></Pressable>
-                </View>
-                <View className="w-[47%]">
-                  <Pressable className="w-full flex justify-center items-center bg-[#A0D683] p-3 rounded-xl"><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
-                </View>
+                <Pressable className="w-[47%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>props.onNavigate(RootScreens.GROUP_DETAIL)}><Text className="text-[#2C6E35] text-lg font-semibold">Chi tiết</Text></Pressable>
+                  <Pressable className="w-[47%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl"><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
               </View>
             </View>
           </ScrollView>
