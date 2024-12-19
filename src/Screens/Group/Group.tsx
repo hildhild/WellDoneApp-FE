@@ -33,7 +33,7 @@ export const Group = (props: IGroupProps) => {
             <Text className="text-2xl font-bold px-10 text-center text-black">Nhóm</Text>
           </View>
           <ScrollView className="px-6 py-3">
-            <Pressable className="w-full flex justify-center items-center bg-[#4D7C0F] p-3 rounded-xl mb-5"><Text className="text-white text-lg font-semibold">Thêm nhóm</Text></Pressable>
+            <Pressable className="w-full flex justify-center items-center bg-[#4D7C0F] p-3 rounded-xl mb-5" onPress={()=>props.onNavigate(RootScreens.ADD_GROUP)}><Text className="text-white text-lg font-semibold">Thêm nhóm</Text></Pressable>
             <View className="bg-[#DCFCE7] rounded-xl p-5 mb-8">
               <View className="flex flex-row mb-5 items-center">
                 <View className="w-[40%]">
@@ -61,7 +61,7 @@ export const Group = (props: IGroupProps) => {
               </View>
               <View className="flex flex-row gap-[6%]">
                 <Pressable className="w-[47%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>props.onNavigate(RootScreens.GROUP_DETAIL)}><Text className="text-[#2C6E35] text-lg font-semibold">Chi tiết</Text></Pressable>
-                  <Pressable className="w-[47%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl"><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
+                <Pressable className="w-[47%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl"><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
               </View>
             </View>
           </ScrollView>
