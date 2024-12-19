@@ -46,6 +46,8 @@ const GroupGeneral = () => {
 
   return (
     <ScrollView className="w-full h-full">
+      <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Mô tả nhóm</Text>
+      <Text className="text-xl mb-5">Nhóm này chuyên lừa đảo bắt cóc bán sang Campuchia</Text>
       <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Tháng 10</Text>
       <View className="mb-5">
         <Text className="text-xl text-[#3F6212] font-semibold">Nhiệm vụ đã hoàn thành</Text>
@@ -106,7 +108,7 @@ const GroupMember = () => {
         <View className="flex items-end">
           <Pressable className="w-[47%] flex flex-row gap-1 justify-center items-center bg-[#4D7C0F] p-2 rounded-xl">
             <Ionicons name="information-circle-outline" color="white" size={20}/>
-            <Text className="text-[#fff] font-semibold">Chi tiết</Text>
+            <Text className="text-[#fff] font-semibold">Xem thông tin</Text>
           </Pressable>
         </View>
       </View>
