@@ -13,86 +13,119 @@ export const PASSWORD_PATTERN =
 //   no space,
 //   and it must be at least 6 characters long
 
+export const StatusType = {
+  COMPLETED: "completed",
+  IN_PROGRESS: "in_progress",
+  NEW: "new",
+};
+
 export type Status = "completed" | "in_progress" | "new";
 export type DocumentType = "csv" | "doc" | "docx" | "pdf" | "png" | "ppt" | "pptx" | "xls" | "xlsx" | "zip" | "jpg" ;
 export type Priority = "High" | "Medium" | "Low";
 
-export const data: IProjectDetail = {
-  id: "1",
-  name: "Green sky Website Dev",
-  members: [
+export const dataa: IProjectDetail = {
+  "id": "001",
+  "name": "Project Phoenix",
+  "groups": [
     {
-      id: "101",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "Project Manager",
-      avatar: require("assets/Switch.png"),
-    },
-    {
-      id: "102",
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      role: "Developer",
-      avatar: require("assets/Switch.png"),
-    },
-    {
-      id: "103",
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      role: "Designer",
-      avatar: require("assets/Switch.png"),
-    },
-    {
-      id: "104",
-      name: "Bob Brown",
-      email: "bob.brown@example.com",
-      role: "Tester",
-      avatar: require("assets/Switch.png"),
-    },
-    {
-      id: "105",
-      name: "Charlie Davis",
-      email: "charlie.davis@example.com",
-      role: "Developer",
-      avatar: require("assets/Switch.png"),
-    },
-  ],
-  description: "A sample project to demonstrate JSON structure.",
-  documents: [
-    {
-      id: "201",
-      name: "Project Plan",
-      type: "pdf",
-      url: "http://example.com/project-plan.pdf",
-    },
-    {
-      id: "202",
-      name: "Requirements Document",
-      type: "docx",
-      url: "http://example.com/requirements.docx",
-    },
-  ],
-  tasks: [
-    {
-      id: "301",
-      name: "Develop Feature A",
-      priority: "High",
-      status: "in_progress",
-      task_code: "FA-123",
-      members: [
+      "id": "g1",
+      "name": "Backend Team",
+      "description": "Responsible for API development and database management.",
+      "createdAt": "2023-05-10T08:00:00Z",
+      "updatedAt": "2023-12-01T18:00:00Z",
+      "user": [
         {
-          id: "102",
-          name: "Jane Smith",
-          email: "jane.smith@example.com",
-          role: "Developer",
-          avatar: require("assets/Switch.png"),
+          "id": "m1",
+          "name": "Alice",
+          "email": "alice@company.com",
+          "role": "Lead Developer"
         },
-      ],
-      sum_hours: 24,
+        {
+          "id": "m2",
+          "name": "Bob",
+          "email": "bob@company.com",
+          "role": "Backend Developer"
+        }
+      ]
     },
+    {
+      "id": "g2",
+      "name": "Frontend Team",
+      "description": "Handles the user interface and experience design.",
+      "createdAt": "2023-05-10T08:00:00Z",
+      "updatedAt": "2023-12-01T18:00:00Z",
+      "user": [
+        {
+          "id": "m3",
+          "name": "Charlie",
+          "email": "charlie@company.com",
+          "role": "Frontend Developer"
+        },
+        {
+          "id": "m4",
+          "name": "Diana",
+          "email": "diana@company.com",
+          "role": "UI/UX Designer"
+        }
+      ]
+    }
   ],
-  status: "in_progress",
-};
+  "description": "This project aims to develop a cutting-edge e-commerce platform.",
+  "documents": [
+    {
+      "id": "doc1",
+      "name": "Project Overview",
+      "type": "pdf",
+      "url": "https://example.com/docs/project-overview.pdf"
+    },
+    {
+      "id": "doc2",
+      "name": "System Architecture",
+      "type": "pptx",
+      "url": "https://example.com/docs/system-architecture.pptx"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "name": "Setup Project Environment",
+      "priority": "High",
+      "status": "completed",
+      "task_code": "ENV-001",
+      "members": [
+        {
+          "id": "m1",
+          "name": "Alice",
+          "email": "alice@company.com",
+          "role": "Lead Developer"
+        }
+      ],
+      "sum_hours": 25
+    },
+    {
+      "id": "t2",
+      "name": "Design Homepage",
+      "priority": "Medium",
+      "status": "in_progress",
+      "task_code": "FEAT-002",
+      "members": [
+        {
+          "id": "m4",
+          "name": "Diana",
+          "email": "diana@company.com",
+          "role": "UI/UX Designer"
+        }
+      ],
+      "sum_hours": 40
+    }
+  ],
+  "status": "in_progress",
+  "sum_hours": 65,
+  "start_date": "2023-06-01",
+  "end_date": "2024-06-01",
+  "progress": 10
+}
+
 
 export const mockData: NotificationList = [
   {
@@ -126,467 +159,87 @@ export const mockData: NotificationList = [
 
 export const ProjectList: IProjectList = [
   {
-    "id": "101",
-    "name": "Project Apollo",
-    "progress": 45,
-    "sum_hours_until_now": 120,
-    "start_date": "2024-01-01",
-    "end_date": "2024-12-31",
-    "members": [
-      {
-        "id": "1",
-        "name": "Alice Johnson",
-        "email": "alice.johnson@example.com",
-        "role": "Project Manager",
-        "avatar": require("assets/Switch.png") 
-      },
-      {
-        "id": "2",
-        "name": "Bob Smith",
-        "email": "bob.smith@example.com",
-        "role": "Developer",
-        "avatar": require("assets/Switch.png") 
-      },
-      {
-        "id": "3",
-        "name": "Charlie Brown",
-        "email": "charlie.brown@example.com",
-        "role": "Designer",
-        "avatar": require("assets/Switch.png") 
-      },
-      {
-        "id": "4",
-        "name": "David Lee",
-        "email": "david.lee@example.com",
-        "role": "QA",
-        "avatar": require("assets/Switch.png") 
-      },
-      {
-        "id": "5",
-        "name": "Eva White",
-        "email": "eva.white@example.com",
-        "role": "Developer",
-        "avatar": require("assets/Switch.png") 
-      }
-    ],
-    "description": "Project Apollo is a new mobile app to manage tasks efficiently.",
-    // "documents": [
-    //   {
-    //     "id": 1,
-    //     "name": "Project Plan",
-    //     "type": "pdf",
-    //     "url": "https://example.com/docs/project_plan.pdf"
-    //   },
-    //   {
-    //     "id": 2,
-    //     "name": "Wireframe Designs",
-    //     "type": "png",
-    //     "url": "https://example.com/docs/wireframes.png"
-    //   },
-    //   {
-    //     "id": 3,
-    //     "name": "Development Guidelines",
-    //     "type": "pdf",
-    //     "url": "https://example.com/docs/dev_guidelines.pdf"
-    //   },
-    //   {
-    //     "id": 4,
-    //     "name": "UI Design Mockups",
-    //     "type": "png",
-    //     "url": "https://example.com/docs/ui_mockups.png"
-    //   },
-    //   {
-    //     "id": 5,
-    //     "name": "API Documentation",
-    //     "type": "csv",
-    //     "url": "https://example.com/docs/api_docs.csv"
-    //   },
-    //   {
-    //     "id": 6,
-    //     "name": "API Documentation",
-    //     "type": "csv",
-    //     "url": "https://example.com/docs/api_docs.csv"
-    //   }
-    // ],
-    // "tasks": [
-    //   {
-    //     "id": 201,
-    //     "name": "Set Up Project Repo",
-    //     "priority": "High",
-    //     "status": "in_progress",
-    //     "task_code": "TASK-001",
-    //     "members": [
-    //       {
-    //         "id": 1,
-    //         "name": "Alice Johnson",
-    //         "email": "alice.johnson@example.com",
-    //         "role": "Project Manager",
-    //         "avatar": require("assets/Switch.png")
-    //       },
-    //       {
-    //         "id": 2,
-    //         "name": "Bob Smith",
-    //         "email": "bob.smith@example.com",
-    //         "role": "Developer",
-    //         "avatar": require("assets/Switch.png")
-    //       }
-    //     ],
-    //     "description": "Initialize the project repository on GitHub and configure basic settings.",
-    //     "task_diary": {
-    //       "created_at": "2024-12-01T10:00:00Z",
-    //       "last_accessed": "2024-12-05T14:00:00Z"
-    //     },
-    //     "comments": [
-    //       {
-    //         "id": 301,
-    //         "message": "Repo created. Please start adding initial files.",
-    //         "poster_id": 1,
-    //         "poster_name": "Alice Johnson",
-    //         "created_at": "2024-12-01T10:30:00Z",
-    //         "replies": []
-    //       },
-    //       {
-    //         "id": 302,
-    //         "message": "Initial files added. Please review.",
-    //         "poster_id": 2,
-    //         "poster_name": "Bob Smith",
-    //         "created_at": "2024-12-02T11:00:00Z",
-    //         "replies": []
-    //       }
-    //     ],
-    //     "sum_hours": 12
-    //   },
-    //   {
-    //     "id": 202,
-    //     "name": "Create App UI",
-    //     "priority": "Medium",
-    //     "status": "completed",
-    //     "task_code": "TASK-002",
-    //     "members": [
-    //       {
-    //         "id": 3,
-    //         "name": "Charlie Brown",
-    //         "email": "charlie.brown@example.com",
-    //         "role": "Designer",
-    //         "avatar": require("assets/Switch.png")
-    //       },
-    //       {
-    //         "id": 5,
-    //         "name": "Eva White",
-    //         "email": "eva.white@example.com",
-    //         "role": "Developer",
-    //         "avatar": require("assets/Switch.png")
-    //       }
-    //     ],
-    //     "description": "Design the initial screens for the mobile app.",
-    //     "task_diary": {
-    //       "created_at": "2024-12-05T09:00:00Z",
-    //       "last_accessed": "2024-12-06T15:00:00Z"
-    //     },
-    //     "comments": [
-    //       {
-    //         "id": 303,
-    //         "message": "Waiting for design brief to begin.",
-    //         "poster_id": 3,
-    //         "poster_name": "Charlie Brown",
-    //         "created_at": "2024-12-05T09:30:00Z",
-    //         "replies": []
-    //       }
-    //     ],
-    //     "sum_hours": 24
-    //   }
-    // ],
-    "status": "in_progress"
-  },
-  {
-    "id": "102",
-    "name": "Project Zeus",
-    "start_date": "2024-02-15",
-    "end_date": "2024-11-30",
+    "id": "p1",
+    "name": "Project Alpha",
+    "start_date": "2023-01-15",
+    "end_date": "2023-12-15",
+    "status": "completed",
+    "description": "A project focused on building an internal tool for project management.",
     "progress": 100,
     "sum_hours_until_now": 320,
     "members": [
       {
-        "id": "6",
-        "name": "Grace King",
-        "email": "grace.king@example.com",
-        "role": "Project Manager",
-        "avatar": require("assets/Switch.png") 
+        "id": "m1",
+        "name": "Alice",
+        "email": "alice@company.com",
+        "role": "Project Manager"
       },
       {
-        "id": "7",
-        "name": "Hank Ford",
-        "email": "hank.ford@example.com",
-        "role": "Developer",
-        "avatar": require("assets/Switch.png") 
+        "id": "m2",
+        "name": "Bob",
+        "email": "bob@company.com",
+        "role": "Developer"
       },
       {
-        "id": "8",
-        "name": "Ivy Lee",
-        "email": "ivy.lee@example.com",
-        "role": "Designer",
-        "avatar": require("assets/Switch.png") 
-      },
-      {
-        "id": "9",
-        "name": "Jack Miller",
-        "email": "jack.miller@example.com",
-        "role": "QA",
-        "avatar": require("assets/Switch.png") 
-      },
-      {
-        "id": "10",
-        "name": "Liam Scott",
-        "email": "liam.scott@example.com",
-        "role": "Developer",
-        "avatar": require("assets/Switch.png") 
+        "id": "m3",
+        "name": "Charlie",
+        "email": "charlie@company.com",
+        "role": "QA Engineer"
       }
-    ],
-    "description": "Project Zeus is aimed at creating a platform for real-time collaboration.",
-    // "documents": [
-    //   {
-    //     "id": 6,
-    //     "name": "Project Scope",
-    //     "type": "PDF",
-    //     "url": "https://example.com/docs/project_scope.pdf"
-    //   },
-    //   {
-    //     "id": 7,
-    //     "name": "System Architecture",
-    //     "type": "PNG",
-    //     "url": "https://example.com/docs/system_architecture.png"
-    //   },
-    //   {
-    //     "id": 8,
-    //     "name": "User Stories",
-    //     "type": "Word",
-    //     "url": "https://example.com/docs/user_stories.docx"
-    //   },
-    //   {
-    //     "id": 9,
-    //     "name": "Deployment Plan",
-    //     "type": "PDF",
-    //     "url": "https://example.com/docs/deployment_plan.pdf"
-    //   },
-    //   {
-    //     "id": 10,
-    //     "name": "API Specification",
-    //     "type": "HTML",
-    //     "url": "https://example.com/docs/api_spec.html"
-    //   }
-    // ],
-    // "tasks": [
-    //   {
-    //     "id": 203,
-    //     "name": "Set Up Database",
-    //     "priority": "High",
-    //     "status": "In Progress",
-    //     "task_code": "TASK-003",
-    //     "members": [
-    //       {
-    //         "id": 7,
-    //         "name": "Hank Ford",
-    //         "email": "hank.ford@example.com",
-    //         "role": "Developer",
-    //         "avatar": "https://example.com/avatars/hank.jpg"
-    //       },
-    //       {
-    //         "id": 9,
-    //         "name": "Jack Miller",
-    //         "email": "jack.miller@example.com",
-    //         "role": "QA",
-    //         "avatar": "https://example.com/avatars/jack.jpg"
-    //       }
-    //     ],
-    //     "description": "Set up and configure the PostgreSQL database for the application.",
-    //     "task_diary": {
-    //       "created_at": "2024-12-03T11:00:00Z",
-    //       "last_accessed": "2024-12-05T16:00:00Z"
-    //     },
-    //     "comments": [
-    //       {
-    //         "id": 304,
-    //         "message": "Database schema finalized.",
-    //         "poster_id": 7,
-    //         "poster_name": "Hank Ford",
-    //         "created_at": "2024-12-03T11:30:00Z",
-    //         "replies": []
-    //       }
-    //     ],
-    //     "sum_hours": 16
-    //   },
-    //   {
-    //     "id": 204,
-    //     "name": "Design UI Mockups",
-    //     "priority": "Medium",
-    //     "status": "Not Started",
-    //     "task_code": "TASK-004",
-    //     "members": [
-    //       {
-    //         "id": 8,
-    //         "name": "Ivy Lee",
-    //         "email": "ivy.lee@example.com",
-    //         "role": "Designer",
-    //         "avatar": "https://example.com/avatars/ivy.jpg"
-    //       },
-    //       {
-    //         "id": 6,
-    //         "name": "Grace King",
-    //         "email": "grace.king@example.com",
-    //         "role": "Project Manager",
-    //         "avatar": "https://example.com/avatars/grace.jpg"
-    //       }
-    //     ],
-    //     "description": "Create initial UI designs for the real-time collaboration platform.",
-    //     "task_diary": {
-    //       "created_at": "2024-12-04T10:00:00Z",
-    //       "last_accessed": "2024-12-05T10:00:00Z"
-    //     },
-    //     "comments": [],
-    //     "sum_hours": 0
-    //   }
-    // ],
-    "status": "new"
+    ]
   },
   {
-    "id": "103",
-    "name": "Project Titan",
-    "progress": 0,
-    "sum_hours_until_now": 0,
-    "start_date": "2024-03-01",
-    "end_date": "2024-09-30",
+    "id": "p2",
+    "name": "Project Beta",
+    "start_date": "2023-03-01",
+    "end_date": "2024-03-01",
+    "status": "in_progress",
+    "description": "A new e-commerce platform that aims to provide a seamless shopping experience.",
+    "progress": 60,
+    "sum_hours_until_now": 150,
     "members": [
       {
-        "id": "11",
-        "name": "Mona Harris",
-        "email": "mona.harris@example.com",
-        "role": "Project Manager",
-        "avatar": "https://example.com/avatars/mona.jpg"
+        "id": "m4",
+        "name": "David",
+        "email": "david@company.com",
+        "role": "Backend Developer"
       },
       {
-        "id": "12",
-        "name": "Nina Clark",
-        "email": "nina.clark@example.com",
-        "role": "Developer",
-        "avatar": "https://example.com/avatars/nina.jpg"
+        "id": "m5",
+        "name": "Eve",
+        "email": "eve@company.com",
+        "role": "Frontend Developer"
       },
       {
-        "id": "13",
-        "name": "Oscar Taylor",
-        "email": "oscar.taylor@example.com",
-        "role": "Designer",
-        "avatar": "https://example.com/avatars/oscar.jpg"
-      },
-      {
-        "id": "14",
-        "name": "Paul Green",
-        "email": "paul.green@example.com",
-        "role": "QA",
-        "avatar": "https://example.com/avatars/paul.jpg"
-      },
-      {
-        "id": "15",
-        "name": "Quinn Adams",
-        "email": "quinn.adams@example.com",
-        "role": "Developer",
-        "avatar": "https://example.com/avatars/quinn.jpg"
+        "id": "m6",
+        "name": "Frank",
+        "email": "frank@company.com",
+        "role": "UI/UX Designer"
       }
-    ],
-    "description": "Project Titan is focused on developing a cloud-based task management system.",
-    // "documents": [
-    //   {
-    //     "id": 11,
-    //     "name": "Requirements Document",
-    //     "type": "PDF",
-    //     "url": "https://example.com/docs/requirements.pdf"
-    //   },
-    //   {
-    //     "id": 12,
-    //     "name": "Architecture Design",
-    //     "type": "Image",
-    //     "url": "https://example.com/docs/architecture.png"
-    //   },
-    //   {
-    //     "id": 13,
-    //     "name": "Tech Stack Overview",
-    //     "type": "Word",
-    //     "url": "https://example.com/docs/tech_stack.docx"
-    //   },
-    //   {
-    //     "id": 14,
-    //     "name": "Sprint Plan",
-    //     "type": "Excel",
-    //     "url": "https://example.com/docs/sprint_plan.xlsx"
-    //   },
-    //   {
-    //     "id": 15,
-    //     "name": "Cloud Infrastructure",
-    //     "type": "HTML",
-    //     "url": "https://example.com/docs/cloud_infrastructure.html"
-    //   }
-    // ],
-    // "tasks": [
-    //   {
-    //     "id": 205,
-    //     "name": "Set Up Cloud Infrastructure",
-    //     "priority": "High",
-    //     "status": "In Progress",
-    //     "task_code": "TASK-005",
-    //     "members": [
-    //       {
-    //         "id": 12,
-    //         "name": "Nina Clark",
-    //         "email": "nina.clark@example.com",
-    //         "role": "Developer",
-    //         "avatar": "https://example.com/avatars/nina.jpg"
-    //       },
-    //       {
-    //         "id": 14,
-    //         "name": "Paul Green",
-    //         "email": "paul.green@example.com",
-    //         "role": "QA",
-    //         "avatar": "https://example.com/avatars/paul.jpg"
-    //       }
-    //     ],
-    //     "description": "Set up the cloud infrastructure for hosting the task management platform.",
-    //     "task_diary": {
-    //       "created_at": "2024-12-02T08:00:00Z",
-    //       "last_accessed": "2024-12-05T12:00:00Z"
-    //     },
-    //     "comments": [],
-    //     "sum_hours": 8
-    //   },
-    //   {
-    //     "id": 206,
-    //     "name": "Create Database Models",
-    //     "priority": "Medium",
-    //     "status": "Not Started",
-    //     "task_code": "TASK-006",
-    //     "members": [
-    //       {
-    //         "id": 13,
-    //         "name": "Oscar Taylor",
-    //         "email": "oscar.taylor@example.com",
-    //         "role": "Designer",
-    //         "avatar": "https://example.com/avatars/oscar.jpg"
-    //       },
-    //       {
-    //         "id": 15,
-    //         "name": "Quinn Adams",
-    //         "email": "quinn.adams@example.com",
-    //         "role": "Developer",
-    //         "avatar": "https://example.com/avatars/quinn.jpg"
-    //       }
-    //     ],
-    //     "description": "Design the database models for storing task and user data.",
-    //     "task_diary": {
-    //       "created_at": "2024-12-01T07:30:00Z",
-    //       "last_accessed": "2024-12-04T13:00:00Z"
-    //     },
-    //     "comments": [],
-    //     "sum_hours": 0
-    //   }
-    // ],
-    "status": "new"
+    ]
+  },
+  {
+    "id": "p3",
+    "name": "Project Gamma",
+    "start_date": "2023-06-01",
+    "end_date": "2024-06-01",
+    "status": "new",
+    "description": "A platform for collaborative learning and online courses.",
+    "progress": 5,
+    "sum_hours_until_now": 25,
+    "members": [
+      {
+        "id": "m7",
+        "name": "Grace",
+        "email": "grace@company.com",
+        "role": "Product Owner"
+      },
+      {
+        "id": "m8",
+        "name": "Helen",
+        "email": "helen@company.com",
+        "role": "Content Specialist"
+      }
+    ]
   }
 ]

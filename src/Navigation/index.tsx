@@ -24,6 +24,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import NotificationContainer from "@/Screens/Notification/NotificationContainer";
 import ProjectDetailContainer from "@/Screens/Project/ProjectDetail/ProjectDetailContainer";
+import ProjectEditContainer from "@/Screens/Project/ProjectEdit/ProjectEditContainer";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -39,6 +40,7 @@ export type RootStackParamList = {
   [RootScreens.ACCOUNT]: undefined;
   [RootScreens.NOTIFICATION]: undefined;
   [RootScreens.PROJECTDETAIL]: undefined;
+  [RootScreens.PROJECTEDIT]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -136,6 +138,11 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.PROJECTDETAIL}
           component={ProjectDetailContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.PROJECTEDIT}
+          component={ProjectEditContainer}
           options={{}}
         />
       </RootStack.Navigator>

@@ -22,6 +22,7 @@ export enum RootScreens {
   ACCOUNT = "Account",
   NOTIFICATION = "Notification",
   PROJECTDETAIL = "ProjectDetail",
+  PROJECTEDIT = "ProjectEdit",
 }
 
 export {

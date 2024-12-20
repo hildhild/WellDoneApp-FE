@@ -12,12 +12,20 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Foundation from "react-native-vector-icons/Foundation";
 import IonIcons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { RootScreens } from "@/Screens";
+import { useDispatch } from "react-redux";
+import { setProjectId } from "@/Store/reducers";
 interface IProjectDetailProps {
+  onNavigate: (screen: RootScreens) => void;
   project: IProjectDetail;
 }
 
 const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const flatGroupsList = props.project.groups
+    .map((group) => group.user.map((member) => member.name))
+    .join(",");
   return (
     <View className="bg-white h-full mt-8">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
@@ -29,7 +37,18 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
           />
         </TouchableOpacity>
         <Text className="text-heading4 font-bold">Chi tiết Dự án</Text>
-        <MaterialCommunityIcons name="pencil-outline" size={24} color="black" />
+        <TouchableOpacity
+          onPress={() =>
+            dispatch(setProjectId({ id: props.project.id })) &&
+            props.onNavigate(RootScreens.PROJECTEDIT)
+          }
+        >
+          <MaterialCommunityIcons
+            name="pencil-outline"
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
       </View>
 
       <ScrollView className="p-4">
@@ -54,7 +73,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         <Text className="text-body-small-regular text-neutral-500  mt-4">
           Thành viên
         </Text>
-        <AvatarStack users={props.project.members} display="row" />
+        <AvatarStack users={flatGroupsList.split(",")} display="row" />
 
         <Text className="text-body-small-regular text-neutral-500 mt-4">
           Mô tả dự án
@@ -68,15 +87,13 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         </Text>
         <ScrollView horizontal className="flex-row">
           <View className="flex-row mt-2 space-x-4">
-            {props.project.documents.map(
-              (doc: { id: number; type: string }) => (
-                <TouchableOpacity key={doc.id}>
-                  <View className="items-center w-20 h-20">
-                    {renderDocumentTypeIcon(doc.type)}
-                  </View>
-                </TouchableOpacity>
-              )
-            )}
+            {props.project.documents.map((doc) => (
+              <TouchableOpacity key={doc.id}>
+                <View className="items-center w-20 h-20">
+                  {renderDocumentTypeIcon(doc.type)}
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
         </ScrollView>
         <View className="mt-6">
@@ -125,7 +142,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                   </View>
                 </View>
                 <AvatarStack
-                  users={task.members}
+                  users={task.members.map((member) => member.name)}
                   maxVisible={2}
                   display="row"
                 />

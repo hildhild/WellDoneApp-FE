@@ -40,12 +40,12 @@ const Notification = (props: NotificationProps) => {
     Animated.sequence([
       Animated.timing(highlightAnimation, {
         toValue: 1.3,
-        duration: 500,
+        duration: 300,
         useNativeDriver: true,
       }),
       Animated.timing(highlightAnimation, {
         toValue: 1,
-        duration: 500,
+        duration: 300,
         useNativeDriver: true,
       }),
     ]).start();

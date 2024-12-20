@@ -8,6 +8,7 @@ import * as Progress from "react-native-progress";
 import { renderStatusLabel } from "@/Utils/Funtions/render";
 import { generateDate } from "@/Utils/Funtions/generate";
 import { IProjectListItem } from "@/Services/projects";
+import Avatar from "@/Components/Avatar";
 
 interface ProjectCardProps {
   project: IProjectListItem;
@@ -24,16 +25,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   onDelete,
   onAvatarStackClick,
 }) => {
+  const flatMembersList = project.members
+    .map((member) => member.name)
+    .join(", ");
   return (
     <View
       style={{ backgroundColor: bgColor }}
       className="rounded-lg p-4 mb-4 shadow-md"
     >
       <View className="flex-row justify-between items-center mb-2">
-        <Image
-          source={require("assets/Switch.png")}
-          className="w-16 h-16 mr-2"
-        />
+        <Avatar name={project.name} />
         <View className="flex-row">
           <TouchableOpacity onPress={onNavigate}>
             <MaterialCommunityIcons
@@ -62,7 +63,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <View className="flex-row items-center">
           <AntDesign name="calendar" size={16} color="gray" />
           <Text className="ml-2 text-body-base-bold text-gray-500">
-            Từ {generateDate(project.start_date)} đến {generateDate(project.end_date)}
+            Từ {generateDate(project.start_date)} đến{" "}
+            {generateDate(project.end_date)}
           </Text>
         </View>
         {renderStatusLabel(project.status)}
@@ -74,10 +76,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
       <View className="w-[170px]">
         <TouchableOpacity onPress={onAvatarStackClick}>
-          <AvatarStack users={project.members} maxVisible={5} display="row" />
+          <AvatarStack
+            users={flatMembersList.split(",")}
+            maxVisible={5}
+            display="row"
+          />
         </TouchableOpacity>
       </View>
-      
+
       <View className="flex-col ml-auto mt-4 items-end">
         <Progress.Bar
           progress={project.progress / 100}

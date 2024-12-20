@@ -1,5 +1,17 @@
+import { ProjectEditForm } from "@/Screens/Project/ProjectEdit/ProjectEditContainer";
 import { API } from "..";
 import { DocumentType, Priority, Status } from "@/Utils/constant";
+
+export interface CheckRoleRequest {
+  user_token: string;
+  project_id: string;
+}
+
+export interface GetGroupsResponse {
+  id: string;
+  name: string;
+}
+export interface EditProjectRequest extends ProjectEditForm {}
 
 export interface GetDetailProjectResponse extends IProjectDetail {}
 
@@ -29,19 +41,29 @@ export type GetProjectListResponse = IProjectList;
 export interface IProjectDetail {
   id: string;
   name: string;
-  members: ProjectMember[];
+  groups: ProjectGroups[];
   description: string;
   documents: ProjectDocument[];
   tasks: ProjectTask[];
   status: Status;
+  sum_hours: number;
+  start_date: string;
+  end_date: string;
+  progress: number;
 }
-
+export interface ProjectGroups {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+  user: ProjectMember[];
+}
 export interface ProjectMember {
   id: string;
   name: string;
   email: string;
   role: string;
-  avatar: string;
 }
 
 export interface ProjectDocument {
@@ -91,8 +113,19 @@ const projectApi = API.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    editProject: build.mutation<boolean, EditProjectRequest>({
+      query: (projectData) => ({
+        url: "/projects/",
+        method: "PUT",
+        body: projectData,
+      }),
+    }),
   }),
 });
 
-export const { useGetDetailProjectMutation, useGetProjectListMutation, useDeleteProjectMutation} =
-  projectApi;
+export const {
+  useGetDetailProjectMutation,
+  useGetProjectListMutation,
+  useDeleteProjectMutation,
+  useEditProjectMutation,
+} = projectApi;

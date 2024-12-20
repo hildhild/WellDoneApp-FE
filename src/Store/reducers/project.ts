@@ -1,3 +1,4 @@
+import { IProjectDetail } from "@/Services/projects";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface ProjectState {
   id: string | null;
@@ -19,6 +20,9 @@ const slice = createSlice({
     },
   },
 });
-export const { setProjectId, clearProjectId } = slice.actions;
+export const {
+  setProjectId,
+  clearProjectId,
+} = slice.actions;
 
 export const projectReducers = slice.reducer;
