@@ -5,6 +5,7 @@ import { RootScreens } from "..";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useDispatch } from "react-redux";
 import { removeToken } from "@/Store/reducers";
+import { Toast } from "toastify-react-native";
 
 type MenuItem = {
   iconName: string;
@@ -19,6 +20,7 @@ export const Other = (props: {
   const handleLogout = () => {
     dispatch(removeToken());
     props.onNavigate(RootScreens.LOGIN);
+    Toast.success("Đăng xuất thành công");
   }
 
   const otherMenus: MenuItem[][]= [

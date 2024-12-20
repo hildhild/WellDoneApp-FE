@@ -131,7 +131,7 @@ export const Account = (props: {
             </View>
           </View>
         </View>
-    </Modal>
+      </Modal>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Tài khoản</Text>
       </View>

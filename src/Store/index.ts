@@ -12,7 +12,7 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
-import { homeReducers, themeReducers, userReducers, profileReducers, notificationReducers, projectReducers } from "./reducers";
+import { homeReducers, themeReducers, userReducers, profileReducers, notificationReducers, projectReducers, groupReducers} from "./reducers";
 
 const reducers = combineReducers({
   api: API.reducer,
@@ -20,6 +20,7 @@ const reducers = combineReducers({
   home: homeReducers,
   user: userReducers,
   profile: profileReducers,
+  group: groupReducers,
   notification: notificationReducers,
   project: projectReducers
 });
@@ -27,7 +28,7 @@ const reducers = combineReducers({
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["profile"],
+  whitelist: ["profile", "group"],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);

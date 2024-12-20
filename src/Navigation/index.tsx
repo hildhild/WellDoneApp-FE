@@ -2,11 +2,13 @@ import {
   AccountContainer,
   DashboardContainer,
   GroupContainer,
+  GroupDetailContainer,
   Onboarding1Container,
   Onboarding2Container,
   Onboarding3Container,
   OtherContainer,
   ProjectContainer,
+  AddGroupContainer,
   RootScreens,
 } from "@/Screens";
 import ForgotPasswordContainer from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
@@ -41,17 +43,19 @@ export type RootStackParamList = {
   [RootScreens.NOTIFICATION]: undefined;
   [RootScreens.PROJECTDETAIL]: undefined;
   [RootScreens.PROJECTEDIT]: undefined;
+  [RootScreens.GROUP_DETAIL]: undefined;
+  [RootScreens.ADD_GROUP]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
-const getTabBarStyle = (route: any) => {
-  const routeName = route.state?.routes[route.state.index]?.name ?? "";
-  if (routeName === "Account") {
-    return { display: "flex" }; // Hiển thị tab bar
-  }
-  return { display: "none" }; // Ẩn tab bar
-};
+// const getTabBarStyle = (route: any) => {
+//   const routeName = route.state?.routes[route.state.index]?.name ?? "";
+//   if (routeName === "Account") {
+//     return { display: "flex" }; // Hiển thị tab bar
+//   }
+//   return { display: "none" }; // Ẩn tab bar
+// };
 
 // @refresh reset
 const ApplicationNavigator = () => {
@@ -143,6 +147,15 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.PROJECTEDIT}
           component={ProjectEditContainer}
+          />
+        <RootStack.Screen
+          name={RootScreens.GROUP_DETAIL}
+          component={GroupDetailContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.ADD_GROUP}
+          component={AddGroupContainer}
           options={{}}
         />
       </RootStack.Navigator>

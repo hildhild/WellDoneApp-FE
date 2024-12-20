@@ -1,7 +1,7 @@
 import { RootStackParamList } from "@/Navigation";
 import { ErrorHandle, useLogInMutation } from "@/Services";
 import { useGetProfileMutation } from "@/Services/profile";
-import { setProfile, setToken } from "@/Store/reducers";
+import { setGroupList, setProfile, setToken } from "@/Store/reducers";
 import {
   renderErrorMessageResponse,
   renderSuccessMessageResponse,
@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "../..";
 import LogIn from "./LogIn";
+import { useGetGroupsMutation } from "@/Services/group";
 
 export interface LogInForm {
   email: string;
@@ -26,6 +27,7 @@ type LogInScreenNavigatorProps = NativeStackScreenProps<
 const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [logIn, { isLoading, isError, error }] = useLogInMutation();
   const [getProfile] = useGetProfileMutation();
+  const [getGroups] = useGetGroupsMutation();
   const dispatch = useDispatch();
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
@@ -54,6 +56,21 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
               email: profileResponse.email,
             })
           );
+        }
+        const groupsResponse = await getGroups(
+          response.access_token
+        ).unwrap();
+        if (Array.isArray(groupsResponse)) {
+          dispatch(
+            setGroupList(groupsResponse)
+          );
+        }
+        else if (groupsResponse.message === "Group not found") {
+          dispatch(
+            setGroupList([])
+          );
+        } else {
+          Toast.error("Lỗi")
         }
       }
     } catch (err) {
