@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Store";
 import { Group as GroupType, useDeleteGroupMutation, useGetGroupsMutation, useUpdateGroupMutation } from "@/Services/group";
 import { Toast } from "toastify-react-native";
-import { setGroupList } from "@/Store/reducers";
+import { setCurGroup, setGroupList } from "@/Store/reducers";
 
 export interface IGroupProps {
   onNavigate: (screen: RootScreens) => void;
@@ -210,8 +210,9 @@ export const Group = (props: IGroupProps) => {
                       />
                     </View>
                     <View className="w-[60%]">
-                      <Text className="text-[#2C6E35] font-semibold mb-3">Đang thực hiện: 12</Text>
-                      <Text className="text-[#2C6E35] font-semibold">Thành viên: {group.user.length}</Text>
+                      {/* <Text className="text-[#2C6E35] font-semibold mb-3">Đang thực hiện: 12</Text> */}
+                      <Text className="text-[#2C6E35] font-semibold mb-3">Thành viên: {group.user.length}</Text>
+                      <Text className="text-[#2C6E35] font-semibold">Vai trò: {group.role === "Leader" ? "Nhóm trưởng" : "Thành viên"}</Text>
                     </View>
                   </View>
                   <Text className="font-semibold text-2xl mb-4">{group.name}</Text>
@@ -223,17 +224,25 @@ export const Group = (props: IGroupProps) => {
                     {
                       group.user.length > 2
                       ? 
-                      <Text>,...</Text>
+                      <Text>...</Text>
                       :
                       <></>
                     }
                   </View>
-                  <View className="flex flex-row gap-[3%]">
-                    <Pressable className="w-[42%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>props.onNavigate(RootScreens.GROUP_DETAIL)}><Text className="text-[#2C6E35] text-lg font-semibold">Chi tiết</Text></Pressable>
-                    <Pressable className="w-[42%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>{setEditGroup(true); setGroupGeneral({id: group.id, name: group.name, description: group.description})}}><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
-                    <Pressable className="w-[10%] flex justify-center items-center" onPress={()=>{setDeleteGroup(true); setGroupGeneral({id: group.id, name: group.name, description: group.description})}}>
-                      <Icon name="trash" color="red" size={30}/>
-                    </Pressable>
+                  <View className="flex flex-row gap-[3%] justify-end">
+                    <Pressable className="w-[42%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>{props.onNavigate(RootScreens.GROUP_DETAIL); dispatch(setCurGroup(group))}}><Text className="text-[#2C6E35] text-lg font-semibold">Chi tiết</Text></Pressable>
+                    {
+                      group.role === "Leader"
+                      &&
+                      <>
+                        <Pressable className="w-[42%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>{setEditGroup(true); setGroupGeneral({id: group.id, name: group.name, description: group.description})}}><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
+                        <Pressable className="w-[10%] flex justify-center items-center" onPress={()=>{setDeleteGroup(true); setGroupGeneral({id: group.id, name: group.name, description: group.description})}}>
+                          <Icon name="trash" color="red" size={30}/>
+                        </Pressable>
+                      </>
+                    
+                    }
+                    
                   </View>
                 </View>
               )
