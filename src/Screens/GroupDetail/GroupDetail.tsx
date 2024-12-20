@@ -19,10 +19,14 @@ import { Dimensions } from "react-native";
 import {
   LineChart,
 } from "react-native-chart-kit";
+import { current } from "@reduxjs/toolkit";
+import { User } from "@/Services/group";
 
 
 
 const GroupGeneral = () => {
+  const curGroup = useSelector((state: any) => state.group.curGroup);
+
   const chartConfig = {
     backgroundGradientFrom: "#F8FBF6",
     backgroundGradientTo: "#F8FBF6",
@@ -47,7 +51,7 @@ const GroupGeneral = () => {
   return (
     <ScrollView className="w-full h-full">
       <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Mô tả nhóm</Text>
-      <Text className="text-xl mb-5">Nhóm này chuyên lừa đảo bắt cóc bán sang Campuchia</Text>
+      <Text className="text-xl mb-5">{curGroup.description}</Text>
       <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Tháng 10</Text>
       <View className="mb-5">
         <Text className="text-xl text-[#3F6212] font-semibold">Nhiệm vụ đã hoàn thành</Text>
@@ -86,36 +90,98 @@ const GroupGeneral = () => {
 };
 
 const GroupMember = () => {
+  const curGroup = useSelector((state: any) => state.group.curGroup);
+  const [isViewInfo, setIsViewInfo] = useState<boolean>(false);
+  const [curMember, setCurMember] = useState<User>(null);
+
   return (
     <ScrollView className="w-full h-full">
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isViewInfo}
+        >
+        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
+          <View className="bg-white w-[90%] p-4 rounded-2xl">
+            <View className="w-full flex-row justify-center mb-3">
+              <Text className="font-bold text-2xl">Thông tin thành viên</Text>
+            </View>
+            <View className="mb-3">
+              <Text className="mb-2 font-semibold text-neutral-500 text-lg">Họ và tên</Text>
+              <TextInput
+                editable={false}
+                className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
+                value={curMember?.name}
+              />
+              <Text className="mb-2 font-semibold text-neutral-500 text-lg">Vai trò</Text>
+              <TextInput
+                editable={false}
+                className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
+                value={curMember?.role ? curMember.role : ""}
+              />
+              <Text className="mb-2 font-semibold text-neutral-500 text-lg">Ngày sinh</Text>
+              <TextInput
+                editable={false}
+                className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
+                value={curMember?.dateofbirth ? new Date(curMember.dateofbirth).toLocaleDateString() : ""}
+              />
+              <Text className="mb-2 font-semibold text-neutral-500 text-lg">Email</Text>
+              <TextInput
+                editable={false}
+                className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
+                value={curMember?.email}
+              />
+            </View>
+            
+            <View className="w-full flex-row gap-3 justify-end items-center">
+              <Pressable className="!rounded-xl !bg-gray-300 px-5 py-3" onPress={()=>setIsViewInfo(false)}>
+                <Text className="text-black font-semibold">Đóng</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5">
         <Ionicons name="person-add-outline" color="white" size={25}/>
         <Text className="text-white text-lg font-semibold">Mời thành viên</Text>
       </Pressable>
-      <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8">
-        <View className="flex flex-row mb-3 items-center">
-          <View className="w-[15%]">
-            <Image
-              className="w-[40px] h-[40px] object-cover rounded-full border-[1px] border-black"
-              source={require('assets/dark-logo.png')}
-            />
+      {
+        curGroup?.user.map((mem: User) => 
+          <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.id}>
+            <View className="flex flex-row mb-3 items-center">
+              <View className="w-[15%]">
+                <Image
+                  className="w-[40px] h-[40px] object-cover rounded-full border-[1px] border-black"
+                  source={require('assets/dark-logo.png')}
+                />
+              </View>
+              <View className="w-[85%]">
+                <Text className="text-lg font-bold text-[#30411A]">{mem.name}</Text>
+                <Text className=" text-[#30411A]">{mem.role}</Text>
+              </View>
+            </View>
+            <View className="flex-row gap-3 justify-end items-center">
+              <Pressable className="w-[47%] flex flex-row gap-1 justify-center items-center bg-[#4D7C0F] p-2 rounded-xl" onPress={()=>{setIsViewInfo(true); setCurMember(mem);}}>
+                <Ionicons name="information-circle-outline" color="white" size={20}/>
+                <Text className="text-[#fff] font-semibold">Xem thông tin</Text>
+              </Pressable>
+              {
+                curGroup.role === "Leader"
+                &&
+                <Pressable className="w-[10%] flex justify-center items-center">
+                  <Icon name="trash" color="red" size={30}/>
+                </Pressable>
+              }
+            </View>
           </View>
-          <View className="w-[85%]">
-            <Text className="text-lg font-bold text-[#30411A]">Alice Johnson</Text>
-            <Text className=" text-[#30411A]">Leader</Text>
-          </View>
-        </View>
-        <View className="flex items-end">
-          <Pressable className="w-[47%] flex flex-row gap-1 justify-center items-center bg-[#4D7C0F] p-2 rounded-xl">
-            <Ionicons name="information-circle-outline" color="white" size={20}/>
-            <Text className="text-[#fff] font-semibold">Xem thông tin</Text>
-          </Pressable>
-        </View>
-      </View>
+        )
+      }
+      
     </ScrollView>
 )};
 
 const GroupTask = () => {
+  
   return (
     <ScrollView className="w-full h-full">
       <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5">
@@ -169,6 +235,8 @@ export const GroupDetail = (props: {
     newPassword: "",
     rePassword: ""
   })
+  const curGroup = useSelector((state: any) => state.group.curGroup);
+
 
   const [index, setIndex] = useState(0);
 
@@ -274,7 +342,7 @@ export const GroupDetail = (props: {
       <View className="w-full p-6">
           <View className="w-full mb-5">
             <Text className="text-3xl font-semibold text-[#347928] mb-2">Dự án: WellDone</Text>
-            <Text className="text-3xl font-semibold text-[#347928]">Nhóm: Frontend Team</Text>
+            <Text className="text-3xl font-semibold text-[#347928]">Nhóm: {curGroup.name}</Text>
           </View>
           <View className="h-[600px] overflow-hidden">
             <Tab
