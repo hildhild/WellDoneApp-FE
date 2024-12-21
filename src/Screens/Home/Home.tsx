@@ -1,6 +1,7 @@
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
-import { ProjectDetail } from "@/Services/projects";
+import { IProjectDetail } from "@/Services/projects";
+import { setProjectId } from "@/Store/reducers";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
 import React from "react";
@@ -8,17 +9,25 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from "react-native-progress";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
 import { RootScreens } from "..";
 import FeedItemContainer from "./FeedItem/FeedItemContainer";
+import { RootState } from "@/Store";
+import Avatar from "@/Components/Avatar";
 
 export interface IHomeProps {
   onNavigate: (screen: RootScreens) => void;
-  data: ProjectDetail | undefined;
+  data: IProjectDetail | undefined;
   isLoading: boolean;
 }
 
 export const Home = (props: IHomeProps) => {
   const { data, isLoading } = props;
+  const flatGroupsList = data?.groups
+    .map((group) => group.user.map((user) => user.name))
+    .join(",");
+  const dispatch = useDispatch();
+  const name = useSelector((state: RootState) => state.profile.name);
   return (
     <View className="bg-neutral-100 pt-8 h-full">
       <StatusBar style="auto" />
@@ -45,10 +54,7 @@ export const Home = (props: IHomeProps) => {
             <TouchableOpacity
               onPress={() => props.onNavigate(RootScreens.ACCOUNT)}
             >
-              <Image
-                className="w-16 h-16"
-                source={require("assets/Switch.png")}
-              />
+              <Avatar name={name} width={70} height={70} />
             </TouchableOpacity>
           </View>
 
@@ -84,7 +90,7 @@ export const Home = (props: IHomeProps) => {
                 </Text>
                 <View className="flex-row items-center space-x-4 p-4">
                   <Progress.Bar
-                    progress={0.65}
+                    progress={(data?.progress ?? 0) / 100}
                     width={200}
                     height={15}
                     borderRadius={100}
@@ -92,17 +98,18 @@ export const Home = (props: IHomeProps) => {
                     color="#fee2e2"
                   />
                   <Text className="text-primary-200 text-body-base-bold ml-2 mb-4">
-                    65%
+                    {data?.progress}%
                   </Text>
                 </View>
                 <View className="flex-row items-center space-x-4 p-2">
                   <TouchableOpacity
-                    style={{
-                      backgroundColor: "#d9f99d",
-                      width: 155,
+                    className="bg-primary-200 w-[155px] px-4 py-2 rounded-3xl mb-4 flex-row justify-between"
+                    onPress={() => {
+                      if (data?.id) {
+                        dispatch(setProjectId({ id: data.id }));
+                        props.onNavigate(RootScreens.PROJECTDETAIL);
+                      }
                     }}
-                    className="bg-neutral-100 px-4 py-2 rounded-3xl mb-4 flex-row justify-between"
-                    onPress={() => {}}
                   >
                     <Text className="text-center text-neutral-900 text-body-base-regular ">
                       Open Project
@@ -118,12 +125,7 @@ export const Home = (props: IHomeProps) => {
               </View>
 
               <AvatarStack
-                users={
-                  data?.members?.map((member) => ({
-                    name: member.name,
-                    avatar: member.avatar,
-                  })) || []
-                }
+                users={flatGroupsList ? flatGroupsList.split(",") : []}
               />
             </View>
           </View>

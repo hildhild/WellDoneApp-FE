@@ -23,8 +23,11 @@ export enum RootScreens {
   VERIFY_MAIL = "VerifyMail",
   ACCOUNT = "Account",
   NOTIFICATION = "Notification",
+  PROJECTDETAIL = "ProjectDetail",
+  PROJECTEDIT = "ProjectEdit",
   GROUP_DETAIL = "GroupDetail",
   ADD_GROUP = "AddGroup",
+  PROJECTCREATE = "ProjectCreate",
 }
 
 export {
