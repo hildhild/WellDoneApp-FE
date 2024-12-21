@@ -3,7 +3,7 @@ import { ProjectEditForm } from "../ProjectEdit/ProjectEditContainer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "@/Screens";
-import React, { FC } from "react";
+import React, { FC, memo } from "react";
 export interface ProjectCreateForm extends ProjectEditForm {}
 
 type ProjectCreateScreenNavigatorProps = NativeStackScreenProps<
@@ -27,4 +27,4 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
     />
   );
 };
-export default ProjectCreateContainer;
+export default memo(ProjectCreateContainer);

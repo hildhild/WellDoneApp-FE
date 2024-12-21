@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import NotificationContainer from "@/Screens/Notification/NotificationContainer";
 import ProjectDetailContainer from "@/Screens/Project/ProjectDetail/ProjectDetailContainer";
 import ProjectEditContainer from "@/Screens/Project/ProjectEdit/ProjectEditContainer";
+import ProjectCreateContainer from "@/Screens/Project/ProjectCreate/ProjectCreateContainer";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -166,7 +167,7 @@ const ApplicationNavigator = () => {
         />
         <RootStack.Screen
           name={RootScreens.PROJECTCREATE}
-          component={ProjectContainer}
+          component={ProjectCreateContainer}
           options={{}}
         />
       </RootStack.Navigator>

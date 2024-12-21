@@ -3,8 +3,6 @@ import { StatusType } from "@/Utils/constant";
 import { generateStatusText } from "@/Utils/Funtions/generate";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
-import { SerializedError } from "@reduxjs/toolkit";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import ArrowDown from "assets/icons/ProjectEdit/arrowDown";
 import ArrowUp from "assets/icons/ProjectEdit/arrowUp";
 import GroupsIcon from "assets/icons/ProjectEdit/groupsIcon";
@@ -26,6 +24,10 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ProjectCreateForm } from "./ProjectCreateContainer";
+import { useSelector } from "react-redux";
+import { RootState } from "@/Store";
+import ViewGroups from "../ProjectEdit/ViewGroups";
+import { Status } from "@/Utils/constant";
 
 interface IProjectCreateProps {
   onNavigate: (screen: RootScreens) => void;
@@ -43,7 +45,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
     formState: { errors },
   } = useForm<ProjectCreateForm>();
   const [open, setOpen] = useState(false);
-  const [statusValue, setStatusValue] = useState<string | null>();
+  const [statusValue, setStatusValue] = useState<Status>(StatusType.NEW as Status);
   const [timeHours, setTimeHours] = useState<number>(0);
   const [items, setItems] = useState([
     { label: generateStatusText(StatusType.NEW), value: StatusType.NEW },
@@ -60,14 +62,20 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
   const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const group = useSelector((state: RootState) => state.group.groupList);
+  const convertIDToName = (id: string[]) => {
+    return group
+      .filter((item) => id.includes(item.id.toString()))
+      .map((item) => item.name);
+  };
   const [openViewGroups, setOpenViewGroups] = useState(false);
-
+  const [groupDisplay, setGroupDisplay] = useState<string[]>([]);
   const onSubmit = (data: ProjectCreateForm) => {
     const transformedData: ProjectCreateForm = {
       project_name: data.project_name,
       project_description: data.project_description,
       project_group_member: data.project_group_member,
-      project_status: data.project_status,
+      project_status: statusValue,
       project_sum_hours: timeHours,
       project_start_date: data.project_start_date,
       project_end_date: data.project_end_date,
@@ -97,7 +105,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
             color="black"
           />
         </TouchableOpacity>
-        <Text className="text-xl font-bold text-center">Chỉnh sửa Dự án</Text>
+        <Text className="text-xl font-bold text-center">Thêm Dự án</Text>
         <TouchableOpacity onPress={handleSubmit(onSubmit)}>
           <Feather name="save" size={32} color="black" />
         </TouchableOpacity>
@@ -134,7 +142,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
           />
           {errors.project_name && (
             <Text className="text-danger-600 text-caption-bold mb-2">
-              {typeof errors.project_name.message === 'string' && errors.project_name.message}
+              {typeof errors.project_name.message === "string" &&
+                errors.project_name.message}
             </Text>
           )}
         </View>
@@ -160,7 +169,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
         </View>
         {errors.project_description && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {typeof errors.project_description.message === 'string' && errors.project_description.message}
+            {typeof errors.project_description.message === "string" &&
+              errors.project_description.message}
           </Text>
         )}
         <View className="flex-row p-4 rounded-2xl mb-2 shadow-lg bg-neutral-100">
@@ -174,23 +184,36 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
               </Text>
               <Text className="text-danger-600"> *</Text>
             </View>
-            {/* <Controller
+            <Controller
               control={control}
               name="project_group_member"
               render={({ field: { onChange } }) => (
-                  // {openViewGroups && (
-                  //   <ViewGroups
-                  //     listGroupId={groupData}
-                  //     closeModal={() => setOpenViewGroups(false)}
-                  //     handleSave={(listGroupName) => {
-                  //       setOpenViewGroups(false);
-                  //       onChange(listGroupName);
-                  //       console.log(listGroupName)
-                  //     }}
-                  //   />
-                  // )}
+                <View className="flex-row flex-wrap mb-4">
+                  {convertIDToName(groupDisplay).slice(0, 3).map((member, index) => (
+                    <View
+                      key={index}
+                      className="bg-gray-200 rounded-full px-2 py-1 mr-2 mb-2 flex-row items-center"
+                    >
+                      <Text className="text-caption-bold mr-1">
+                        {String(member)}
+                      </Text>
+                      <AntDesign name="checkcircle" size={12} color="green" />
+                    </View>
+                  ))}
+                  {openViewGroups && (
+                    <ViewGroups
+                      listGroupId={group.map((item) => item.id)}
+                      closeModal={() => setOpenViewGroups(false)}
+                      handleSave={(listGroupName) => {
+                        setOpenViewGroups(false);
+                        onChange(listGroupName);
+                        setGroupDisplay(listGroupName);
+                      }}
+                    />
+                  )}
+                </View>
               )}
-            /> */}
+            />
           </View>
           <TouchableOpacity
             className="mt-4 p-2 rounded-md"
@@ -255,7 +278,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
         </View>
         {errors.project_status && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {typeof errors.project_status.message === 'string' && errors.project_status.message}
+            {typeof errors.project_status.message === "string" &&
+              errors.project_status.message}
           </Text>
         )}
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
@@ -286,7 +310,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
         </View>
         {errors.project_sum_hours && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {typeof errors.project_sum_hours.message === 'string' && errors.project_sum_hours.message}
+            {typeof errors.project_sum_hours.message === "string" &&
+              errors.project_sum_hours.message}
           </Text>
         )}
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
@@ -338,7 +363,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
         </View>
         {errors.project_start_date && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {typeof errors.project_start_date.message === 'string' && errors.project_start_date.message}
+            {typeof errors.project_start_date.message === "string" &&
+              errors.project_start_date.message}
           </Text>
         )}
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
@@ -391,7 +417,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
       </View>
       {errors.project_end_date && (
         <Text className="text-danger-600 text-caption-bold mb-2">
-          {typeof errors.project_end_date.message === 'string' && errors.project_end_date.message}
+          {typeof errors.project_end_date.message === "string" &&
+            errors.project_end_date.message}
         </Text>
       )}
     </View>
@@ -404,9 +431,9 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
       <FlatList
-        data={[]}
+        data={[1]}
         renderItem={renderItem}
-        keyExtractor={() => "project-edit"}
+        keyExtractor={() => "project-create"}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
         contentContainerStyle={{ flexGrow: 1 }}

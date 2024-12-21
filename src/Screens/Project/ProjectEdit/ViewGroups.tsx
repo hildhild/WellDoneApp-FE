@@ -34,7 +34,7 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
 
   return (
     <Modal animationType="slide" transparent={true} visible={true}>
-      <View className="flex-1 justify-center items-center bg-neutral-500 bg-opacity-50">
+      <View className="flex-1 justify-center items-center bg-neutral-300 bg-opacity-50">
         <View className="bg-neutral-100 rounded-[35px] w-4/5 p-4 shadow-lg">
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-body-small-bold text-neutral-500">

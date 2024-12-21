@@ -21,7 +21,6 @@ export interface IProjectProps {
   search: string;
   setSearch: (value: string) => void;
   onNavigate: (screen: RootScreens) => void;
-  onCreateProject: () => void;
 }
 
 export const Project = (props: IProjectProps) => {
@@ -79,7 +78,7 @@ export const Project = (props: IProjectProps) => {
             </ScrollView>
             <TouchableOpacity
               className="w-16 h-16 absolute bottom-[100px] right-5 bg-primary-600 rounded-full p-2 flex justify-center items-center"
-              onPress={props.onCreateProject}
+              onPress={() => props.onNavigate(RootScreens.PROJECTCREATE)}
             >
               <AntDesign name="plus" size={30} color="#fff" />
             </TouchableOpacity>

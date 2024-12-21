@@ -30,9 +30,6 @@ export const ProjectContainer = ({
       search={search}
       setSearch={setSearch}
       onNavigate={onNavigate}
-      onCreateProject={() => {
-        console.log("Create Project");
-      }}
     />
   );
 };
