@@ -52,7 +52,7 @@ export interface ErrorHandle {
 
 export interface ErrorResponse{
   message: string 
-  error: string
+  error?: string
   statusCode: number
 }
 

@@ -1,6 +1,6 @@
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
-import { IProjectDetail } from "@/Services/projects";
+import { GetDetailProjectResponse } from "@/Services/projects";
 import { setProjectId } from "@/Store/reducers";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
@@ -17,14 +17,14 @@ import Avatar from "@/Components/Avatar";
 
 export interface IHomeProps {
   onNavigate: (screen: RootScreens) => void;
-  data: IProjectDetail | undefined;
+  data: GetDetailProjectResponse | undefined;
   isLoading: boolean;
 }
 
 export const Home = (props: IHomeProps) => {
-  const { data, isLoading } = props;
+  const { data, isLoading, onNavigate } = props;
   const flatGroupsList = data?.groups
-    .map((group) => group.user.map((user) => user.name))
+    .map((group) => group.name)
     .join(",");
   const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.profile.name);
@@ -52,7 +52,7 @@ export const Home = (props: IHomeProps) => {
             </View>
 
             <TouchableOpacity
-              onPress={() => props.onNavigate(RootScreens.ACCOUNT)}
+              onPress={() => onNavigate(RootScreens.ACCOUNT)}
             >
               <Avatar name={name} width={70} height={70} />
             </TouchableOpacity>
@@ -63,7 +63,7 @@ export const Home = (props: IHomeProps) => {
               <Text className="text-heading4 font-bold mb-4 p-4">Bảng tin</Text>
               <TouchableOpacity
                 className="mt-4"
-                onPress={() => props.onNavigate(RootScreens.NOTIFICATION)}
+                onPress={() => onNavigate(RootScreens.NOTIFICATION)}
               >
                 <MaterialCommunityIcons
                   name="arrow-top-right-thin-circle-outline"
@@ -73,7 +73,7 @@ export const Home = (props: IHomeProps) => {
               </TouchableOpacity>
             </View>
             <View className="flex-row justify-between">
-              <FeedItemContainer onNavigate={props.onNavigate} />
+              <FeedItemContainer onNavigate={onNavigate} />
             </View>
           </View>
 
@@ -107,7 +107,7 @@ export const Home = (props: IHomeProps) => {
                     onPress={() => {
                       if (data?.id) {
                         dispatch(setProjectId({ id: data.id }));
-                        props.onNavigate(RootScreens.PROJECTDETAIL);
+                        onNavigate(RootScreens.PROJECTDETAIL);
                       }
                     }}
                   >
