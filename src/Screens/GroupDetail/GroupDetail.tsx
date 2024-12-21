@@ -13,7 +13,7 @@ import { removeToken, setCurGroup, setGroupList, setProfile } from "@/Store/redu
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { Tab, TabView } from '@rneui/themed';
-import { SemiCircleProgress } from "@/Components";
+import { LoadingProcess, SemiCircleProgress } from "@/Components";
 import { ProgressBar, MD3Colors } from 'react-native-paper';
 import { Dimensions } from "react-native";
 import {
@@ -99,9 +99,9 @@ const GroupMember = () => {
     "updatedAt": "",
     "role": ""
   });
-  const [deleteMemberApi] = useDeleteMemberMutation();
-  const [addMemberApi] = useAddMemberMutation();
-  const [getGroups] = useGetGroupsMutation();
+  const [deleteMemberApi, {isLoading: deleteLoading}] = useDeleteMemberMutation();
+  const [addMemberApi, {isLoading: addLoading}] = useAddMemberMutation();
+  const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
   const [refetch, setRefect] = useState<boolean>(false);
@@ -114,6 +114,7 @@ const GroupMember = () => {
     };
   });
   const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>([]);
+  const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
 
   const getGroupList = async () => {
@@ -138,10 +139,15 @@ const GroupMember = () => {
   }
 
   useEffect(() => {
-    getGroupList();
+    if (isInitialRender) {
+      setIsInitialRender(false); // Đánh dấu lần render đầu tiên đã hoàn thành
+    } else {
+      getGroupList();
+    }
   }, [refetch])
 
   const handleDeleteMember = async () => {
+    setDeleteMember(false);
     try {
       const res = await deleteMemberApi({
         token: accessToken,
@@ -149,9 +155,8 @@ const GroupMember = () => {
         userId: curMember.id
       }).unwrap();
       if (!res) {
-        Toast.success("Xóa thành công");
-        setDeleteMember(false);
         setRefect(!refetch);
+        Toast.success("Xóa thành công");
       } 
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
@@ -165,6 +170,7 @@ const GroupMember = () => {
   }
 
   const handleAddMember = async () => {
+    setAddMember(false);
     try {
       const res = await addMemberApi({
         data: {
@@ -174,12 +180,12 @@ const GroupMember = () => {
         groupId: curGroup.id
       }).unwrap();
       if ("id" in res) {
-        Toast.success("Thêm thành viên thành công");
-        setAddMember(false);
         setRefect(!refetch);
+        Toast.success("Thêm thành viên thành công");
       } 
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
+        setAddMember(true);
         const errorData = err as ErrorHandle;
         Toast.error(
           String(errorData.data.message),
@@ -191,6 +197,7 @@ const GroupMember = () => {
 
   return (
     <ScrollView className="w-full h-full">
+      <LoadingProcess isVisible={addLoading || getLoading || deleteLoading} />
       <Modal
         animationType="fade"
         transparent={true}
