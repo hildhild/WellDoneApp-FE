@@ -239,6 +239,13 @@ export const Group = (props: IGroupProps) => {
                 </View>
               )
             }
+            {
+              groupList.length === 0
+              &&
+              <View className="w-full flex items-center justify-center py-56">
+                <Text className="text-gray-400 font-semibold text-xl">Không có nhóm</Text>
+              </View>
+            }
             <View className="mb-24"></View>
           </ScrollView>
         </View>
