@@ -1,7 +1,7 @@
-import { IProjectDetail } from "@/Services/projects";
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface ProjectState {
-  id: string | null;
+  id: number | null;
 }
 
 const initialState: ProjectState = {
@@ -11,7 +11,7 @@ const slice = createSlice({
   name: "project",
   initialState,
   reducers: {
-    setProjectId: (state, action: PayloadAction<{ id: string }>) => {
+    setProjectId: (state, action: PayloadAction<{ id: number }>) => {
       const { id } = action.payload;
       state.id = id;
     },
