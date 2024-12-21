@@ -58,20 +58,30 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
             })
           );
         }
-        const groupsResponse = await getGroups(
-          response.access_token
-        ).unwrap();
-        if (Array.isArray(groupsResponse)) {
-          dispatch(
-            setGroupList(groupsResponse)
-          );
-        }
-        else if (groupsResponse.message === "Group not found") {
-          dispatch(
-            setGroupList([])
-          );
-        } else {
-          Toast.error("Lỗi")
+        try {
+          const groupsResponse = await getGroups(
+            response.access_token
+          ).unwrap();
+          if (Array.isArray(groupsResponse)) {
+            dispatch(
+              setGroupList(groupsResponse)
+            );
+          }
+        } catch (err) {
+          if (err && typeof err === "object" && "data" in err) {
+            const errorData = err as ErrorHandle;
+            if (String(errorData.data.message) === "Groups not found"){
+              dispatch(
+                setGroupList([])
+              );
+            }
+            else {
+              Toast.error(
+                String(errorData.data.message),
+                "top"
+              );
+            }
+          }
         }
         const userListRes = await getUserList(
           response.access_token
