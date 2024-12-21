@@ -1,13 +1,13 @@
 import { i18n, LocalizationKey } from "@/Localization";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable, Modal, TextInput } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal, TextInput, Platform, Keyboard } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { HStack, Spinner, Heading, Button } from "native-base";
 import { ErrorHandle, User } from "@/Services";
 import { RootScreens } from "..";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Image } from "react-native";
-import { AvatarRow } from "@/Components";
+import { AvatarRow, LoadingProcess } from "@/Components";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Store";
 import { Group as GroupType, useDeleteGroupMutation, useGetGroupsMutation, useUpdateGroupMutation } from "@/Services/group";
@@ -16,12 +16,9 @@ import { setCurGroup, setGroupList } from "@/Store/reducers";
 
 export interface IGroupProps {
   onNavigate: (screen: RootScreens) => void;
-  data: User | undefined;
-  isLoading: boolean;
 }
 
 export const Group = (props: IGroupProps) => {
-  const { data, isLoading } = props;
   const [editGroup, setEditGroup] = useState<boolean>(false);
   const [deleteGroup, setDeleteGroup] = useState<boolean>(false);
   const [refetch, setRefect] = useState<boolean>(false);
@@ -31,11 +28,12 @@ export const Group = (props: IGroupProps) => {
     name: "",
     description: ""
   });
-  const [updateGroupApi] = useUpdateGroupMutation();
-  const [deleteGroupApi] = useDeleteGroupMutation();
+  const [updateGroupApi, { isLoading: updateLoading }] = useUpdateGroupMutation();
+  const [getGroups, { isLoading: getLoading }] = useGetGroupsMutation();
+  const [deleteGroupApi, {isLoading: deleteLoading}] = useDeleteGroupMutation();
   const accessToken = useSelector((state: RootState) => state.profile.token);
-  const [getGroups] = useGetGroupsMutation();
   const dispatch = useDispatch();
+  const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
   const getGroupList = async () => {
     const groupsResponse = await getGroups(
@@ -56,11 +54,16 @@ export const Group = (props: IGroupProps) => {
   }
 
   useEffect(() => {
-    getGroupList();
+    if (isInitialRender) {
+      setIsInitialRender(false); 
+    } else {
+      getGroupList();
+    }
   }, [refetch])
 
 
   const handleEditGroup = async () => {
+    setEditGroup(false);
     try {
       const res = await updateGroupApi({
         data: {
@@ -70,15 +73,13 @@ export const Group = (props: IGroupProps) => {
         token: accessToken,
         groupId: groupGeneral.id
       }).unwrap();
-      if (!res) {
-        Toast.success("Chỉnh sửa thành công");
-        setEditGroup(false);
+      if ("id" in res) {
         setRefect(!refetch);
-      } else {
-  
+        Toast.success("Chỉnh sửa thành công");
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
+        setEditGroup(true);
         const errorData = err as ErrorHandle;
         Toast.error(
           String(errorData.data.message),
@@ -89,18 +90,16 @@ export const Group = (props: IGroupProps) => {
   }
 
   const handleDeleteGroup = async () => {
+    setDeleteGroup(false);
     try {
       const res = await deleteGroupApi({
         token: accessToken,
         groupId: groupGeneral.id
       }).unwrap();
       if (!res) {
-        Toast.success("Xóa thành công");
-        setDeleteGroup(false);
         setRefect(!refetch);
-      } else {
-  
-      }
+        Toast.success("Xóa thành công");
+      } 
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as ErrorHandle;
@@ -116,21 +115,14 @@ export const Group = (props: IGroupProps) => {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      {isLoading ? (
-        <HStack space={2} justifyContent="center">
-          <Spinner accessibilityLabel="Loading posts" />
-          <Heading color="primary.500" fontSize="md">
-            {i18n.t(LocalizationKey.LOADING)}
-          </Heading>
-        </HStack>
-      ) : (
         <View className="bg-[#F8FBF6] w-full h-full relative">
+          <LoadingProcess isVisible={updateLoading || getLoading || deleteLoading}/>
           <Modal
             animationType="fade"
             transparent={true}
             visible={editGroup}
             >
-            <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
+            <Pressable className="flex justify-center items-center w-full h-full bg-[#00000090]" onPress={() => Keyboard.dismiss()}>
               <View className="bg-white w-[90%] p-4 rounded-2xl">
                 <View className="w-full flex-row justify-center mb-3">
                   <Text className="font-bold text-2xl">Chỉnh sửa nhóm</Text>
@@ -164,7 +156,7 @@ export const Group = (props: IGroupProps) => {
                   </Pressable>
                 </View>
               </View>
-            </View>
+            </Pressable>
           </Modal>
           <Modal
             animationType="fade"
@@ -250,7 +242,6 @@ export const Group = (props: IGroupProps) => {
             <View className="mb-24"></View>
           </ScrollView>
         </View>
-      )}
     </View>
   );
 };
