@@ -18,8 +18,12 @@ export interface User {
 }
 
 export interface Member {
-  user: User,
-  role: string
+  "id": number,
+  "name": string,
+  "email": string,
+  "dateofbirth": string,
+  "updatedAt": string,
+  "role": string
 }
 
 export interface Group {
@@ -88,13 +92,13 @@ export interface AddGroupRequest {
 }
 
 export interface AddGroupResponse {
+  "id": number,
   "name": string,
   "description": string,
-  "user_id_create": number,
-  "projectId": number | null,
-  "id": number,
   "createdAt": string,
-  "updatedAt": string
+  "updatedAt": string,
+  "role": string,
+  "user": Member[]
 }
 
 export interface ChangePasswordResponse {}

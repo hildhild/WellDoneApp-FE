@@ -111,25 +111,25 @@ const GroupMember = () => {
               <TextInput
                 editable={false}
                 className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-                value={curMember?.user.name}
+                value={curMember?.name}
               />
               <Text className="mb-2 font-semibold text-neutral-500 text-lg">Vai trò</Text>
               <TextInput
                 editable={false}
                 className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-                value={curMember?.role ? curMember.role : ""}
+                value={curMember?.role ? curMember.role === "Leader" ? "Nhóm trưởng" : "Thành viên" : ""}
               />
               <Text className="mb-2 font-semibold text-neutral-500 text-lg">Ngày sinh</Text>
               <TextInput
                 editable={false}
                 className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-                value={curMember?.user.dateofbirth ? new Date(curMember.user.dateofbirth).toLocaleDateString() : ""}
+                value={curMember?.dateofbirth ? new Date(curMember.dateofbirth).toLocaleDateString() : ""}
               />
               <Text className="mb-2 font-semibold text-neutral-500 text-lg">Email</Text>
               <TextInput
                 editable={false}
                 className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-                value={curMember?.user.email}
+                value={curMember?.email}
               />
             </View>
             
@@ -143,11 +143,11 @@ const GroupMember = () => {
       </Modal>
       <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5">
         <Ionicons name="person-add-outline" color="white" size={25}/>
-        <Text className="text-white text-lg font-semibold">Mời thành viên</Text>
+        <Text className="text-white text-lg font-semibold">Thêm thành viên</Text>
       </Pressable>
       {
         curGroup?.user.map((mem: Member) => 
-          <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.user.id}>
+          <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.id}>
             <View className="flex flex-row mb-3 items-center">
               <View className="w-[15%]">
                 <Image
@@ -156,8 +156,8 @@ const GroupMember = () => {
                 />
               </View>
               <View className="w-[85%]">
-                <Text className="text-lg font-bold text-[#30411A]">{mem.user.name}</Text>
-                <Text className=" text-[#30411A]">{mem.role}</Text>
+                <Text className="text-lg font-bold text-[#30411A]">{mem.name}</Text>
+                <Text className=" text-[#30411A]">{mem.role === "Leader" ? "Nhóm trưởng" : "Thành viên"}</Text>
               </View>
             </View>
             <View className="flex-row gap-3 justify-end items-center">
@@ -216,123 +216,14 @@ export const GroupDetail = (props: {
   onNavigate: (string: RootScreens) => void;
 }) => {
   const navigation = useNavigation();
-  const [editable, setEditable] = useState<boolean>(false);
-  const [isChangePassword, setIsChangePassword] = useState<boolean>(false);
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-  const profile = useSelector((state: any) => state.profile);
-  const [profileData, setProfileData] = useState<{name: string, dateOfBirth: Date, email: string}>({
-    name: profile.name,
-    dateOfBirth: new Date(profile.dateOfBirth),
-    email: profile.email
-  });
-  const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
-  const [updateProfile] = useUpdateProfileMutation();
-  const [changePassword] = useChangePasswordMutation();
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
-  const [changePasswordData, setChangePasswordData] = useState<{curPassword: string, newPassword: string, rePassword: string}>({
-    curPassword: "",
-    newPassword: "",
-    rePassword: ""
-  })
   const curGroup = useSelector((state: any) => state.group.curGroup);
-
 
   const [index, setIndex] = useState(0);
 
-  const handleEditProfile = async () => {
-    if (editable){
-      try {
-        const response = await updateProfile({
-          data: {
-            name: profileData.name,
-            dateofbirth: profileData.dateOfBirth.toISOString(),
-          },
-          token: accessToken
-        }).unwrap();
-        if ("name" in response) {
-          Toast.success("Chỉnh sửa thành công")
-          dispatch(setProfile({name: profileData.name, dateOfBirth: profileData.dateOfBirth.toISOString(), email: profileData.email}));
-          setEditable(false);
-        }
-      } catch (err) {
-        if (err && typeof err === "object" && "data" in err) {
-          const errorData = err as ErrorHandle;
-          Toast.error(
-            renderErrorMessageResponse(String(errorData.data.message)),
-            "top"
-          );
-        }
-      }
-    } else {
-      setEditable(true);
-    }
-  }
-
-  const handleChangePassword = async () => {
-    if (isChangePassword) {
-      if (changePasswordData.rePassword !== changePasswordData.newPassword){
-        Toast.error("Mật khẩu không khớp");
-      } else {
-        try {
-          const response = await changePassword({
-            data: {
-              password: changePasswordData.curPassword,
-              newPassword: changePasswordData.newPassword,
-            },
-            token: accessToken
-          }).unwrap();
-          if (response === null || response === undefined){
-            Toast.success("Đổi thành công, vui lòng đăng nhập lại")
-            setEditable(false);
-            dispatch(removeToken());
-            props.onNavigate(RootScreens.LOGIN);
-          }
-        } catch (err) {
-          if (err && typeof err === "object" && "data" in err) {
-            const errorData = err as ErrorHandle;
-            Toast.error(
-              renderErrorMessageResponse(String(errorData.data.message)),
-              "top"
-            );
-          }
-        }
-      }
-    } else {
-      setIsChangePassword(true);
-    }
-  }
-
-  const handleChangeDateOfBirth = (event: any, selectedDate: Date) => {
-    if (selectedDate) {
-      setProfileData({...profileData, dateOfBirth: selectedDate}); 
-    }
-  };
-
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={openDatePicker}
-        >
-        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
-          <View className="bg-white w-[90%] py-3">
-            <DateTimePicker
-              value={profileData.dateOfBirth}
-              mode="date" 
-              display="spinner"
-              onChange={handleChangeDateOfBirth}
-              themeVariant="light"
-            />
-            <View className="w-full flex justify-center items-center">
-              <Button className="!rounded-full !bg-lime-300" onPress={()=>setOpenDatePicker(false)}>
-                <Text className="text-black font-semibold">Xong</Text>
-              </Button>
-            </View>
-          </View>
-        </View>
-      </Modal>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Chi tiết nhóm</Text>
       </View>
@@ -341,7 +232,7 @@ export const GroupDetail = (props: {
       </Pressable>
       <View className="w-full p-6">
           <View className="w-full mb-5">
-            <Text className="text-3xl font-semibold text-[#347928] mb-2">Dự án: WellDone</Text>
+            <Text className="text-3xl font-semibold text-[#347928] mb-2">Dự án: Chưa tham gia</Text>
             <Text className="text-3xl font-semibold text-[#347928]">Nhóm: {curGroup.name}</Text>
           </View>
           <View className="h-[600px] overflow-hidden">

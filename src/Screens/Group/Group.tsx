@@ -219,7 +219,7 @@ export const Group = (props: IGroupProps) => {
                   <Text className="text-xl font-extralight mb-3">{group.description}</Text>
                   <View className="mb-4 flex-row">
                     {
-                      group.user.slice(0,2).map((user, index) => <Text key={user.user.id}>{index !== group.user.length-1 ? user.user.name + ", " : user.user.name}</Text>)
+                      group.user.slice(0,2).map((user, index) => <Text key={user.id}>{index !== group.user.length-1 ? user.name + ", " : user.name}</Text>)
                     }
                     {
                       group.user.length > 2

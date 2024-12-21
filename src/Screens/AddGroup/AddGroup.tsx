@@ -6,26 +6,13 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { useChangePasswordMutation, useUpdateProfileMutation } from "@/Services/profile";
-import { removeToken, setGroupList, setProfile } from "@/Store/reducers";
+import { setGroupList } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { TextInput } from "react-native";
 import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
-
-const data = [
-  { label: 'Item 1', value: '1' },
-  { label: 'Item 2', value: '2' },
-  { label: 'Item 3', value: '3' },
-  { label: 'Item 4', value: '4' },
-  { label: 'Item 5', value: '5' },
-  { label: 'Item 6', value: '6' },
-  { label: 'Item 7', value: '7' },
-  { label: 'Item 8', value: '8' },
-];
 
 
 export const AddGroup = (props: {
@@ -48,80 +35,17 @@ export const AddGroup = (props: {
   const [addGroupApi] = useAddGroupMutation();
   const [getGroups] = useGetGroupsMutation();
 
-
-  // const handleEditProfile = async () => {
-  //   if (editable){
-  //     try {
-  //       const response = await updateProfile({
-  //         data: {
-  //           name: profileData.name,
-  //           dateofbirth: profileData.dateOfBirth.toISOString(),
-  //         },
-  //         token: accessToken
-  //       }).unwrap();
-  //       if ("name" in response) {
-  //         Toast.success("Chỉnh sửa thành công")
-  //         dispatch(setProfile({name: profileData.name, dateOfBirth: profileData.dateOfBirth.toISOString(), email: profileData.email}));
-  //         setEditable(false);
-  //       }
-  //     } catch (err) {
-  //       if (err && typeof err === "object" && "data" in err) {
-  //         const errorData = err as ErrorHandle;
-  //         Toast.error(
-  //           renderErrorMessageResponse(String(errorData.data.message)),
-  //           "top"
-  //         );
-  //       }
-  //     }
-  //   } else {
-  //     setEditable(true);
-  //   }
-  // }
-
-  // const handleChangePassword = async () => {
-  //   if (isChangePassword) {
-  //     if (changePasswordData.rePassword !== changePasswordData.newPassword){
-  //       Toast.error("Mật khẩu không khớp");
-  //     } else {
-  //       try {
-  //         const response = await changePassword({
-  //           data: {
-  //             password: changePasswordData.curPassword,
-  //             newPassword: changePasswordData.newPassword,
-  //           },
-  //           token: accessToken
-  //         }).unwrap();
-  //         if (response === null || response === undefined){
-  //           Toast.success("Đổi thành công, vui lòng đăng nhập lại")
-  //           setEditable(false);
-  //           dispatch(removeToken());
-  //           props.onNavigate(RootScreens.LOGIN);
-  //         }
-  //       } catch (err) {
-  //         if (err && typeof err === "object" && "data" in err) {
-  //           const errorData = err as ErrorHandle;
-  //           Toast.error(
-  //             renderErrorMessageResponse(String(errorData.data.message)),
-  //             "top"
-  //           );
-  //         }
-  //       }
-  //     }
-  //   } else {
-  //     setIsChangePassword(true);
-  //   }
-  // }
   const handleCreateGroup = async () => {
     try {
       const response = await addGroupApi({
         data: {
           name: groupData.name,
           description: groupData.description,
-          list_user_members: userList.map((user: any) => user.id)
+          list_user_members: selectedUsers.map((user: any) => {return user.id;})
         },
         token: accessToken
       }).unwrap();
-      if ("name" in response) {
+      if ("id" in response) {
         navigation.goBack()
         Toast.success("Thêm thành công")
         const groupsResponse = await getGroups(
