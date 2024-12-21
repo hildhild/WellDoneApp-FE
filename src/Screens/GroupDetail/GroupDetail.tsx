@@ -343,6 +343,9 @@ const GroupMember = () => {
           <Text className="text-white text-lg font-semibold">Thêm thành viên</Text>
         </Pressable>
       }
+      <View className="w-full flex-row justify-end mb-4">
+        <Text className="text-[#2C6E35] font-semibold text-lg">Tổng số: {curGroup.user.length}</Text>
+      </View>
       {
         curGroup?.user.map((mem: Member) => 
           <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.id}>
@@ -386,6 +389,9 @@ const GroupTask = () => {
         <Ionicons name="add-circle-outline" color="white" size={25}/>
         <Text className="text-white text-lg font-semibold">Thêm nhiệm vụ</Text>
       </Pressable>
+      <View className="w-full flex-row justify-end mb-4">
+        <Text className="text-[#2C6E35] font-semibold text-lg">Tổng số: 1</Text>
+      </View>
       <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8">
         <View className="flex flex-row mb-3 items-center">
           <View className="w-[15%]">
