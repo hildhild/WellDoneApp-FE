@@ -14,5 +14,4 @@ web-build/
 .DS_Store
 
 .env.local
-
 android/sentry.properties
