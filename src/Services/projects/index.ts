@@ -12,7 +12,7 @@ export interface CreateProjectRequest {
     startDate: string;
     endDate: string;
     status: string;
-    groups: GroupCreateProject[];
+    groups: number[];
   };
 }
 export interface CreateProjectResponse {
@@ -48,17 +48,17 @@ export interface GetProjectListResponse extends GetProjectList {}
 export type GetProjectList = CreateProjectResponse[];
 
 export interface GetDetailProjectRequest {
-  projectId: string;
+  projectId: number;
   token: string;
 }
 
 export interface GetDetailProjectResponse extends CreateProjectResponse {}
 export interface EditProjectRequest extends CreateProjectRequest {
-  id: string;
+  id: number;
 }
 
 export interface DeleteProjectRequest {
-  projectId: string;
+  projectId: number;
   token: string;
 }
 const projectApi = API.injectEndpoints({

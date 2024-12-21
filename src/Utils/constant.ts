@@ -295,35 +295,35 @@ export type Priority = "High" | "Medium" | "Low";
 //   progress: 10,
 // };
 
-// export const mockData: NotificationList = [
-//   {
-//     id: "1",
-//     task_code: "T001",
-//     task_name: "Research Market Trends",
-//     task_description: "Conduct research on the latest market trends.",
-//     date_time: "2024-12-18T10:00:00",
-//     project_parent_name: "Market Research Project",
-//     member: { name: "John Doe", avatar: require("assets/Switch.png") },
-//   },
-//   {
-//     id: "2",
-//     task_code: "T002",
-//     task_name: "Design Product Prototype",
-//     task_description: "Create design for the smart home product prototype.",
-//     date_time: "2024-12-19T14:00:00",
-//     project_parent_name: "Product Development",
-//     member: { name: "Jane Smith", avatar: require("assets/Switch.png") },
-//   },
-//   {
-//     id: "3",
-//     task_code: "T003",
-//     task_name: "Write Marketing Copy",
-//     task_description: "Draft marketing copy for the upcoming campaign.",
-//     date_time: "2024-12-20T09:00:00",
-//     project_parent_name: "Marketing Campaign",
-//     member: { name: "Alice Johnson", avatar: require("assets/Switch.png") },
-//   },
-// ];
+export const mockData: NotificationList = [
+  {
+    id: "1",
+    task_code: "T001",
+    task_name: "Research Market Trends",
+    task_description: "Conduct research on the latest market trends.",
+    date_time: "2024-12-18T10:00:00",
+    project_parent_name: "Market Research Project",
+    member: { name: "John Doe", avatar: require("assets/Switch.png") },
+  },
+  {
+    id: "2",
+    task_code: "T002",
+    task_name: "Design Product Prototype",
+    task_description: "Create design for the smart home product prototype.",
+    date_time: "2024-12-19T14:00:00",
+    project_parent_name: "Product Development",
+    member: { name: "Jane Smith", avatar: require("assets/Switch.png") },
+  },
+  {
+    id: "3",
+    task_code: "T003",
+    task_name: "Write Marketing Copy",
+    task_description: "Draft marketing copy for the upcoming campaign.",
+    date_time: "2024-12-20T09:00:00",
+    project_parent_name: "Marketing Campaign",
+    member: { name: "Alice Johnson", avatar: require("assets/Switch.png") },
+  },
+];
 
 // export const ProjectList: IProjectList = [
 //   {

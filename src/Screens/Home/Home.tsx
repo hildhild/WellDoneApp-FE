@@ -1,6 +1,8 @@
+import Avatar from "@/Components/Avatar";
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
-import { GetDetailProjectResponse } from "@/Services/projects";
+import { CreateProjectResponse } from "@/Services/projects";
+import { RootState } from "@/Store";
 import { setProjectId } from "@/Store/reducers";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
@@ -12,20 +14,16 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useDispatch, useSelector } from "react-redux";
 import { RootScreens } from "..";
 import FeedItemContainer from "./FeedItem/FeedItemContainer";
-import { RootState } from "@/Store";
-import Avatar from "@/Components/Avatar";
 
 export interface IHomeProps {
   onNavigate: (screen: RootScreens) => void;
-  data: GetDetailProjectResponse | undefined;
+  data: CreateProjectResponse | undefined;
   isLoading: boolean;
 }
 
 export const Home = (props: IHomeProps) => {
   const { data, isLoading, onNavigate } = props;
-  const flatGroupsList = data?.groups
-    .map((group) => group.name)
-    .join(",");
+  const flatGroupsList = data?.groups.map((group) => group.name).join(", ");
   const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.profile.name);
   return (
@@ -51,9 +49,7 @@ export const Home = (props: IHomeProps) => {
               </Text>
             </View>
 
-            <TouchableOpacity
-              onPress={() => onNavigate(RootScreens.ACCOUNT)}
-            >
+            <TouchableOpacity onPress={() => onNavigate(RootScreens.ACCOUNT)}>
               <Avatar name={name} width={70} height={70} />
             </TouchableOpacity>
           </View>

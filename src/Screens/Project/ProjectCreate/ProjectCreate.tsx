@@ -45,10 +45,10 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
     formState: { errors },
   } = useForm<ProjectCreateForm>();
   const [open, setOpen] = useState(false);
-  const [statusValue, setStatusValue] = useState<Status>(StatusType.NEW as Status);
+  const [statusValue, setStatusValue] = useState<Status>(StatusType.NOT_STARTED as Status);
   const [timeHours, setTimeHours] = useState<number>(0);
   const [items, setItems] = useState([
-    { label: generateStatusText(StatusType.NEW), value: StatusType.NEW },
+    { label: generateStatusText(StatusType.NOT_STARTED), value: StatusType.NOT_STARTED },
     {
       label: generateStatusText(StatusType.IN_PROGRESS),
       value: StatusType.IN_PROGRESS,
