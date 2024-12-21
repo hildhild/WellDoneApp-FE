@@ -1,7 +1,7 @@
 import { RootStackParamList } from "@/Navigation";
 import { ErrorHandle, useLogInMutation } from "@/Services";
-import { useGetProfileMutation } from "@/Services/profile";
-import { setGroupList, setProfile, setToken } from "@/Store/reducers";
+import { useGetProfileMutation, useGetUserListMutation } from "@/Services/profile";
+import { setGroupList, setProfile, setToken, setUserList } from "@/Store/reducers";
 import {
   renderErrorMessageResponse,
   renderSuccessMessageResponse,
@@ -28,6 +28,7 @@ type LogInScreenNavigatorProps = NativeStackScreenProps<
 const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [logIn, { isLoading, isError, error }] = useLogInMutation();
   const [getProfile] = useGetProfileMutation();
+  const [getUserList] = useGetUserListMutation();
   const [getGroups] = useGetGroupsMutation();
   const dispatch = useDispatch();
   const onNavigate = (screen: RootScreens) => {
@@ -73,12 +74,20 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         } else {
           Toast.error("Lỗi")
         }
+        const userListRes = await getUserList(
+          response.access_token
+        ).unwrap();
+        if (Array.isArray(userListRes)) {
+          dispatch(
+            setUserList(userListRes)
+          );
+        }
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as ErrorHandle;
         Toast.error(
-          renderErrorMessageResponse(String(errorData.data.message)),
+          String(errorData.data.message),
           "top"
         );
       }

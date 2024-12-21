@@ -20,7 +20,7 @@ import {
   LineChart,
 } from "react-native-chart-kit";
 import { current } from "@reduxjs/toolkit";
-import { User } from "@/Services/group";
+import { Member, User } from "@/Services/group";
 
 
 
@@ -92,7 +92,7 @@ const GroupGeneral = () => {
 const GroupMember = () => {
   const curGroup = useSelector((state: any) => state.group.curGroup);
   const [isViewInfo, setIsViewInfo] = useState<boolean>(false);
-  const [curMember, setCurMember] = useState<User>(null);
+  const [curMember, setCurMember] = useState<Member | null>(null);
 
   return (
     <ScrollView className="w-full h-full">
@@ -111,7 +111,7 @@ const GroupMember = () => {
               <TextInput
                 editable={false}
                 className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-                value={curMember?.name}
+                value={curMember?.user.name}
               />
               <Text className="mb-2 font-semibold text-neutral-500 text-lg">Vai trò</Text>
               <TextInput
@@ -123,13 +123,13 @@ const GroupMember = () => {
               <TextInput
                 editable={false}
                 className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-                value={curMember?.dateofbirth ? new Date(curMember.dateofbirth).toLocaleDateString() : ""}
+                value={curMember?.user.dateofbirth ? new Date(curMember.user.dateofbirth).toLocaleDateString() : ""}
               />
               <Text className="mb-2 font-semibold text-neutral-500 text-lg">Email</Text>
               <TextInput
                 editable={false}
                 className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-                value={curMember?.email}
+                value={curMember?.user.email}
               />
             </View>
             
@@ -146,8 +146,8 @@ const GroupMember = () => {
         <Text className="text-white text-lg font-semibold">Mời thành viên</Text>
       </Pressable>
       {
-        curGroup?.user.map((mem: User) => 
-          <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.id}>
+        curGroup?.user.map((mem: Member) => 
+          <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.user.id}>
             <View className="flex flex-row mb-3 items-center">
               <View className="w-[15%]">
                 <Image
@@ -156,7 +156,7 @@ const GroupMember = () => {
                 />
               </View>
               <View className="w-[85%]">
-                <Text className="text-lg font-bold text-[#30411A]">{mem.name}</Text>
+                <Text className="text-lg font-bold text-[#30411A]">{mem.user.name}</Text>
                 <Text className=" text-[#30411A]">{mem.role}</Text>
               </View>
             </View>
@@ -166,7 +166,7 @@ const GroupMember = () => {
                 <Text className="text-[#fff] font-semibold">Xem thông tin</Text>
               </Pressable>
               {
-                curGroup.role === "Leader"
+                curGroup.role === "Leader" && mem.role !== "Leader"
                 &&
                 <Pressable className="w-[10%] flex justify-center items-center">
                   <Icon name="trash" color="red" size={30}/>

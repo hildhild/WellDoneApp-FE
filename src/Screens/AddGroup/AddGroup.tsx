@@ -8,12 +8,13 @@ import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useChangePasswordMutation, useUpdateProfileMutation } from "@/Services/profile";
-import { removeToken, setProfile } from "@/Store/reducers";
+import { removeToken, setGroupList, setProfile } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { TextInput } from "react-native";
 import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 
 const data = [
   { label: 'Item 1', value: '1' },
@@ -31,121 +32,128 @@ export const AddGroup = (props: {
   onNavigate: (string: RootScreens) => void;
 }) => {
   const navigation = useNavigation();
-  const [editable, setEditable] = useState<boolean>(false);
-  const [isChangePassword, setIsChangePassword] = useState<boolean>(false);
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-  const profile = useSelector((state: any) => state.profile);
-  const [profileData, setProfileData] = useState<{name: string, dateOfBirth: Date, email: string}>({
-    name: profile.name,
-    dateOfBirth: new Date(profile.dateOfBirth),
-    email: profile.email
-  });
-  const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
-  const [updateProfile] = useUpdateProfileMutation();
-  const [changePassword] = useChangePasswordMutation();
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
-  const [changePasswordData, setChangePasswordData] = useState<{curPassword: string, newPassword: string, rePassword: string}>({
-    curPassword: "",
-    newPassword: "",
-    rePassword: ""
-  })
-  const [value, setValue] = useState<string | null>(null);
+  const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>([]);
+  const [groupData, setGroupData] = useState<{name: string, description: string}>({
+    name: "",
+    description: ""
+  });
+  const userList = useSelector((state: any) => state.userList.userList).map((user: User) => {
+    return {
+      label: user.name,
+      value: user.id
+    };
+  });
+  const [addGroupApi] = useAddGroupMutation();
+  const [getGroups] = useGetGroupsMutation();
 
 
-  const handleEditProfile = async () => {
-    if (editable){
-      try {
-        const response = await updateProfile({
-          data: {
-            name: profileData.name,
-            dateofbirth: profileData.dateOfBirth.toISOString(),
-          },
-          token: accessToken
-        }).unwrap();
-        if ("name" in response) {
-          Toast.success("Chỉnh sửa thành công")
-          dispatch(setProfile({name: profileData.name, dateOfBirth: profileData.dateOfBirth.toISOString(), email: profileData.email}));
-          setEditable(false);
-        }
-      } catch (err) {
-        if (err && typeof err === "object" && "data" in err) {
-          const errorData = err as ErrorHandle;
-          Toast.error(
-            renderErrorMessageResponse(String(errorData.data.message)),
-            "top"
+  // const handleEditProfile = async () => {
+  //   if (editable){
+  //     try {
+  //       const response = await updateProfile({
+  //         data: {
+  //           name: profileData.name,
+  //           dateofbirth: profileData.dateOfBirth.toISOString(),
+  //         },
+  //         token: accessToken
+  //       }).unwrap();
+  //       if ("name" in response) {
+  //         Toast.success("Chỉnh sửa thành công")
+  //         dispatch(setProfile({name: profileData.name, dateOfBirth: profileData.dateOfBirth.toISOString(), email: profileData.email}));
+  //         setEditable(false);
+  //       }
+  //     } catch (err) {
+  //       if (err && typeof err === "object" && "data" in err) {
+  //         const errorData = err as ErrorHandle;
+  //         Toast.error(
+  //           renderErrorMessageResponse(String(errorData.data.message)),
+  //           "top"
+  //         );
+  //       }
+  //     }
+  //   } else {
+  //     setEditable(true);
+  //   }
+  // }
+
+  // const handleChangePassword = async () => {
+  //   if (isChangePassword) {
+  //     if (changePasswordData.rePassword !== changePasswordData.newPassword){
+  //       Toast.error("Mật khẩu không khớp");
+  //     } else {
+  //       try {
+  //         const response = await changePassword({
+  //           data: {
+  //             password: changePasswordData.curPassword,
+  //             newPassword: changePasswordData.newPassword,
+  //           },
+  //           token: accessToken
+  //         }).unwrap();
+  //         if (response === null || response === undefined){
+  //           Toast.success("Đổi thành công, vui lòng đăng nhập lại")
+  //           setEditable(false);
+  //           dispatch(removeToken());
+  //           props.onNavigate(RootScreens.LOGIN);
+  //         }
+  //       } catch (err) {
+  //         if (err && typeof err === "object" && "data" in err) {
+  //           const errorData = err as ErrorHandle;
+  //           Toast.error(
+  //             renderErrorMessageResponse(String(errorData.data.message)),
+  //             "top"
+  //           );
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     setIsChangePassword(true);
+  //   }
+  // }
+  const handleCreateGroup = async () => {
+    try {
+      const response = await addGroupApi({
+        data: {
+          name: groupData.name,
+          description: groupData.description,
+          list_user_members: userList.map((user: any) => user.id)
+        },
+        token: accessToken
+      }).unwrap();
+      if ("name" in response) {
+        navigation.goBack()
+        Toast.success("Thêm thành công")
+        const groupsResponse = await getGroups(
+          accessToken
+        ).unwrap();
+        if (Array.isArray(groupsResponse)) {
+          dispatch(
+            setGroupList(groupsResponse)
           );
         }
-      }
-    } else {
-      setEditable(true);
-    }
-  }
-
-  const handleChangePassword = async () => {
-    if (isChangePassword) {
-      if (changePasswordData.rePassword !== changePasswordData.newPassword){
-        Toast.error("Mật khẩu không khớp");
-      } else {
-        try {
-          const response = await changePassword({
-            data: {
-              password: changePasswordData.curPassword,
-              newPassword: changePasswordData.newPassword,
-            },
-            token: accessToken
-          }).unwrap();
-          if (response === null || response === undefined){
-            Toast.success("Đổi thành công, vui lòng đăng nhập lại")
-            setEditable(false);
-            dispatch(removeToken());
-            props.onNavigate(RootScreens.LOGIN);
-          }
-        } catch (err) {
-          if (err && typeof err === "object" && "data" in err) {
-            const errorData = err as ErrorHandle;
-            Toast.error(
-              renderErrorMessageResponse(String(errorData.data.message)),
-              "top"
-            );
-          }
+        else if (groupsResponse.message === "Group not found") {
+          dispatch(
+            setGroupList([])
+          );
+        } else {
+          Toast.error("Lỗi")
         }
       }
-    } else {
-      setIsChangePassword(true);
+    } catch (err) {
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          String(errorData.data.message),
+          "top"
+        );
+      }
     }
   }
 
-  const handleChangeDateOfBirth = (event: any, selectedDate: Date) => {
-    if (selectedDate) {
-      setProfileData({...profileData, dateOfBirth: selectedDate}); 
-    }
-  };
 
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={openDatePicker}
-        >
-        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
-          <View className="bg-white w-[90%] py-3">
-            <DateTimePicker
-              value={profileData.dateOfBirth}
-              mode="date" 
-              display="spinner"
-              onChange={handleChangeDateOfBirth}
-              themeVariant="light"
-            />
-            <View className="w-full flex justify-center items-center">
-              <Button className="!rounded-full !bg-lime-300" onPress={()=>setOpenDatePicker(false)}>
-                <Text className="text-black font-semibold">Xong</Text>
-              </Button>
-            </View>
-          </View>
-        </View>
-      </Modal>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Thêm nhóm</Text>
       </View>
@@ -160,8 +168,8 @@ export const AddGroup = (props: {
             editable
             placeholder="Nhập tên nhóm"
             className=" text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-            // value={changePasswordData.newPassword}
-            // onChangeText={(newPassword) => setChangePasswordData({...changePasswordData, newPassword: newPassword})}
+            value={groupData.name}
+            onChangeText={(name) => setGroupData({...groupData, name: name})}
           />
           <Text className="mb-2 font-semibold text-neutral-500 text-lg">Mô tả nhóm</Text>
           <TextInput
@@ -169,8 +177,8 @@ export const AddGroup = (props: {
             placeholder="Nhập mô tả nhóm"
             multiline
             className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-            // value={changePasswordData.newPassword}
-            // onChangeText={(newPassword) => setChangePasswordData({...changePasswordData, newPassword: newPassword})}
+            value={groupData.description}
+            onChangeText={(description) => setGroupData({...groupData, description: description})}
           />
         </View>
         <View>
@@ -181,33 +189,36 @@ export const AddGroup = (props: {
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
             iconStyle={styles.iconStyle}
-            data={data}
+            data={userList}
             search
             maxHeight={300}
             labelField="label"
             valueField="value"
             placeholder="Chọn thành viên"
             searchPlaceholder="Tìm kiếm..."
-            value={value}
             onChange={item => {
-              setValue(item.value);
+              setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
             }}
             renderLeftIcon={() => (
               <Icon color="black" name="search" size={15} />
             )}
           />
-          <View className="flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
-            <Text className="font-semibold">Lisa Blackpink</Text>
-            <View className="flex-row gap-3 items-center">
-              <View className="rounded-full p-2 bg-lime-200">
-                <Text className="text-xs text-lime-800 font-semibold">Thành viên</Text>
+          {
+            selectedUsers.map((user: any) => 
+              <View key={user.id} className="flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
+                <Text className="font-semibold">{user.name}</Text>
+                <View className="flex-row gap-3 items-center">
+                  <View className="rounded-full p-2 bg-lime-200">
+                    <Text className="text-xs text-lime-800 font-semibold">Thành viên</Text>
+                  </View>
+                  <Pressable onPress={() => setSelectedUsers((prevUsers) => prevUsers.filter((userItem) => userItem.id !== user.id))}>
+                    <Icon name="trash" size={20}/>
+                  </Pressable>
+                </View>
               </View>
-              <Pressable>
-                <Icon name="trash" size={20}/>
-              </Pressable>
-            </View>
-          </View>
-          <Pressable className="mt-5 w-full flex justify-center items-center bg-lime-600 p-3 rounded-xl"><Text className="text-white text-lg font-semibold">Xác nhận</Text></Pressable>
+            )
+          }
+          <Pressable className="mt-5 w-full flex justify-center items-center bg-lime-600 p-3 rounded-xl" onPress={handleCreateGroup}><Text className="text-white text-lg font-semibold">Xác nhận</Text></Pressable>
         </View>
 
       </ScrollView>

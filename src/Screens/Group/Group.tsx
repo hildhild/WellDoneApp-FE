@@ -1,6 +1,6 @@
 import { i18n, LocalizationKey } from "@/Localization";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable, Modal, TextInput } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal, TextInput, Platform, Keyboard } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { HStack, Spinner, Heading, Button } from "native-base";
 import { ErrorHandle, User } from "@/Services";
@@ -70,7 +70,7 @@ export const Group = (props: IGroupProps) => {
         token: accessToken,
         groupId: groupGeneral.id
       }).unwrap();
-      if (!res) {
+      if ("id" in res) {
         Toast.success("Chỉnh sửa thành công");
         setEditGroup(false);
         setRefect(!refetch);
@@ -130,7 +130,7 @@ export const Group = (props: IGroupProps) => {
             transparent={true}
             visible={editGroup}
             >
-            <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
+            <Pressable className="flex justify-center items-center w-full h-full bg-[#00000090]" onPress={() => Keyboard.dismiss()}>
               <View className="bg-white w-[90%] p-4 rounded-2xl">
                 <View className="w-full flex-row justify-center mb-3">
                   <Text className="font-bold text-2xl">Chỉnh sửa nhóm</Text>
@@ -164,7 +164,7 @@ export const Group = (props: IGroupProps) => {
                   </Pressable>
                 </View>
               </View>
-            </View>
+            </Pressable>
           </Modal>
           <Modal
             animationType="fade"
@@ -219,7 +219,7 @@ export const Group = (props: IGroupProps) => {
                   <Text className="text-xl font-extralight mb-3">{group.description}</Text>
                   <View className="mb-4 flex-row">
                     {
-                      group.user.slice(0,2).map((user, index) => <Text key={user.id}>{index !== group.user.length-1 ? user.name + ", " : user.name}</Text>)
+                      group.user.slice(0,2).map((user, index) => <Text key={user.user.id}>{index !== group.user.length-1 ? user.user.name + ", " : user.user.name}</Text>)
                     }
                     {
                       group.user.length > 2

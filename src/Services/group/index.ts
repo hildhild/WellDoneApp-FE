@@ -6,9 +6,6 @@ export interface User {
   "dateofbirth": string | null,
   "email": string,
   "password": string,
-  "group_id": string | null,
-  "joined_at": string | null,
-  "role": string | null,
   "createdAt": string,
   "updatedAt": string,
   "isActive": boolean,
@@ -20,6 +17,11 @@ export interface User {
   "passwordResetCodeExpiresAt": string | null
 }
 
+export interface Member {
+  user: User,
+  role: string
+}
+
 export interface Group {
   id: number,
   role: string,
@@ -27,7 +29,7 @@ export interface Group {
   description: string | null,
   createdAt: string,
   updatedAt: string,
-  user: User[]
+  user: Member []
 }
 
 export interface Response {
@@ -65,6 +67,36 @@ export interface UpdateGroupRequest {
   groupId: number
 }
 
+export interface UpdateGroupResponse {
+  "id": number,
+  "name": string,
+  "createdAt": string,
+  "updatedAt": string,
+  "description": string,
+  "user_id_create": number,
+  "projectId": number | null,
+  "project": number | null
+}
+
+export interface AddGroupRequest {
+  data: {
+    name: string,
+    description: string,
+    list_user_members: number[]
+  },
+  token: string,
+}
+
+export interface AddGroupResponse {
+  "name": string,
+  "description": string,
+  "user_id_create": number,
+  "projectId": number | null,
+  "id": number,
+  "createdAt": string,
+  "updatedAt": string
+}
+
 export interface ChangePasswordResponse {}
 
 export interface DeleteGroupRequest {
@@ -83,13 +115,23 @@ const groupApi = API.injectEndpoints({
         },
       }),
     }),
-    updateGroup: build.mutation<undefined | ErrorResponse, UpdateGroupRequest>({
+    updateGroup: build.mutation<UpdateGroupResponse | ErrorResponse, UpdateGroupRequest>({
       query: (updateData) => ({
         url: `/groups/${updateData.groupId}`,
         method: "PATCH",
         body: updateData.data,
         headers: {
           Authorization: `Bearer ${updateData.token}`,
+        },
+      }),
+    }),
+    addGroup: build.mutation<AddGroupResponse | ErrorResponse, AddGroupRequest>({
+      query: (addData) => ({
+        url: `/groups`,
+        method: "POST",
+        body: addData.data,
+        headers: {
+          Authorization: `Bearer ${addData.token}`,
         },
       }),
     }),
@@ -109,5 +151,6 @@ const groupApi = API.injectEndpoints({
 export const {
   useGetGroupsMutation,
   useUpdateGroupMutation,
-  useDeleteGroupMutation
+  useDeleteGroupMutation,
+  useAddGroupMutation
 } = groupApi;

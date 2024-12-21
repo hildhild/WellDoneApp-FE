@@ -4,5 +4,6 @@ export * from "./user";
 export * from "./profile";
 export * from "./notification";
 export * from "./group";
+export * from "./userList";
 
 
