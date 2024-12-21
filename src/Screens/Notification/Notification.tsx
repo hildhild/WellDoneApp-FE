@@ -24,11 +24,15 @@ const Notification = (props: NotificationProps) => {
   const [highlightedId, setHighlightedId] = useState<string | null>("");
   const highlightAnimation = new Animated.Value(1);
   useEffect(() => {
-    setNotifications(mockData);
-    if (id) {
-      setHighlightedId(id);
-      startHighlightAnimation();
-    }
+    const fetchNotifications = async () => {
+      //const mockData = await getNotification()
+      setNotifications(mockData);
+      if (id) {
+        setHighlightedId(id);
+        startHighlightAnimation();
+      }
+    };
+    fetchNotifications();
   }, [highlightedId]);
 
   const startHighlightAnimation = () => {
@@ -36,12 +40,12 @@ const Notification = (props: NotificationProps) => {
     Animated.sequence([
       Animated.timing(highlightAnimation, {
         toValue: 1.3,
-        duration: 500,
+        duration: 300,
         useNativeDriver: true,
       }),
       Animated.timing(highlightAnimation, {
         toValue: 1,
-        duration: 500,
+        duration: 300,
         useNativeDriver: true,
       }),
     ]).start();

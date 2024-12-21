@@ -81,6 +81,8 @@ const config: Config = {
         "body-small-semibold": ["12px", { fontWeight: "600" }],
         "body-small-medium": ["12px", { fontWeight: "500" }],
         "body-small-regular": ["12px", { fontWeight: "400" }],
+        "caption-bold": ["10px", { fontWeight: "700" }],
+        "caption-regular": ["10px", { fontWeight: "400" }],
       },
     },
   },

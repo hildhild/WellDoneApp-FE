@@ -1,3 +1,5 @@
+
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 export const renderErrorMessageResponse = (
   responseString: string | string[]
 ) => {
@@ -45,7 +47,8 @@ export const renderErrorMessageResponse = (
     return "Nhập sai mật khẩu hiện tại";
   } else if (
     (Array.isArray(responseString) &&
-      "password must be longer than or equal to 8 characters" in responseString) ||
+      "password must be longer than or equal to 8 characters" in
+        responseString) ||
     responseString === "password must be longer than or equal to 8 characters"
   ) {
     return "Mật khẩu phải tối thiểu 8 ký tự";
@@ -60,7 +63,9 @@ export const renderErrorMessageResponse = (
   }
 };
 
-export const renderSuccessMessageResponse = (responseString = "Tác vụ thành công 🔥🌸!") => {
+export const renderSuccessMessageResponse = (
+  responseString = "Tác vụ thành công 🔥🌸!"
+) => {
   if (
     responseString ===
     "User registered successfully. Please check your email for verification code."
@@ -75,13 +80,84 @@ export const renderSuccessMessageResponse = (responseString = "Tác vụ thành 
     "If your email is registered, you will receive a password reset code."
   ) {
     return "Nếu không nhận được mã xác thực, hãy kiểm tra email đã nhập!";
-  }
-  else if (responseString === "Password reset successful")
-  {
-    return "Mật khẩu đã được thay đổi 🔥🌸"
-  }
-  
-  else {
+  } else if (responseString === "Password reset successful") {
+    return "Mật khẩu đã được thay đổi 🔥🌸";
+  } else {
     return responseString;
   }
 };
+
+import Csv from "assets/documentType/csv";
+import Defaulticon from "assets/documentType/defaulticon";
+import Doc from "assets/documentType/doc";
+import doc from "assets/documentType/doc";
+import Jpg from "assets/documentType/jpg";
+import Pdf from "assets/documentType/pdf";
+import Png from "assets/documentType/png";
+import Ppt from "assets/documentType/ppt";
+import Xls from "assets/documentType/xls";
+import Zip from "assets/documentType/zip";
+import { Text } from "react-native";
+
+export const renderStatusLabel = (status: string) => {
+  if (status === "completed") {
+    return (
+      <Text className="text-caption-bold font-medium text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
+        Hoàn thành
+      </Text>
+    );
+  } else if (status === "in_progress") {
+    return (
+      <Text className="text-caption-bold font-medium text-neutral-500 bg-secondary-200 px-2 py-1 rounded-full">
+        Đang thực hiện
+      </Text>
+    );
+  } else {
+    return (
+      <Text className="text-caption-bold font-medium text-neutral-500 bg-warning-100 px-2 py-1 rounded-full">
+        Mới
+      </Text>
+    );
+  }
+};
+
+export const renderDocumentTypeIcon = (type: string, width: number = 40, height: number = 40) => {
+  if (type === "pdf") {
+    return <Pdf width={width} height={height} />;
+  } else if (type === "doc" || type === "docx") {
+    return <Doc width={width} height={height} />;
+  } else if (type === "xls" || type === "xlsx") {
+    return <Xls width={width} height={height} />;
+  } else if (type === "ppt" || type === "pptx") {
+    return <Ppt width={width} height={height} />;
+  } else if (type === "png") {
+    return <Png width={width} height={height} />;
+  } else if (type === "zip") {
+    return <Zip width={width} height={height} />;
+  } else if (type === "csv") {
+    return <Csv width={width} height={height} />;
+  } else if (type === "jpg") {
+    return <Jpg width={width} height={height} />;
+  } else {
+    return <Defaulticon width={width} height={height} />;
+  }
+};
+
+export const renderPriorityIcon = (priority: string) => {
+  if (priority === "High") {
+    return (
+      <MaterialIcons name="keyboard-double-arrow-up" size={25} color="red" />
+    );
+  }
+  if (priority === "Medium") {
+    return (
+      <MaterialIcons name="keyboard-arrow-up" size={25} color="red" />
+    );
+  }
+  if (priority === "Low") {
+    return (
+      <MaterialIcons name="arrow-drop-up" size={25} color="green" />
+    );
+  }
+}
+

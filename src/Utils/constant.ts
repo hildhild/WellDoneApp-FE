@@ -1,5 +1,5 @@
 import { NotificationItem, NotificationList } from "@/Services/notification";
-import { ProjectDetail } from "@/Services/projects";
+import { IProjectDetail, IProjectList } from "@/Services/projects";
 
 export const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
@@ -13,110 +13,287 @@ export const PASSWORD_PATTERN =
 //   no space,
 //   and it must be at least 6 characters long
 
-export const data: ProjectDetail = {
-  id: 1,
-  name: "Green sky Website Dev",
-  members: [
+export const StatusType = {
+  COMPLETED: "completed",
+  IN_PROGRESS: "in_progress",
+  NEW: "new",
+};
+
+export type Status = "completed" | "in_progress" | "new";
+export type DocumentType =
+  | "csv"
+  | "doc"
+  | "docx"
+  | "pdf"
+  | "png"
+  | "ppt"
+  | "pptx"
+  | "xls"
+  | "xlsx"
+  | "zip"
+  | "jpg";
+export type Priority = "High" | "Medium" | "Low";
+
+export const dataa: IProjectDetail = {
+  id: "001",
+  name: "Project Phoenix",
+  groups: [
     {
-      id: 101,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "Project Manager",
-      avatar: require("assets/Switch.png"),
+      id: 21,
+      role: "Leader",
+      name: "Backend",
+      description: "Hello, this is the description",
+      createdAt: "2024-12-20T15:30:53.089Z",
+      updatedAt: "2024-12-20T15:30:53.089Z",
+      user: [
+        {
+          id: 8,
+          name: " Tt",
+          dateofbirth: null,
+          email: "lsjenny1710+1@gmail.com",
+          password:
+            "$2b$10$kZSPFAogfTWrkmY4GzhLo.KKzt4os5Mqw5fSPyS1KmJUEnZD9HT/S",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-15T13:34:41.588Z",
+          updatedAt: "2024-12-15T14:01:52.380Z",
+          isActive: true,
+          isEmailVerified: true,
+          verificationCode: null,
+          verificationCodeExpiresAt: null,
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+      ],
     },
     {
-      id: 102,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      role: "Developer",
-      avatar: require("assets/Switch.png"),
+      id: 22,
+      role: "Leader",
+      name: "Backend",
+      description: "Hello, this is the description",
+      createdAt: "2024-12-20T15:33:05.612Z",
+      updatedAt: "2024-12-20T15:33:05.612Z",
+      user: [
+        {
+          id: 8,
+          name: " Tt",
+          dateofbirth: null,
+          email: "lsjenny1710+1@gmail.com",
+          password:
+            "$2b$10$kZSPFAogfTWrkmY4GzhLo.KKzt4os5Mqw5fSPyS1KmJUEnZD9HT/S",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-15T13:34:41.588Z",
+          updatedAt: "2024-12-15T14:01:52.380Z",
+          isActive: true,
+          isEmailVerified: true,
+          verificationCode: null,
+          verificationCodeExpiresAt: null,
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+      ],
     },
     {
-      id: 103,
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      role: "Designer",
-      avatar: require("assets/Switch.png"),
+      id: 24,
+      role: "Leader",
+      name: "Backend",
+      description: "Hello, this is the description",
+      createdAt: "2024-12-20T15:34:38.485Z",
+      updatedAt: "2024-12-20T15:34:38.485Z",
+      user: [
+        {
+          id: 8,
+          name: " Tt",
+          dateofbirth: null,
+          email: "lsjenny1710+1@gmail.com",
+          password:
+            "$2b$10$kZSPFAogfTWrkmY4GzhLo.KKzt4os5Mqw5fSPyS1KmJUEnZD9HT/S",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-15T13:34:41.588Z",
+          updatedAt: "2024-12-15T14:01:52.380Z",
+          isActive: true,
+          isEmailVerified: true,
+          verificationCode: null,
+          verificationCodeExpiresAt: null,
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+        {
+          id: 2,
+          name: "Thi ne",
+          dateofbirth: null,
+          email: "lsjenny1710+200@gmail.com",
+          password:
+            "$2b$10$2RTzkFRVwu4tL9.Thr6KJOEE1JECkYfe8mFcKQJ4IVeMWL.ggMqoi",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-15T10:55:32.299Z",
+          updatedAt: "2024-12-15T10:55:47.804Z",
+          isActive: true,
+          isEmailVerified: true,
+          verificationCode: null,
+          verificationCodeExpiresAt: null,
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+        {
+          id: 3,
+          name: "Thi thi thi",
+          dateofbirth: null,
+          email: "thi.phanpham+200@hcmut.edu.vn",
+          password:
+            "$2b$10$gUGr.EoUL7vKvT0H2xQ1MuSG4qIEJaLdPRNLAfbc81ZFfKPfKSm9e",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-15T11:13:14.033Z",
+          updatedAt: "2024-12-15T11:13:14.033Z",
+          isActive: true,
+          isEmailVerified: false,
+          verificationCode: "415602",
+          verificationCodeExpiresAt: "2024-12-15T11:28:13.863Z",
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+      ],
     },
     {
-      id: 104,
-      name: "Bob Brown",
-      email: "bob.brown@example.com",
-      role: "Tester",
-      avatar: require("assets/Switch.png"),
-    },
-    {
-      id: 105,
-      name: "Charlie Davis",
-      email: "charlie.davis@example.com",
-      role: "Developer",
-      avatar: require("assets/Switch.png"),
+      id: 25,
+      role: "Leader",
+      name: "Frontend Team",
+      description: "Hello, this is the description",
+      createdAt: "2024-12-20T15:35:33.163Z",
+      updatedAt: "2024-12-20T15:35:33.163Z",
+      user: [
+        {
+          id: 8,
+          name: " Tt",
+          dateofbirth: null,
+          email: "lsjenny1710+1@gmail.com",
+          password:
+            "$2b$10$kZSPFAogfTWrkmY4GzhLo.KKzt4os5Mqw5fSPyS1KmJUEnZD9HT/S",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-15T13:34:41.588Z",
+          updatedAt: "2024-12-15T14:01:52.380Z",
+          isActive: true,
+          isEmailVerified: true,
+          verificationCode: null,
+          verificationCodeExpiresAt: null,
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+        {
+          id: 1,
+          name: "Tuan Nguyen 1",
+          dateofbirth: "2003-05-16T07:00:00.000Z",
+          email: "nguyenducanhtuan0602@gmail.com",
+          password:
+            "$2b$10$xBmGZ9waMSodhC.yQkfACu9NFkPIxH6Zo2rw1ZItDNrIJDj4SWkMS",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-11T03:43:08.432Z",
+          updatedAt: "2024-12-20T10:17:43.475Z",
+          isActive: true,
+          isEmailVerified: true,
+          verificationCode: null,
+          verificationCodeExpiresAt: null,
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+        {
+          id: 2,
+          name: "Thi ne",
+          dateofbirth: null,
+          email: "lsjenny1710+200@gmail.com",
+          password:
+            "$2b$10$2RTzkFRVwu4tL9.Thr6KJOEE1JECkYfe8mFcKQJ4IVeMWL.ggMqoi",
+          group_id: null,
+          joined_at: null,
+          role: null,
+          createdAt: "2024-12-15T10:55:32.299Z",
+          updatedAt: "2024-12-15T10:55:47.804Z",
+          isActive: true,
+          isEmailVerified: true,
+          verificationCode: null,
+          verificationCodeExpiresAt: null,
+          status: "OFFLINE",
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+        },
+      ],
     },
   ],
-  description: "A sample project to demonstrate JSON structure.",
+  description:
+    "This project aims to develop a cutting-edge e-commerce platform.",
   documents: [
     {
-      id: 201,
-      name: "Project Plan",
-      type: "PDF",
-      url: "http://example.com/project-plan.pdf",
+      id: "doc1",
+      name: "Project Overview",
+      type: "pdf",
+      url: "https://example.com/docs/project-overview.pdf",
     },
     {
-      id: 202,
-      name: "Requirements Document",
-      type: "Word",
-      url: "http://example.com/requirements.docx",
+      id: "doc2",
+      name: "System Architecture",
+      type: "pptx",
+      url: "https://example.com/docs/system-architecture.pptx",
     },
   ],
   tasks: [
     {
-      id: 301,
-      name: "Develop Feature A",
+      id: "t1",
+      name: "Setup Project Environment",
       priority: "High",
-      status: "In Progress",
-      task_code: "FA-123",
+      status: "completed",
+      task_code: "ENV-001",
       members: [
         {
-          id: 102,
-          name: "Jane Smith",
-          email: "jane.smith@example.com",
-          role: "Developer",
-          avatar: require("assets/Switch.png"),
+          id: "m1",
+          name: "Alice",
+          email: "alice@company.com",
+          role: "Lead Developer",
         },
       ],
-      description: "Develop the initial version of Feature A.",
-      task_diary: {
-        created_at: "2024-12-10T08:00:00Z",
-        last_accessed: "2024-12-15T14:30:00Z",
-      },
-      comments: [
+      sum_hours: 25,
+    },
+    {
+      id: "t2",
+      name: "Design Homepage",
+      priority: "Medium",
+      status: "in_progress",
+      task_code: "FEAT-002",
+      members: [
         {
-          id: 401,
-          message: "Task started, initial setup completed.",
-          poster_id: 102,
-          poster_name: "Jane Smith",
-          created_at: "2024-12-10T09:00:00Z",
-          replies: [
-            {
-              id: 501,
-              message: "Good progress, keep going!",
-              poster_id: 101,
-              poster_name: "John Doe",
-              created_at: "2024-12-11T10:00:00Z",
-            },
-          ],
-        },
-        {
-          id: 402,
-          message: "Feature A implemented, testing next.",
-          poster_id: 102,
-          poster_name: "Jane Smith",
-          created_at: "2024-12-14T16:00:00Z",
-          replies: [],
+          id: "m4",
+          name: "Diana",
+          email: "diana@company.com",
+          role: "UI/UX Designer",
         },
       ],
+      sum_hours: 40,
     },
   ],
+  status: "in_progress",
+  sum_hours: 65,
+  start_date: "2023-06-01",
+  end_date: "2024-06-01",
+  progress: 10,
 };
 
 export const mockData: NotificationList = [
@@ -146,5 +323,94 @@ export const mockData: NotificationList = [
     date_time: "2024-12-20T09:00:00",
     project_parent_name: "Marketing Campaign",
     member: { name: "Alice Johnson", avatar: require("assets/Switch.png") },
+  },
+];
+
+export const ProjectList: IProjectList = [
+  {
+    id: "p1",
+    name: "Project Alpha",
+    start_date: "2023-01-15",
+    end_date: "2023-12-15",
+    status: "completed",
+    description:
+      "A project focused on building an internal tool for project management.",
+    progress: 100,
+    sum_hours_until_now: 320,
+    members: [
+      {
+        id: "m1",
+        name: "Alice",
+        email: "alice@company.com",
+        role: "Project Manager",
+      },
+      {
+        id: "m2",
+        name: "Bob",
+        email: "bob@company.com",
+        role: "Developer",
+      },
+      {
+        id: "m3",
+        name: "Charlie",
+        email: "charlie@company.com",
+        role: "QA Engineer",
+      },
+    ],
+  },
+  {
+    id: "p2",
+    name: "Project Beta",
+    start_date: "2023-03-01",
+    end_date: "2024-03-01",
+    status: "in_progress",
+    description:
+      "A new e-commerce platform that aims to provide a seamless shopping experience.",
+    progress: 60,
+    sum_hours_until_now: 150,
+    members: [
+      {
+        id: "m4",
+        name: "David",
+        email: "david@company.com",
+        role: "Backend Developer",
+      },
+      {
+        id: "m5",
+        name: "Eve",
+        email: "eve@company.com",
+        role: "Frontend Developer",
+      },
+      {
+        id: "m6",
+        name: "Frank",
+        email: "frank@company.com",
+        role: "UI/UX Designer",
+      },
+    ],
+  },
+  {
+    id: "p3",
+    name: "Project Gamma",
+    start_date: "2023-06-01",
+    end_date: "2024-06-01",
+    status: "new",
+    description: "A platform for collaborative learning and online courses.",
+    progress: 5,
+    sum_hours_until_now: 25,
+    members: [
+      {
+        id: "m7",
+        name: "Grace",
+        email: "grace@company.com",
+        role: "Product Owner",
+      },
+      {
+        id: "m8",
+        name: "Helen",
+        email: "helen@company.com",
+        role: "Content Specialist",
+      },
+    ],
   },
 ];

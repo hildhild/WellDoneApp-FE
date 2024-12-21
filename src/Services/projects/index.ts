@@ -1,83 +1,132 @@
+import { ProjectEditForm } from "@/Screens/Project/ProjectEdit/ProjectEditContainer";
 import { API } from "..";
+import { DocumentType, Priority, Status } from "@/Utils/constant";
+import { Group } from "../group";
 
-export interface GetDetailProjectResponse extends ProjectDetail {}
+export interface CheckRoleRequest {
+  user_token: string;
+  project_id: string;
+}
+
+export interface GetGroupsResponse {
+  id: string;
+  name: string;
+}
+export interface EditProjectRequest extends ProjectEditForm {}
+
+export interface GetDetailProjectResponse extends IProjectDetail {}
+
+export interface GetProjectListRequest {
+  userId: string;
+  searchProjectNameQuery?: string;
+}
 export interface GetDetailProjectRequest {
-  projectId: number;
+  projectId: string;
   getRecentProject?: boolean;
 }
-export interface ProjectDetail {
-  id: number;
+export type IProjectList = IProjectListItem[];
+
+export interface IProjectListItem {
+  id: string;
   name: string;
+  start_date: string;
+  end_date: string;
+  status: Status;
+  description: string;
+  progress: number;
+  sum_hours_until_now: number;
   members: ProjectMember[];
+}
+
+export type GetProjectListResponse = IProjectList;
+export interface IProjectDetail {
+  id: string;
+  name: string;
+  groups: Group[];
   description: string;
   documents: ProjectDocument[];
   tasks: ProjectTask[];
+  status: Status;
+  sum_hours: number;
+  start_date: string;
+  end_date: string;
+  progress: number;
 }
-
+export interface ProjectGroups {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+  user: ProjectMember[];
+}
 export interface ProjectMember {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: string;
-  avatar: string;
 }
 
 export interface ProjectDocument {
-  id: number;
+  id: string;
   name: string;
-  type: string;
+  type: DocumentType;
   url: string;
 }
 
 export interface ProjectTask {
-  id: number;
+  id: string;
   name: string;
-  priority: string;
-  status: string;
+  priority: Priority;
+  status: Status;
   task_code: string;
   members: TaskMember[];
-  description: string;
-  task_diary: TaskDiary;
-  comments: TaskComment[];
+  sum_hours: number;
 }
 
 export interface TaskMember extends ProjectMember {}
 
-export interface TaskDiary {
-  created_at: string;
-  last_accessed: string;
-}
-
-export interface TaskComment {
-  id: number;
-  message: string;
-  poster_id: number;
-  poster_name: string;
-  created_at: string;
-  replies: TaskCommentReply[];
-}
-
-export interface TaskCommentReply {
-  id: number;
-  message: string;
-  poster_id: number;
-  poster_name: string;
-  created_at: string;
-}
-
 const projectApi = API.injectEndpoints({
   endpoints: (build) => ({
+    getProjectList: build.mutation<
+      GetProjectListResponse,
+      GetProjectListRequest
+    >({
+      query: (projectListData) => ({
+        url: "/projects/",
+        method: "POST",
+        body: projectListData,
+      }),
+    }),
     getDetailProject: build.mutation<
       GetDetailProjectResponse,
       GetDetailProjectRequest
     >({
       query: (detailProjectData) => ({
-        url: "/projects/",
+        url: "/projects/project/",
         method: "POST",
         body: detailProjectData,
+      }),
+    }),
+    deleteProject: build.mutation<boolean, string>({
+      query: (projectId) => ({
+        url: "/projects/" + projectId,
+        method: "DELETE",
+      }),
+    }),
+    editProject: build.mutation<boolean, EditProjectRequest>({
+      query: (projectData) => ({
+        url: "/projects/",
+        method: "PUT",
+        body: projectData,
       }),
     }),
   }),
 });
 
-export const { useGetDetailProjectMutation } = projectApi;
+export const {
+  useGetDetailProjectMutation,
+  useGetProjectListMutation,
+  useDeleteProjectMutation,
+  useEditProjectMutation,
+} = projectApi;

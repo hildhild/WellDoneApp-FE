@@ -25,6 +25,9 @@ import { MainNavigator } from "./Main";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import NotificationContainer from "@/Screens/Notification/NotificationContainer";
+import ProjectDetailContainer from "@/Screens/Project/ProjectDetail/ProjectDetailContainer";
+import ProjectEditContainer from "@/Screens/Project/ProjectEdit/ProjectEditContainer";
+import ProjectCreateContainer from "@/Screens/Project/ProjectCreate/ProjectCreateContainer";
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
@@ -39,8 +42,11 @@ export type RootStackParamList = {
   [RootScreens.VERIFY_MAIL]: undefined;
   [RootScreens.ACCOUNT]: undefined;
   [RootScreens.NOTIFICATION]: undefined;
+  [RootScreens.PROJECTDETAIL]: undefined;
+  [RootScreens.PROJECTEDIT]: undefined;
   [RootScreens.GROUP_DETAIL]: undefined;
   [RootScreens.ADD_GROUP]: undefined;
+  [RootScreens.PROJECTCREATE]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -55,8 +61,9 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 // @refresh reset
 const ApplicationNavigator = () => {
-  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean>(false);
-  const accessToken = useSelector((state: any) => state.profile.token)
+  const [isOnboardingCompleted, setIsOnboardingCompleted] =
+    useState<boolean>(false);
+  const accessToken = useSelector((state: any) => state.profile.token);
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -74,11 +81,15 @@ const ApplicationNavigator = () => {
       <StatusBar />
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={isOnboardingCompleted ? RootScreens.ONBOARDING3 : accessToken ? RootScreens.MAIN : RootScreens.ONBOARDING1}
+        initialRouteName={
+          isOnboardingCompleted
+            ? RootScreens.ONBOARDING3
+            : accessToken
+            ? RootScreens.MAIN
+            : RootScreens.ONBOARDING1
+        }
       >
-        {
-          !isOnboardingCompleted 
-          &&
+        {!isOnboardingCompleted && (
           <>
             <RootStack.Screen
               name={RootScreens.ONBOARDING1}
@@ -89,8 +100,8 @@ const ApplicationNavigator = () => {
               component={Onboarding2Container}
             />
           </>
-        }
-        
+        )}
+
         <RootStack.Screen
           name={RootScreens.ONBOARDING3}
           component={Onboarding3Container}
@@ -136,6 +147,15 @@ const ApplicationNavigator = () => {
           options={{}}
         />
         <RootStack.Screen
+          name={RootScreens.PROJECTDETAIL}
+          component={ProjectDetailContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.PROJECTEDIT}
+          component={ProjectEditContainer}
+        />
+        <RootStack.Screen
           name={RootScreens.GROUP_DETAIL}
           component={GroupDetailContainer}
           options={{}}
@@ -145,10 +165,14 @@ const ApplicationNavigator = () => {
           component={AddGroupContainer}
           options={{}}
         />
+        <RootStack.Screen
+          name={RootScreens.PROJECTCREATE}
+          component={ProjectCreateContainer}
+          options={{}}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );
 };
 
 export { ApplicationNavigator };
-
