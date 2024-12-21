@@ -13,6 +13,7 @@ import { TextInput } from "react-native";
 import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
+import { LoadingProcess } from "@/Components";
 
 
 export const AddGroup = (props: {
@@ -32,8 +33,8 @@ export const AddGroup = (props: {
       value: user.id
     };
   });
-  const [addGroupApi] = useAddGroupMutation();
-  const [getGroups] = useGetGroupsMutation();
+  const [addGroupApi, {isLoading: addLoading}] = useAddGroupMutation();
+  const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
 
   const handleCreateGroup = async () => {
     try {
@@ -46,8 +47,7 @@ export const AddGroup = (props: {
         token: accessToken
       }).unwrap();
       if ("id" in response) {
-        navigation.goBack()
-        Toast.success("Thêm thành công")
+        Toast.success("Thêm thành công");
         const groupsResponse = await getGroups(
           accessToken
         ).unwrap();
@@ -55,6 +55,7 @@ export const AddGroup = (props: {
           dispatch(
             setGroupList(groupsResponse)
           );
+          navigation.goBack();
         }
         else if (groupsResponse.message === "Group not found") {
           dispatch(
@@ -78,6 +79,7 @@ export const AddGroup = (props: {
 
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <LoadingProcess isVisible={addLoading || getLoading}/>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Thêm nhóm</Text>
       </View>

@@ -7,7 +7,7 @@ import { ErrorHandle, User } from "@/Services";
 import { RootScreens } from "..";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Image } from "react-native";
-import { AvatarRow } from "@/Components";
+import { AvatarRow, LoadingProcess } from "@/Components";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Store";
 import { Group as GroupType, useDeleteGroupMutation, useGetGroupsMutation, useUpdateGroupMutation } from "@/Services/group";
@@ -28,11 +28,12 @@ export const Group = (props: IGroupProps) => {
     name: "",
     description: ""
   });
-  const [updateGroupApi] = useUpdateGroupMutation();
-  const [deleteGroupApi] = useDeleteGroupMutation();
+  const [updateGroupApi, { isLoading: updateLoading }] = useUpdateGroupMutation();
+  const [getGroups, { isLoading: getLoading }] = useGetGroupsMutation();
+  const [deleteGroupApi, {isLoading: deleteLoading}] = useDeleteGroupMutation();
   const accessToken = useSelector((state: RootState) => state.profile.token);
-  const [getGroups] = useGetGroupsMutation();
   const dispatch = useDispatch();
+  const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
   const getGroupList = async () => {
     const groupsResponse = await getGroups(
@@ -53,11 +54,16 @@ export const Group = (props: IGroupProps) => {
   }
 
   useEffect(() => {
-    getGroupList();
+    if (isInitialRender) {
+      setIsInitialRender(false); 
+    } else {
+      getGroupList();
+    }
   }, [refetch])
 
 
   const handleEditGroup = async () => {
+    setEditGroup(false);
     try {
       const res = await updateGroupApi({
         data: {
@@ -68,12 +74,12 @@ export const Group = (props: IGroupProps) => {
         groupId: groupGeneral.id
       }).unwrap();
       if ("id" in res) {
-        Toast.success("Chỉnh sửa thành công");
-        setEditGroup(false);
         setRefect(!refetch);
+        Toast.success("Chỉnh sửa thành công");
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
+        setEditGroup(true);
         const errorData = err as ErrorHandle;
         Toast.error(
           String(errorData.data.message),
@@ -84,15 +90,15 @@ export const Group = (props: IGroupProps) => {
   }
 
   const handleDeleteGroup = async () => {
+    setDeleteGroup(false);
     try {
       const res = await deleteGroupApi({
         token: accessToken,
         groupId: groupGeneral.id
       }).unwrap();
       if (!res) {
-        Toast.success("Xóa thành công");
-        setDeleteGroup(false);
         setRefect(!refetch);
+        Toast.success("Xóa thành công");
       } 
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
@@ -110,6 +116,7 @@ export const Group = (props: IGroupProps) => {
     <View style={styles.container}>
       <StatusBar style="auto" />
         <View className="bg-[#F8FBF6] w-full h-full relative">
+          <LoadingProcess isVisible={updateLoading || getLoading || deleteLoading}/>
           <Modal
             animationType="fade"
             transparent={true}
