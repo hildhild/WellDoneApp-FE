@@ -27,6 +27,7 @@ export enum RootScreens {
   PROJECTEDIT = "ProjectEdit",
   GROUP_DETAIL = "GroupDetail",
   ADD_GROUP = "AddGroup",
+  PROJECTCREATE = "ProjectCreate",
 }
 
 export {

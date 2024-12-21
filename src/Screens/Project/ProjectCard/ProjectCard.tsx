@@ -34,7 +34,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       className="rounded-lg p-4 mb-4 shadow-md"
     >
       <View className="flex-row justify-between items-center mb-2">
-        <Avatar name={project.name} />
+        <Avatar name={project.name} width={70} height={70}/>
         <View className="flex-row">
           <TouchableOpacity onPress={onNavigate}>
             <MaterialCommunityIcons

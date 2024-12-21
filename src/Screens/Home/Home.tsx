@@ -1,6 +1,7 @@
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
 import { IProjectDetail } from "@/Services/projects";
+import { setProjectId } from "@/Store/reducers";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
 import React from "react";
@@ -8,10 +9,11 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from "react-native-progress";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
 import { RootScreens } from "..";
 import FeedItemContainer from "./FeedItem/FeedItemContainer";
-import { useDispatch } from "react-redux";
-import { setProjectId } from "@/Store/reducers";
+import { RootState } from "@/Store";
+import Avatar from "@/Components/Avatar";
 
 export interface IHomeProps {
   onNavigate: (screen: RootScreens) => void;
@@ -21,8 +23,11 @@ export interface IHomeProps {
 
 export const Home = (props: IHomeProps) => {
   const { data, isLoading } = props;
-  const flatGroupsList = data?.groups.map((group) => group.user.map((member)=>member.name)).join(",");
-  const dispatch =useDispatch();
+  const flatGroupsList = data?.groups
+    .map((group) => group.user.map((user) => user.name))
+    .join(",");
+  const dispatch = useDispatch();
+  const name = useSelector((state: RootState) => state.profile.name);
   return (
     <View className="bg-neutral-100 pt-8 h-full">
       <StatusBar style="auto" />
@@ -49,10 +54,7 @@ export const Home = (props: IHomeProps) => {
             <TouchableOpacity
               onPress={() => props.onNavigate(RootScreens.ACCOUNT)}
             >
-              <Image
-                className="w-16 h-16"
-                source={require("assets/Switch.png")}
-              />
+              <Avatar name={name} width={70} height={70} />
             </TouchableOpacity>
           </View>
 

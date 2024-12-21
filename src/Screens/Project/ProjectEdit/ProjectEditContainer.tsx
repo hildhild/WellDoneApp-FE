@@ -20,7 +20,7 @@ export interface ProjectEditForm {
 
   project_description: string;
 
-  //project_group_member: string[];
+  project_group_member: number[];
 
   project_status: Status;
 

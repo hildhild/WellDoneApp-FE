@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   View,
+  TouchableOpacity,
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { RootScreens } from "..";
@@ -20,6 +21,7 @@ export interface IProjectProps {
   search: string;
   setSearch: (value: string) => void;
   onNavigate: (screen: RootScreens) => void;
+  onCreateProject: () => void;
 }
 
 export const Project = (props: IProjectProps) => {
@@ -27,8 +29,9 @@ export const Project = (props: IProjectProps) => {
   const filteredProjects = data?.filter((project) =>
     project.name.toLowerCase().includes(props.search.toLowerCase())
   );
+
   return (
-    <View className="flex align-center justify-center bg-neutral-100">
+    <View className="flex align-center justify-center bg-neutral-100 relative">
       <StatusBar style="auto" />
       {isLoading ? (
         <HStack space={2} justifyContent="center">
@@ -74,6 +77,12 @@ export const Project = (props: IProjectProps) => {
                 />
               ))}
             </ScrollView>
+            <TouchableOpacity
+              className="w-16 h-16 absolute bottom-[100px] right-5 bg-primary-600 rounded-full p-2 flex justify-center items-center"
+              onPress={props.onCreateProject}
+            >
+              <AntDesign name="plus" size={30} color="#fff" />
+            </TouchableOpacity>
           </View>
         </>
       )}

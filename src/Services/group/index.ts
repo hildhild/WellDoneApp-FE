@@ -22,6 +22,7 @@ export interface User {
 
 export interface Group {
   id: number,
+  role: string,
   name: string,
   description: string | null,
   createdAt: string,

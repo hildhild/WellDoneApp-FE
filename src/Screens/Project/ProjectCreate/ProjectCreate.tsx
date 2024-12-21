@@ -1,15 +1,16 @@
 import { RootScreens } from "@/Screens";
-import { IProjectDetail } from "@/Services/projects";
 import { StatusType } from "@/Utils/constant";
 import { generateStatusText } from "@/Utils/Funtions/generate";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import ArrowDown from "assets/icons/ProjectEdit/arrowDown";
 import ArrowUp from "assets/icons/ProjectEdit/arrowUp";
 import GroupsIcon from "assets/icons/ProjectEdit/groupsIcon";
+import StatusIcon from "assets/icons/ProjectEdit/statusIcon";
 import React, { FC, useState } from "react";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   FlatList,
   Image,
@@ -24,48 +25,26 @@ import DropDownPicker from "react-native-dropdown-picker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import StatusIcon from "assets/icons/ProjectEdit/statusIcon";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { ProjectEditForm } from "./ProjectEditContainer";
-import ViewGroups from "./ViewGroups";
+import { ProjectCreateForm } from "./ProjectCreateContainer";
 
-interface IProjectEditProps {
-  project: IProjectDetail;
+interface IProjectCreateProps {
   onNavigate: (screen: RootScreens) => void;
-  onEditProject: (data: ProjectEditForm) => void;
-  isLoading: boolean;
-  isError: boolean;
-  error: FetchBaseQueryError | SerializedError | Response | undefined;
+  onCreateProject: (data: ProjectCreateForm) => void;
 }
 
-const ProjectEdit: FC<IProjectEditProps> = ({
-  project,
+const ProjectCreate: FC<IProjectCreateProps> = ({
   onNavigate,
-  onEditProject,
-  isLoading,
-  isError,
-  error,
+  onCreateProject,
 }) => {
-  const groupData = project.groups.map((group) => group.id);
   const navigation = useNavigation();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      project_name: project?.name || "",
-      project_description: project?.description || "",
-      project_group_member: groupData || [],
-      project_status: project?.status || StatusType.NEW,
-      project_sum_hours: project?.sum_hours || 0,
-      project_start_date: project?.start_date || "",
-      project_end_date: project?.end_date || "",
-    },
-  });
+  } = useForm<ProjectCreateForm>();
   const [open, setOpen] = useState(false);
-  const [statusValue, setStatusValue] = useState<string | null>(project.status);
-  const [timeHours, setTimeHours] = useState<number>(project.sum_hours);
+  const [statusValue, setStatusValue] = useState<string | null>();
+  const [timeHours, setTimeHours] = useState<number>(0);
   const [items, setItems] = useState([
     { label: generateStatusText(StatusType.NEW), value: StatusType.NEW },
     {
@@ -77,14 +56,14 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       value: StatusType.COMPLETED,
     },
   ]);
-  const [startDate, setStartDate] = useState(new Date(project.start_date));
-  const [endDate, setEndDate] = useState(new Date(project.end_date));
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [openViewGroups, setOpenViewGroups] = useState(false);
 
-  const onSubmit = (data: ProjectEditForm) => {
-    const transformedData: ProjectEditForm = {
+  const onSubmit = (data: ProjectCreateForm) => {
+    const transformedData: ProjectCreateForm = {
       project_name: data.project_name,
       project_description: data.project_description,
       project_group_member: data.project_group_member,
@@ -93,7 +72,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       project_start_date: data.project_start_date,
       project_end_date: data.project_end_date,
     };
-    onEditProject(transformedData);
+    onCreateProject(transformedData);
   };
   const handleChange = (text: string) => {
     if (!text) {
@@ -149,13 +128,13 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                 placeholder="Tên dự án"
                 value={value}
                 onChangeText={onChange}
-                defaultValue={project?.name}
+                defaultValue={""}
               />
             )}
           />
           {errors.project_name && (
             <Text className="text-danger-600 text-caption-bold mb-2">
-              {errors.project_name.message}
+              {typeof errors.project_name.message === 'string' && errors.project_name.message}
             </Text>
           )}
         </View>
@@ -173,7 +152,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                 onChangeText={onChange}
                 multiline
                 numberOfLines={3}
-                defaultValue={project?.description}
+                defaultValue={""}
                 maxLength={300}
               />
             )}
@@ -181,7 +160,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
         </View>
         {errors.project_description && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {errors.project_description.message}
+            {typeof errors.project_description.message === 'string' && errors.project_description.message}
           </Text>
         )}
         <View className="flex-row p-4 rounded-2xl mb-2 shadow-lg bg-neutral-100">
@@ -195,36 +174,23 @@ const ProjectEdit: FC<IProjectEditProps> = ({
               </Text>
               <Text className="text-danger-600"> *</Text>
             </View>
-            <Controller
+            {/* <Controller
               control={control}
               name="project_group_member"
               render={({ field: { onChange } }) => (
-                <View className="flex-row flex-wrap mb-4">
-                  {project?.groups.slice(0, 3).map((member, index) => (
-                    <View
-                      key={index}
-                      className="bg-gray-200 rounded-full px-2 py-1 mr-2 mb-2 flex-row items-center"
-                    >
-                      <Text className="text-caption-bold mr-1">
-                        {String(member.name)}
-                      </Text>
-                      <AntDesign name="checkcircle" size={12} color="green" />
-                    </View>
-                  ))}
-                  {openViewGroups && (
-                    <ViewGroups
-                      listGroupId={groupData}
-                      closeModal={() => setOpenViewGroups(false)}
-                      handleSave={(listGroupName) => {
-                        setOpenViewGroups(false);
-                        onChange(listGroupName);
-                        console.log(listGroupName)
-                      }}
-                    />
-                  )}
-                </View>
+                  // {openViewGroups && (
+                  //   <ViewGroups
+                  //     listGroupId={groupData}
+                  //     closeModal={() => setOpenViewGroups(false)}
+                  //     handleSave={(listGroupName) => {
+                  //       setOpenViewGroups(false);
+                  //       onChange(listGroupName);
+                  //       console.log(listGroupName)
+                  //     }}
+                  //   />
+                  // )}
               )}
-            />
+            /> */}
           </View>
           <TouchableOpacity
             className="mt-4 p-2 rounded-md"
@@ -256,7 +222,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                 render={({ field: { onChange, value } }) => (
                   <DropDownPicker
                     open={open}
-                    value={statusValue}
+                    value={statusValue ?? null}
                     items={items}
                     setOpen={setOpen}
                     setItems={setItems}
@@ -289,7 +255,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
         </View>
         {errors.project_status && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {errors.project_status.message}
+            {typeof errors.project_status.message === 'string' && errors.project_status.message}
           </Text>
         )}
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
@@ -313,14 +279,14 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                   handleChange(text);
                 }}
                 placeholder="Nhập số giờ"
-                defaultValue={project?.sum_hours.toString()}
+                defaultValue={"0"}
               />
             )}
           />
         </View>
         {errors.project_sum_hours && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {errors.project_sum_hours.message}
+            {typeof errors.project_sum_hours.message === 'string' && errors.project_sum_hours.message}
           </Text>
         )}
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
@@ -372,7 +338,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
         </View>
         {errors.project_start_date && (
           <Text className="text-danger-600 text-caption-bold mb-2">
-            {errors.project_start_date.message}
+            {typeof errors.project_start_date.message === 'string' && errors.project_start_date.message}
           </Text>
         )}
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
@@ -425,7 +391,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       </View>
       {errors.project_end_date && (
         <Text className="text-danger-600 text-caption-bold mb-2">
-          {errors.project_end_date.message}
+          {typeof errors.project_end_date.message === 'string' && errors.project_end_date.message}
         </Text>
       )}
     </View>
@@ -438,7 +404,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
       <FlatList
-        data={[project]}
+        data={[]}
         renderItem={renderItem}
         keyExtractor={() => "project-edit"}
         keyboardShouldPersistTaps="handled"
@@ -452,4 +418,4 @@ const ProjectEdit: FC<IProjectEditProps> = ({
   );
 };
 
-export default ProjectEdit;
+export default ProjectCreate;

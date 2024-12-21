@@ -1,6 +1,7 @@
 import { ProjectEditForm } from "@/Screens/Project/ProjectEdit/ProjectEditContainer";
 import { API } from "..";
 import { DocumentType, Priority, Status } from "@/Utils/constant";
+import { Group } from "../group";
 
 export interface CheckRoleRequest {
   user_token: string;
@@ -41,7 +42,7 @@ export type GetProjectListResponse = IProjectList;
 export interface IProjectDetail {
   id: string;
   name: string;
-  groups: ProjectGroups[];
+  groups: Group[];
   description: string;
   documents: ProjectDocument[];
   tasks: ProjectTask[];
