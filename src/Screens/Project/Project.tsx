@@ -1,5 +1,5 @@
 import { i18n, LocalizationKey } from "@/Localization";
-import { IProjectList } from "@/Services/projects";
+import { GetProjectList } from "@/Services/projects";
 import { generatePastelColor } from "@/Utils/Funtions/generate";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
@@ -16,7 +16,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import { RootScreens } from "..";
 import ProjectCardContainer from "./ProjectCard/ProjectCardContainer";
 export interface IProjectProps {
-  data: IProjectList | undefined;
+  data: GetProjectList | undefined;
   isLoading: boolean;
   search: string;
   setSearch: (value: string) => void;
@@ -25,9 +25,6 @@ export interface IProjectProps {
 
 export const Project = (props: IProjectProps) => {
   const { data, isLoading } = props;
-  const filteredProjects = data?.filter((project) =>
-    project.name.toLowerCase().includes(props.search.toLowerCase())
-  );
 
   return (
     <View className="flex align-center justify-center bg-neutral-100 relative">
@@ -64,10 +61,9 @@ export const Project = (props: IProjectProps) => {
 
             <ScrollView showsVerticalScrollIndicator={false} className="mb-20">
               <Text className="text-heading3 font-bold text-neutral-800 mb-4">
-                Danh sách Dự án (
-                {filteredProjects ? filteredProjects.length : 0})
+                Danh sách Dự án ({data?.length})
               </Text>
-              {filteredProjects?.map((project) => (
+              {data?.map((project) => (
                 <ProjectCardContainer
                   key={project.id}
                   project={project}
