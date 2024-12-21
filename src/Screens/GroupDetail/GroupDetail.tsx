@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, Image, Pressable, TouchableOpacity, TextInput, Modal, KeyboardAvoidingView, Platform, useWindowDimensions } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, Pressable, TouchableOpacity, TextInput, Modal, KeyboardAvoidingView, Platform, useWindowDimensions, StyleSheet } from "react-native";
 import { Button, ScrollView } from "native-base";
 import { RootScreens } from "..";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -9,7 +9,7 @@ import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useChangePasswordMutation, useUpdateProfileMutation } from "@/Services/profile";
-import { removeToken, setProfile } from "@/Store/reducers";
+import { removeToken, setCurGroup, setGroupList, setProfile } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { Tab, TabView } from '@rneui/themed';
@@ -20,9 +20,8 @@ import {
   LineChart,
 } from "react-native-chart-kit";
 import { current } from "@reduxjs/toolkit";
-import { Member, User } from "@/Services/group";
-
-
+import { Member, useAddMemberMutation, useDeleteMemberMutation, useGetGroupsMutation, User } from "@/Services/group";
+import { Dropdown } from 'react-native-element-dropdown';
 
 const GroupGeneral = () => {
   const curGroup = useSelector((state: any) => state.group.curGroup);
@@ -92,10 +91,198 @@ const GroupGeneral = () => {
 const GroupMember = () => {
   const curGroup = useSelector((state: any) => state.group.curGroup);
   const [isViewInfo, setIsViewInfo] = useState<boolean>(false);
-  const [curMember, setCurMember] = useState<Member | null>(null);
+  const [curMember, setCurMember] = useState<any>({
+    "id": null ,
+    "name": "",
+    "email": "",
+    "dateofbirth": "",
+    "updatedAt": "",
+    "role": ""
+  });
+  const [deleteMemberApi] = useDeleteMemberMutation();
+  const [addMemberApi] = useAddMemberMutation();
+  const [getGroups] = useGetGroupsMutation();
+  const accessToken = useSelector((state: any) => state.profile.token);
+  const dispatch = useDispatch();
+  const [refetch, setRefect] = useState<boolean>(false);
+  const [deleteMember, setDeleteMember] = useState<boolean>(false);
+  const [addMember, setAddMember] = useState<boolean>(false);
+  const userList = useSelector((state: any) => state.userList.userList).map((user: User) => {
+    return {
+      label: user.name,
+      value: user.id
+    };
+  });
+  const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>([]);
+
+
+  const getGroupList = async () => {
+    const groupsResponse = await getGroups(
+      accessToken
+    ).unwrap();
+    if (Array.isArray(groupsResponse)) {
+      dispatch(
+        setGroupList(groupsResponse)
+      );
+      dispatch(
+        setCurGroup(groupsResponse.filter(group => group.id === curGroup.id)[0])
+      );
+    }
+    else if (groupsResponse.message === "Group not found") {
+      dispatch(
+        setGroupList([])
+      );
+    } else {
+      Toast.error("Lỗi")
+    }
+  }
+
+  useEffect(() => {
+    getGroupList();
+  }, [refetch])
+
+  const handleDeleteMember = async () => {
+    try {
+      const res = await deleteMemberApi({
+        token: accessToken,
+        groupId: curGroup.id,
+        userId: curMember.id
+      }).unwrap();
+      if (!res) {
+        Toast.success("Xóa thành công");
+        setDeleteMember(false);
+        setRefect(!refetch);
+      } 
+    } catch (err) {
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          String(errorData.data.message),
+          "top"
+        );
+      }
+    }
+  }
+
+  const handleAddMember = async () => {
+    try {
+      const res = await addMemberApi({
+        data: {
+          list_user_members: selectedUsers.map((user: any) => {return user.id;})
+        },
+        token: accessToken,
+        groupId: curGroup.id
+      }).unwrap();
+      if ("id" in res) {
+        Toast.success("Thêm thành viên thành công");
+        setAddMember(false);
+        setRefect(!refetch);
+      } 
+    } catch (err) {
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          String(errorData.data.message),
+          "top"
+        );
+      }
+    }
+  }
 
   return (
     <ScrollView className="w-full h-full">
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={addMember}
+        >
+        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
+          <View className="bg-white w-[90%] p-4 rounded-2xl">
+            <View className="mb-3">
+              <View className="w-full flex-col justify-center items-center mb-3">
+                <Text className="font-bold text-2xl mb-5">Thêm thành viên</Text>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={userList}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Chọn thành viên"
+                  searchPlaceholder="Tìm kiếm..."
+                  onChange={item => {
+                    setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
+                  }}
+                  renderLeftIcon={() => (
+                    <Icon color="black" name="search" size={15} />
+                  )}
+                />
+                <ScrollView className="h-[300px]">
+                  {
+                    selectedUsers.map((user: any, index: number) => 
+                      <View key={index} className="w-full flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
+                        <Text className="font-semibold">{user.name}</Text>
+                        <View className="flex-row gap-3 items-center">
+                          <View className="rounded-full p-2 bg-lime-200">
+                            <Text className="text-xs text-lime-800 font-semibold">Thành viên</Text>
+                          </View>
+                          <Pressable onPress={() => setSelectedUsers((prevUsers) => prevUsers.filter((userItem) => userItem.id !== user.id))}>
+                            <Icon name="trash" size={20}/>
+                          </Pressable>
+                        </View>
+                      </View>
+                    )
+                  }
+                  {
+                    selectedUsers.length === 0
+                    &&
+                    <View className="w-full h-[300px] flex justify-center items-center">
+                      <Text className="text-xl">Chưa chọn thành viên nào</Text>
+                    </View>
+                  }
+                </ScrollView>
+              </View>
+            </View>
+            <View className="w-full flex-row gap-3 justify-end items-center">
+              <Pressable className="!rounded-xl !bg-gray-300 px-5 py-3" onPress={()=>setAddMember(false)}>
+                <Text className="text-black font-semibold">Hủy bỏ</Text>
+              </Pressable>
+              <Pressable className="!rounded-xl px-5 py-3 bg-lime-600" onPress={handleAddMember}>
+                <Text className="text-white font-semibold">Xác nhận</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={deleteMember}
+        >
+        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
+          <View className="bg-white w-[90%] p-4 rounded-2xl">
+            <View className="mb-3">
+              <View className="w-full flex-col justify-center items-center mb-3">
+                <Text className="font-bold text-2xl mb-5">Xóa thành viên</Text>
+                <Text className="text-xl text-center">Bạn có chắc chắn muốn xóa thành viên {curMember.name} không?</Text>
+              </View>
+            </View>
+            
+            <View className="w-full flex-row gap-3 justify-end items-center">
+              <Pressable className="!rounded-xl !bg-gray-300 px-5 py-3" onPress={()=>setDeleteMember(false)}>
+                <Text className="text-black font-semibold">Hủy bỏ</Text>
+              </Pressable>
+              <Pressable className="!rounded-xl px-5 py-3" style={{ backgroundColor: "red"}} onPress={handleDeleteMember}>
+                <Text className="text-white font-semibold">Xóa</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <Modal
         animationType="fade"
         transparent={true}
@@ -141,10 +328,14 @@ const GroupMember = () => {
           </View>
         </View>
       </Modal>
-      <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5">
-        <Ionicons name="person-add-outline" color="white" size={25}/>
-        <Text className="text-white text-lg font-semibold">Thêm thành viên</Text>
-      </Pressable>
+      {
+        curGroup.role === "Leader"
+        &&
+        <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5" onPress={()=>setAddMember(true)}>
+          <Ionicons name="person-add-outline" color="white" size={25}/>
+          <Text className="text-white text-lg font-semibold">Thêm thành viên</Text>
+        </Pressable>
+      }
       {
         curGroup?.user.map((mem: Member) => 
           <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.id}>
@@ -168,7 +359,7 @@ const GroupMember = () => {
               {
                 curGroup.role === "Leader" && mem.role !== "Leader"
                 &&
-                <Pressable className="w-[10%] flex justify-center items-center">
+                <Pressable className="w-[10%] flex justify-center items-center" onPress={()=>{setDeleteMember(true); setCurMember(mem);}}>
                   <Icon name="trash" color="red" size={30}/>
                 </Pressable>
               }
@@ -176,9 +367,9 @@ const GroupMember = () => {
           </View>
         )
       }
-      
     </ScrollView>
-)};
+  )
+};
 
 const GroupTask = () => {
   
@@ -313,3 +504,34 @@ export const GroupDetail = (props: {
     
   );
 };
+
+const styles = StyleSheet.create({
+  dropdown: {
+    width: "100%",
+    height: 50,
+    padding: 15,
+    borderColor: '#e0e0e0',
+    borderWidth: 1,
+    backgroundColor: "white",
+    borderRadius: 10,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    marginLeft: 10
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    marginLeft: 10
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+});

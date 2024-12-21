@@ -10,23 +10,12 @@ import { Image } from "react-native";
 
 export interface IDashboardProps {
   onNavigate: (screen: RootScreens) => void;
-  data: User | undefined;
-  isLoading: boolean;
 }
 
 export const Dashboard = (props: IDashboardProps) => {
-  const { data, isLoading } = props;
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      {isLoading ? (
-        <HStack space={2} justifyContent="center">
-          <Spinner accessibilityLabel="Loading posts" />
-          <Heading color="primary.500" fontSize="md">
-            {i18n.t(LocalizationKey.LOADING)}
-          </Heading>
-        </HStack>
-      ) : (
         <View className="bg-[#F8FBF6] w-full h-full relative">
           <View className="w-full h-24 pb-4 flex justify-end items-center">
             <Text className="text-2xl font-bold px-10 text-center text-black">Bảng điều khiển</Text>
@@ -94,7 +83,6 @@ export const Dashboard = (props: IDashboardProps) => {
             </View>
           </ScrollView>
         </View>
-      )}
     </View>
   );
 };

@@ -10,14 +10,6 @@ export const DashboardContainer = ({ navigation }: DashboardScreenNavigatorProps
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
-  const [userId, setUserId] = useState("9");
 
-  const [fetchOne, { data, isSuccess, isLoading, isFetching, error }] =
-    useLazyGetUserQuery();
-
-  useEffect(() => {
-    fetchOne(userId);
-  }, [fetchOne, userId]);
-
-  return <Dashboard onNavigate={onNavigate} data={data} isLoading={isLoading} />;
+  return <Dashboard onNavigate={onNavigate}/>;
 };

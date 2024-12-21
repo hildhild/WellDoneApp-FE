@@ -16,12 +16,9 @@ import { setCurGroup, setGroupList } from "@/Store/reducers";
 
 export interface IGroupProps {
   onNavigate: (screen: RootScreens) => void;
-  data: User | undefined;
-  isLoading: boolean;
 }
 
 export const Group = (props: IGroupProps) => {
-  const { data, isLoading } = props;
   const [editGroup, setEditGroup] = useState<boolean>(false);
   const [deleteGroup, setDeleteGroup] = useState<boolean>(false);
   const [refetch, setRefect] = useState<boolean>(false);
@@ -74,8 +71,6 @@ export const Group = (props: IGroupProps) => {
         Toast.success("Chỉnh sửa thành công");
         setEditGroup(false);
         setRefect(!refetch);
-      } else {
-  
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
@@ -98,9 +93,7 @@ export const Group = (props: IGroupProps) => {
         Toast.success("Xóa thành công");
         setDeleteGroup(false);
         setRefect(!refetch);
-      } else {
-  
-      }
+      } 
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as ErrorHandle;
@@ -116,14 +109,6 @@ export const Group = (props: IGroupProps) => {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      {isLoading ? (
-        <HStack space={2} justifyContent="center">
-          <Spinner accessibilityLabel="Loading posts" />
-          <Heading color="primary.500" fontSize="md">
-            {i18n.t(LocalizationKey.LOADING)}
-          </Heading>
-        </HStack>
-      ) : (
         <View className="bg-[#F8FBF6] w-full h-full relative">
           <Modal
             animationType="fade"
@@ -250,7 +235,6 @@ export const Group = (props: IGroupProps) => {
             <View className="mb-24"></View>
           </ScrollView>
         </View>
-      )}
     </View>
   );
 };
