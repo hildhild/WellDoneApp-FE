@@ -71,6 +71,14 @@ export interface UpdateGroupRequest {
   groupId: number
 }
 
+export interface AddMemberRequest {
+  data: {
+    list_user_members: number[]
+  },
+  token: string,
+  groupId: number
+}
+
 export interface UpdateGroupResponse {
   "id": number,
   "name": string,
@@ -101,10 +109,14 @@ export interface AddGroupResponse {
   "user": Member[]
 }
 
-export interface ChangePasswordResponse {}
-
 export interface DeleteGroupRequest {
   groupId: number,
+  token: string
+}
+
+export interface DeleteMemberRequest {
+  groupId: number,
+  userId: number,
   token: string
 }
 
@@ -120,6 +132,16 @@ const groupApi = API.injectEndpoints({
       }),
     }),
     updateGroup: build.mutation<UpdateGroupResponse | ErrorResponse, UpdateGroupRequest>({
+      query: (updateData) => ({
+        url: `/groups/${updateData.groupId}`,
+        method: "PATCH",
+        body: updateData.data,
+        headers: {
+          Authorization: `Bearer ${updateData.token}`,
+        },
+      }),
+    }),
+    addMember: build.mutation<UpdateGroupResponse | ErrorResponse, AddMemberRequest>({
       query: (updateData) => ({
         url: `/groups/${updateData.groupId}`,
         method: "PATCH",
@@ -148,6 +170,15 @@ const groupApi = API.injectEndpoints({
         },
       }),
     }),
+    deleteMember: build.mutation<undefined | ErrorResponse, DeleteMemberRequest>({
+      query: (deleteData) => ({
+        url: `/groups/${deleteData.groupId}/members/${deleteData.userId}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${deleteData.token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -156,5 +187,7 @@ export const {
   useGetGroupsMutation,
   useUpdateGroupMutation,
   useDeleteGroupMutation,
-  useAddGroupMutation
+  useAddGroupMutation,
+  useAddMemberMutation,
+  useDeleteMemberMutation,
 } = groupApi;
