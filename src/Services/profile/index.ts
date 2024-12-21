@@ -1,33 +1,5 @@
 import { API } from "../base";
-export interface Geo {
-  lat: string;
-  lng: string;
-}
-
-export interface Address {
-  city: string;
-  geo: Geo;
-  street: string;
-  suite: string;
-  zipcode: string;
-}
-
-export interface Company {
-  bs: string;
-  catchPhrase: string;
-  name: string;
-}
-
-export interface User {
-  address: Address;
-  company: Company;
-  email: string;
-  id: number;
-  name: string;
-  phone: string;
-  username: string;
-  website: string;
-}
+import { User } from "../group";
 
 export interface Response {
   data: Data
@@ -127,6 +99,15 @@ const profileApi = API.injectEndpoints({
         },
       }),
     }),
+    getUserList: build.mutation<User[] | ErrorResponse, string>({
+      query: (token) => ({
+        url: "/users",
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -134,5 +115,6 @@ const profileApi = API.injectEndpoints({
 export const {
   useGetProfileMutation,
   useUpdateProfileMutation,
-  useChangePasswordMutation
+  useChangePasswordMutation,
+  useGetUserListMutation
 } = profileApi;
