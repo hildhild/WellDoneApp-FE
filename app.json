@@ -34,7 +34,15 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-localization"
+      "expo-localization",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "welldone",
+          "organization": "welldone-lx"
+        }
+      ]
     ],
     "runtimeVersion": {
       "policy": "sdkVersion"
