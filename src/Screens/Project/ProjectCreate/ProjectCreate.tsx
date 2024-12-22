@@ -2,6 +2,7 @@ import { RootScreens } from "@/Screens";
 import { RootState } from "@/Store";
 import { Status, StatusType } from "@/Utils/constant";
 import { generateStatusText } from "@/Utils/Funtions/generate";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import ArrowDown from "assets/icons/ProjectEdit/arrowDown";
@@ -21,9 +22,6 @@ import {
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
 import ViewGroups from "../ProjectEdit/ViewGroups";
 import { ProjectCreateForm } from "./ProjectCreateContainer";
@@ -80,9 +78,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
       project_description: data.project_description,
       project_group_member: data.project_group_member,
       project_status: statusValue,
-      project_sum_hours: timeHours,
-      project_start_date: data.project_start_date,
-      project_end_date: data.project_end_date,
+      project_start_date: data.project_start_date === undefined ? new Date().toISOString() : data.project_start_date,
+      project_end_date: data.project_end_date === undefined ? new Date().toISOString() : data.project_end_date,
     };
     onCreateProject(transformedData);
   };
@@ -208,6 +205,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                     ))}
                   {openViewGroups && (
                     <ViewGroups
+                      onNavigate={onNavigate}
                       listGroupId={group.map((item) => item.id)}
                       closeModal={() => setOpenViewGroups(false)}
                       handleSave={(listGroupName) => {
@@ -288,38 +286,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
               errors.project_status.message}
           </Text>
         )}
-        <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
-          <View className="flex-row items-center mb-2">
-            <Text className="text-caption-regular text-neutral-500">
-              Thời gian (Giờ)
-            </Text>
-            <Text className="text-danger-600"> *</Text>
-          </View>
-          <Controller
-            control={control}
-            name="project_sum_hours"
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                keyboardType="numeric"
-                value={timeHours.toString()}
-                onChange={(e) => {
-                  const text = e.nativeEvent.text;
-                  setTimeHours(parseInt(text));
-                  onChange(text);
-                  handleChange(text);
-                }}
-                placeholder="Nhập số giờ"
-                defaultValue={"0"}
-              />
-            )}
-          />
-        </View>
-        {errors.project_sum_hours && (
-          <Text className="text-danger-600 text-caption-bold mb-2">
-            {typeof errors.project_sum_hours.message === "string" &&
-              errors.project_sum_hours.message}
-          </Text>
-        )}
+
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
           <View className="flex-row items-center mb-2">
             <Text className="text-caption-regular text-neutral-500">
@@ -349,7 +316,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                       onChange={(event, selectedDate) => {
                         if (selectedDate) {
                           setStartDate(selectedDate);
-                          onChange(selectedDate);
+                          onChange(selectedDate.toISOString());
                         }
                         setShowStartDatePicker(false);
                       }}
@@ -402,7 +369,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                       onChange={(event, selectedDate) => {
                         if (selectedDate) {
                           setEndDate(selectedDate);
-                          onChange(selectedDate);
+                          onChange(selectedDate.toISOString());
                         }
                         setShowEndDatePicker(false);
                       }}

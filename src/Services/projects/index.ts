@@ -1,3 +1,4 @@
+import { Status } from "@/Utils/constant";
 import { API } from "..";
 import { ErrorResponse } from "../profile";
 
@@ -14,7 +15,7 @@ export interface CreateProjectRequest {
     startDate: string;
     endDate: string;
     status: string;
-    groups: number[];
+    groupIds: number[];
   };
 }
 export interface CreateProjectResponse {
@@ -23,7 +24,7 @@ export interface CreateProjectResponse {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: Status;
   createdAt: string;
   updatedAt: string;
   groups: GroupCreateProject[];
@@ -56,38 +57,38 @@ export interface GetProjectListResponse {
   createdAt: string;
   updatedAt: string;
   groups: GroupCreateProject[];
-  userGroups: UserGroup [];
+  userGroups: UserGroup[];
   progress?: number;
 }
 
 export type GetProjectList = CreateProjectResponse[];
-
+export interface EditProjectResponse extends GetProjectListItem {}
 export interface GetProjectListItem {
-  id: number
-  name: string
-  description: string
-  startDate: string
-  endDate: string
-  status: string
-  createdAt: string
-  updatedAt: string
-  groups: Group[]
-  userGroups: UserGroup[]
+  id: number;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  groups: Group[];
+  userGroups: UserGroup[];
 }
 
 export interface Group {
-  id: number
-  name: string
-  createdAt: string
-  updatedAt: string
-  description: string
-  user_id_create: number
-  projectId: number
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  description: string;
+  user_id_create: number;
+  projectId: number;
 }
 
 export interface UserGroup {
-  id: number
-  name: string
+  id: number;
+  name: string;
 }
 export interface GetDetailProjectRequest {
   projectId: number;
@@ -164,7 +165,10 @@ const projectApi = API.injectEndpoints({
         },
       }),
     }),
-    editProject: build.mutation<boolean, EditProjectRequest>({
+    editProject: build.mutation<
+      EditProjectResponse | ErrorResponse,
+      EditProjectRequest
+    >({
       query: (editProjectData) => ({
         url: "/projects/" + editProjectData.id,
         method: "PATCH",
@@ -207,5 +211,5 @@ export const {
   useDeleteProjectMutation,
   useEditProjectMutation,
   useCreateProjectMutation,
-  useGetMemOfProjectMutation
+  useGetMemOfProjectMutation,
 } = projectApi;

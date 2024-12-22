@@ -1,7 +1,9 @@
 import { RootScreens } from "@/Screens";
+import { useProjectMembers } from "@/Screens/Home";
 import {
   CreateProjectResponse,
   GetMemOfProjectResponse,
+  GetProjectListResponse,
   GroupCreateProject,
   useDeleteProjectMutation,
   useGetMemOfProjectMutation,
@@ -9,14 +11,13 @@ import {
 import { RootState } from "@/Store";
 import { setProjectId } from "@/Store/reducers";
 import React, { FC, memo, useCallback, useEffect, useState } from "react";
-import { Alert, View, Text } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import ProjectCard from "./ProjectCard";
-import { useProjectMembers } from "@/Screens/Home";
 
 interface IProjectCardContainerProps {
-  project: CreateProjectResponse;
+  project: GetProjectListResponse;
   bgColor: string;
   onNavigate: (screen: RootScreens) => void;
 }

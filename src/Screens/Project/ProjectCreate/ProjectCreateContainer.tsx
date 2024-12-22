@@ -1,16 +1,16 @@
-import ProjectCreate from "./ProjectCreate";
-import { ProjectEditForm } from "../ProjectEdit/ProjectEditContainer";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "@/Screens";
-import React, { FC, memo, useCallback } from "react";
-import { useCreateProjectMutation } from "@/Services/projects";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/Store";
-import { Toast } from "toastify-react-native";
-import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { ErrorHandle } from "@/Services";
+import { useCreateProjectMutation } from "@/Services/projects";
+import { RootState } from "@/Store";
 import { setProjectId } from "@/Store/reducers";
+import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { FC, memo, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Toast } from "toastify-react-native";
+import { ProjectEditForm } from "../ProjectEdit/ProjectEditContainer";
+import ProjectCreate from "./ProjectCreate";
 export interface ProjectCreateForm extends ProjectEditForm {}
 
 type ProjectCreateScreenNavigatorProps = NativeStackScreenProps<
@@ -29,8 +29,10 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
   const dispatch = useDispatch();
   const handleCreateProject = useCallback(
     async (formData: ProjectCreateForm) => {
+      const convertGroupMemberFromStringToNumber = formData.project_group_member.map(
+        (group) => parseInt(group.toString())
+      );
       try {
-        console.log(formData);
         const response = await createProject({
           token: token,
           data: {
@@ -39,16 +41,14 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
             startDate: formData.project_start_date,
             endDate: formData.project_end_date,
             status: formData.project_status,
-            groups: formData.project_group_member,
+            groupIds: convertGroupMemberFromStringToNumber,
           },
         }).unwrap();
-        console.log(response);
         if (response && "id" in response) {
           dispatch(setProjectId({ id: response.id }));
           onNavigate(RootScreens.PROJECTDETAIL);
         }
       } catch (err) {
-        console.log(err);
         if (err && typeof err === "object" && "data" in err) {
           const errorData = err as ErrorHandle;
           Toast.error(

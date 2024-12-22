@@ -4,19 +4,22 @@ import MembersModal from "@/Components/MembersModal";
 import {
   CreateProjectResponse,
   GetMemOfProjectResponse,
+  GetProjectListResponse,
 } from "@/Services/projects";
 import { generateDate } from "@/Utils/Funtions/generate";
 import { renderStatusLabel } from "@/Utils/Funtions/render";
+import {
+  AntDesign,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import React, { memo, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as Progress from "react-native-progress";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface ProjectCardProps {
   listMember: GetMemOfProjectResponse;
-  project: CreateProjectResponse;
+  project: GetProjectListResponse;
   bgColor: string;
   onNavigate: () => void;
   onDelete: (id: number) => void;

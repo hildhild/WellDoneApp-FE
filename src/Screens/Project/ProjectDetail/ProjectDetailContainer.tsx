@@ -43,7 +43,15 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
   }, [projectId, token, getDetailProject]);
 
   const renderContent = () => {
-    if (isLoading) return <Text>Loading...</Text>;
+    if (isLoading) return (
+      <>
+        <View className="flex justify-center items-center h-full">
+          <Text className="p-16 text-center ">
+            Loading...
+          </Text>
+        </View>
+      </>
+    );
 
     if (projectInfo) {
       return <ProjectDetail listMember={listMember || []} onNavigate={onNavigate} project={projectInfo} />;

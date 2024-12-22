@@ -7,14 +7,14 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, memo } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Foundation from "react-native-vector-icons/Foundation";
-import IonIcons from "react-native-vector-icons/Ionicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { RootScreens } from "@/Screens";
 import { useDispatch } from "react-redux";
 import { setProjectId } from "@/Store/reducers";
-import { CreateProjectResponse, GetMemOfProjectResponse } from "@/Services/projects";
+import {
+  CreateProjectResponse,
+  GetMemOfProjectResponse,
+} from "@/Services/projects";
 interface IProjectDetailProps {
   listMember: GetMemOfProjectResponse;
   onNavigate: (screen: RootScreens) => void;
@@ -24,7 +24,9 @@ interface IProjectDetailProps {
 const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const flatGroupsList = props.listMember.map((member) => member.name).join(", ");
+  const flatGroupsList = props.listMember
+    .map((member) => member.name)
+    .join(", ");
   return (
     <View className="bg-white h-full mt-8">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
@@ -37,10 +39,10 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         </TouchableOpacity>
         <Text className="text-heading4 font-bold">Chi tiết Dự án</Text>
         <TouchableOpacity
-          onPress={() =>
-            dispatch(setProjectId({ id: props.project.id })) &&
-            props.onNavigate(RootScreens.PROJECTEDIT)
-          }
+          onPress={() => {
+            dispatch(setProjectId({ id: props.project.id }));
+            props.onNavigate(RootScreens.PROJECTEDIT);
+          }}
         >
           <MaterialCommunityIcons
             name="pencil-outline"

@@ -8,12 +8,12 @@ import Ppt from "assets/documentType/ppt";
 import Xls from "assets/documentType/xls";
 import Zip from "assets/documentType/zip";
 import { Text } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export const renderErrorMessageResponse = (
   responseString: string | string[]
 ) => {
-  const regex = /^Groups \d+ are already associated with other projects$/;
+  const regex = /^Groups (\d+(, \d+)*) are already associated with other projects$/;
   if (
     (Array.isArray(responseString) &&
       "name must be longer than or equal to 2 characters" in responseString) ||

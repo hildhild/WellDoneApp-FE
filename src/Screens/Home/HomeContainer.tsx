@@ -8,10 +8,10 @@ import {
 import { RootState } from "@/Store";
 import { setProjectId } from "@/Store/reducers";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
+import { AntDesign } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";

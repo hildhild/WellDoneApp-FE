@@ -40,7 +40,6 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         email: formData.email,
         password: formData.password,
       }).unwrap();
-      console.log(response);
       if ("access_token" in response) {
         Toast.success(
           renderSuccessMessageResponse("Đăng nhập thành công !~🔥🌸")

@@ -16,7 +16,7 @@ const AvatarStack: React.FC<AvatarStackProps> = ({
   const visibleUsers = users.slice(0, maxVisible);
   const remainingCount = Math.max(0, users.length - maxVisible);
   if (visibleUsers.length === 0) {
-    return <View className="text-caption-regular">None</View>;
+    return <View className="text-caption-regular"><Text>None</Text></View>;
   }
   return (
     <View
