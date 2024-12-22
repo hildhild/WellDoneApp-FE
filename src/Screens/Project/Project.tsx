@@ -1,6 +1,7 @@
 import { i18n, LocalizationKey } from "@/Localization";
-import { GetProjectList } from "@/Services/projects";
+import { GetProjectList, GetProjectListResponse } from "@/Services/projects";
 import { generatePastelColor } from "@/Utils/Funtions/generate";
+import { AntDesign } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
 import React from "react";
@@ -9,14 +10,13 @@ import {
   ScrollView,
   Text,
   TextInput,
-  View,
   TouchableOpacity,
+  View,
 } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { RootScreens } from "..";
 import ProjectCardContainer from "./ProjectCard/ProjectCardContainer";
 export interface IProjectProps {
-  data: GetProjectList | undefined;
+  data: GetProjectListResponse[] | undefined;
   isLoading: boolean;
   search: string;
   setSearch: (value: string) => void;

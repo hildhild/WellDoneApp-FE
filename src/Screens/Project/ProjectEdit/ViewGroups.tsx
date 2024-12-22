@@ -1,13 +1,15 @@
-import { RootState } from "@/Store";
-import React, { FC, memo, useEffect, useState } from "react";
-import { FlatList, Modal, TouchableOpacity, Text, View } from "react-native";
-import { useSelector } from "react-redux";
 import CheckBox from "@/Components/CheckBox";
-
+import { RootScreens } from "@/Screens";
+import { RootState } from "@/Store";
+import { AntDesign } from "@expo/vector-icons";
+import React, { FC, memo, useState } from "react";
+import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 interface IViewGroupsProps {
   listGroupId: number[];
   closeModal: () => void;
   handleSave: (listGroupName: string[]) => void;
+  onNavigate: (screen: RootScreens) => void;
 }
 
 const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
@@ -31,6 +33,26 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
       )
     );
   };
+
+  if (!groups || groups.length === 0) {
+    return (
+      <>
+        <Modal animationType="slide" transparent={false} visible={true}>
+          <View className="flex justify-center items-center h-full">
+            <Text className="p-16 text-center ">
+              Hiện tại bạn chưa thuộc nhóm nào. Tạo nhóm ngay~!🔥🌸👇👇
+            </Text>
+            <TouchableOpacity
+              className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
+              onPress={() => props.onNavigate(RootScreens.ADD_GROUP)}
+            >
+              <AntDesign name="plus" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </>
+    );
+  }
 
   return (
     <Modal animationType="slide" transparent={true} visible={true}>
@@ -62,7 +84,9 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
                 props.closeModal();
               }}
             >
-              <Text className="text-body-base-semibold text-neutral-700">Hủy</Text>
+              <Text className="text-body-base-semibold text-neutral-700">
+                Hủy
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               className=" w-28 h-11 rounded-lg items-center justify-center bg-primary-600"
@@ -74,7 +98,9 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
                 );
               }}
             >
-              <Text className="text-body-base-semibold text-neutral-100">Lưu</Text>
+              <Text className="text-body-base-semibold text-neutral-100">
+                Lưu
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

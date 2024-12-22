@@ -1,5 +1,4 @@
 import AvatarStack from "@/Components/AvatarStack";
-import { IProjectDetail, IProjectListItem } from "@/Services/projects";
 import {
   renderDocumentTypeIcon,
   renderPriorityIcon,
@@ -8,24 +7,26 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, memo } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Foundation from "react-native-vector-icons/Foundation";
-import IonIcons from "react-native-vector-icons/Ionicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { RootScreens } from "@/Screens";
 import { useDispatch } from "react-redux";
 import { setProjectId } from "@/Store/reducers";
+import {
+  CreateProjectResponse,
+  GetMemOfProjectResponse,
+} from "@/Services/projects";
 interface IProjectDetailProps {
+  listMember: GetMemOfProjectResponse;
   onNavigate: (screen: RootScreens) => void;
-  project: IProjectDetail;
+  project: CreateProjectResponse;
 }
 
 const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const flatGroupsList = props.project.groups
-    .map((group) => group.user.map((member) => member.name))
-    .join(",");
+  const flatGroupsList = props.listMember
+    .map((member) => member.name)
+    .join(", ");
   return (
     <View className="bg-white h-full mt-8">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
@@ -38,10 +39,10 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         </TouchableOpacity>
         <Text className="text-heading4 font-bold">Chi tiết Dự án</Text>
         <TouchableOpacity
-          onPress={() =>
-            dispatch(setProjectId({ id: props.project.id })) &&
-            props.onNavigate(RootScreens.PROJECTEDIT)
-          }
+          onPress={() => {
+            dispatch(setProjectId({ id: props.project.id }));
+            props.onNavigate(RootScreens.PROJECTEDIT);
+          }}
         >
           <MaterialCommunityIcons
             name="pencil-outline"
@@ -85,7 +86,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         <Text className="text-body-small-regular text-neutral-500  mt-4">
           Tài liệu
         </Text>
-        <ScrollView horizontal className="flex-row">
+        {/* <ScrollView horizontal className="flex-row">
           <View className="flex-row mt-2 space-x-4">
             {props.project.documents.map((doc) => (
               <TouchableOpacity key={doc.id}>
@@ -95,7 +96,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
               </TouchableOpacity>
             ))}
           </View>
-        </ScrollView>
+        </ScrollView> */}
         <View className="mt-6">
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-body-small-regular text-neutral-500">
@@ -108,7 +109,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
             </TouchableOpacity>
           </View>
 
-          <ScrollView className="p-4">
+          {/* <ScrollView className="p-4">
             {props.project.tasks.map((task) => (
               <View
                 key={task.id}
@@ -149,7 +150,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                 {renderPriorityIcon(task.priority)}
               </View>
             ))}
-          </ScrollView>
+          </ScrollView> */}
         </View>
       </ScrollView>
     </View>

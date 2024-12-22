@@ -1,14 +1,48 @@
 import { RootStackParamList } from "@/Navigation";
-import { GetProjectList, useGetProjectListMutation } from "@/Services/projects";
+import {
+  GetProjectListResponse,
+  useGetProjectListMutation,
+} from "@/Services/projects";
 import { RootState } from "@/Store";
+import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
+import { AntDesign } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
 import { Project } from "./Project";
-import { View, Text, TouchableOpacity } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
 type ProjectScreenNavigatorProps = NativeStackScreenProps<RootStackParamList>;
+const useProjectList = (token: string) => {
+  const [data, setData] = useState<GetProjectListResponse[] | undefined>(
+    undefined
+  );
+  const [getProjectList, { isLoading }] = useGetProjectListMutation();
+  const dispatch = useDispatch();
+
+  const fetchRecentProject = useCallback(async () => {
+    try {
+      const response = await getProjectList({ token });
+      if ("data" in response && Array.isArray(response.data)) {
+        const project: GetProjectListResponse[] = response.data;
+        setData(project);
+      } else {
+        Toast.error("Unexpected response format");
+      }
+    } catch (error) {
+      Toast.error(renderErrorMessageResponse(String(error)));
+      console.error(error);
+    }
+  }, [getProjectList, token, dispatch]);
+
+  useEffect(() => {
+    fetchRecentProject();
+  }, [fetchRecentProject]);
+
+  return { data, isLoading };
+};
+
 export const ProjectContainer = ({
   navigation,
 }: ProjectScreenNavigatorProps) => {
@@ -16,31 +50,18 @@ export const ProjectContainer = ({
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
-
-  const [getProjectList, { isLoading }] = useGetProjectListMutation();
   const token = useSelector((state: RootState) => state.profile.token);
-  const [ProjectList, setProjectList] = useState<GetProjectList>([]);
-  useEffect(() => {
-    const fetchProjectList = async () => {
-      if (search === "") {
-        const response = await getProjectList({ token: token });
-        if (response && Array.isArray(response)) {
-          setProjectList(response);
-        } else {
-          setProjectList([]);
-        }
-      }
-    };
-    fetchProjectList();
-  }, [getProjectList]);
+  const { data: ProjectList, isLoading } = useProjectList(token);
 
   return (
     <>
-      {ProjectList.length === 0 ? (
-        <View>
-          <Text>Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇</Text>
+      {ProjectList?.length === 0 ? (
+        <View className="flex justify-center items-center h-full">
+          <Text className="p-16 text-center ">
+            Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇
+          </Text>
           <TouchableOpacity
-            className="w-32 h-32 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
+            className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
             onPress={() => onNavigate(RootScreens.PROJECTCREATE)}
           >
             <AntDesign name="plus" size={30} color="#fff" />

@@ -1,8 +1,19 @@
+import Csv from "assets/documentType/csv";
+import Defaulticon from "assets/documentType/defaulticon";
+import Doc from "assets/documentType/doc";
+import Jpg from "assets/documentType/jpg";
+import Pdf from "assets/documentType/pdf";
+import Png from "assets/documentType/png";
+import Ppt from "assets/documentType/ppt";
+import Xls from "assets/documentType/xls";
+import Zip from "assets/documentType/zip";
+import { Text } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 export const renderErrorMessageResponse = (
   responseString: string | string[]
 ) => {
+  const regex = /^Groups (\d+(, \d+)*) are already associated with other projects$/;
   if (
     (Array.isArray(responseString) &&
       "name must be longer than or equal to 2 characters" in responseString) ||
@@ -31,6 +42,19 @@ export const renderErrorMessageResponse = (
     )
   ) {
     return "Mã xác thực không tồn tại";
+  } else if (
+    Array.isArray(responseString) &&
+    responseString.every(
+      (msg, index) =>
+        [
+          "property groups should not exist",
+          "name must be longer than or equal to 3 characters",
+          "each value in groupIds must be a number conforming to the specified constraints",
+          "groupIds must be an array",
+        ][index] === msg
+    )
+  ) {
+    return "Tên dự án phải dài hơn hoặc bằng 3 ký tự";
   } else if (responseString === "Email already verified") {
     return "Email đã được xác thực. Vui lòng đăng nhập~ ";
   } else if (responseString === "User not found") {
@@ -58,6 +82,15 @@ export const renderErrorMessageResponse = (
     responseString === "newPassword is not strong enough"
   ) {
     return "Mật khẩu mới không đủ mạnh";
+  } else if (responseString === "At least one group must be specified") {
+    return "Hãy chọn ít nhất một nhóm để thêm vào dự án bạn nhé!";
+  } else if (typeof responseString === "string" && regex.test(responseString)) {
+    return "Một trong các nhóm được chọn đã được gán cho dự án khác!";
+  } else if (
+    responseString ===
+    "You must be a leader in at least one of the specified groups"
+  ) {
+    return "Hãy tạo nhóm mới trước khi tạo dự án bạn nhé!";
   } else {
     return "Đã xảy ra lỗi, vui lòng thử lại!";
   }
@@ -87,26 +120,14 @@ export const renderSuccessMessageResponse = (
   }
 };
 
-import Csv from "assets/documentType/csv";
-import Defaulticon from "assets/documentType/defaulticon";
-import Doc from "assets/documentType/doc";
-import doc from "assets/documentType/doc";
-import Jpg from "assets/documentType/jpg";
-import Pdf from "assets/documentType/pdf";
-import Png from "assets/documentType/png";
-import Ppt from "assets/documentType/ppt";
-import Xls from "assets/documentType/xls";
-import Zip from "assets/documentType/zip";
-import { Text } from "react-native";
-
 export const renderStatusLabel = (status: string) => {
-  if (status === "completed") {
+  if (status === "COMPLETED") {
     return (
       <Text className="text-caption-bold font-medium text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
         Hoàn thành
       </Text>
     );
-  } else if (status === "in_progress") {
+  } else if (status === "IN_PROGRESS") {
     return (
       <Text className="text-caption-bold font-medium text-neutral-500 bg-secondary-200 px-2 py-1 rounded-full">
         Đang thực hiện
@@ -121,7 +142,11 @@ export const renderStatusLabel = (status: string) => {
   }
 };
 
-export const renderDocumentTypeIcon = (type: string, width: number = 40, height: number = 40) => {
+export const renderDocumentTypeIcon = (
+  type: string,
+  width: number = 40,
+  height: number = 40
+) => {
   if (type === "pdf") {
     return <Pdf width={width} height={height} />;
   } else if (type === "doc" || type === "docx") {
@@ -150,14 +175,9 @@ export const renderPriorityIcon = (priority: string) => {
     );
   }
   if (priority === "Medium") {
-    return (
-      <MaterialIcons name="keyboard-arrow-up" size={25} color="red" />
-    );
+    return <MaterialIcons name="keyboard-arrow-up" size={25} color="red" />;
   }
   if (priority === "Low") {
-    return (
-      <MaterialIcons name="arrow-drop-up" size={25} color="green" />
-    );
+    return <MaterialIcons name="arrow-drop-up" size={25} color="green" />;
   }
-}
-
+};
