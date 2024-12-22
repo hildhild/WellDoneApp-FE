@@ -1,5 +1,6 @@
 import { API } from "../base";
 import { User } from "../group";
+import { Task } from "../task";
 
 export interface Response {
   data: Data
@@ -28,83 +29,44 @@ export interface ErrorResponse{
   statusCode: number
 }
 
-export interface GetProfileResponse {
-  id: number,
-  name: string,
-  dateofbirth: string,
-  email: string,
-  group_id: any,
-  joined_at: any,
-  role: any,
-  updatedAt: string
+export interface UploadFileResponse {
+  task: Task,
+  task_id: string,
+  user: User,
+  user_id: string,
+  originalname: string,
+  mimetype: string,
+  destination: string,
+  filename: string,
+  size: number,
+  id: string
 }
 
-export interface UpdateProfileResponse {
-  id: number,
-  name: string,
-  dateofbirth: string,
-  email: string,
-  group_id: any,
-  joined_at: any,
-  role: any,
-  updatedAt: string
-}
-
-export interface UpdateProfileRequest {
+export interface UploadFileRequest {
   data: {
-    name: string,
-    dateofbirth: string,
+    file: File,
+    task_id: number,
   },
   token: string
 }
 
-export interface ChangePasswordResponse {}
-
-export interface ChangePasswordRequest {
-  data: {
-    password: string,
-    newPassword: string,
-  },
-  token: string
-}
+export const getFormDataDocument = (request: UploadFileRequest): FormData => {
+  const formData = new FormData();
+  formData.append('file', request.data.file);
+  formData.append('task_id', request.data.task_id.toString());
+  console.log(formData);
+  return formData;
+};
 
 const documentApi = API.injectEndpoints({
   endpoints: (build) => ({
-    getProfile: build.mutation<GetProfileResponse | ErrorResponse, string>({
-      query: (token) => ({
-        url: "/auth/profile",
-        method: "GET",
+    uploadFile: build.mutation<UploadFileResponse | ErrorResponse, UploadFileRequest>({
+      query: (request) => ({
+        url: "/documents/upload",
+        method: "POST",
+        body: getFormDataDocument(request),
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
-    updateProfile: build.mutation<UpdateProfileResponse | ErrorResponse, UpdateProfileRequest>({
-      query: (updateData) => ({
-        url: "/auth/updateProfile",
-        method: "PATCH",
-        body: updateData.data,
-        headers: {
-          Authorization: `Bearer ${updateData.token}`,
-        },
-      }),
-    }),
-    changePassword: build.mutation<undefined | ErrorResponse, ChangePasswordRequest>({
-      query: (changePasswordData) => ({
-        url: "/auth/reset-password",
-        method: "PATCH",
-        body: changePasswordData.data,
-        headers: {
-          Authorization: `Bearer ${changePasswordData.token}`,
-        },
-      }),
-    }),
-    getUserList: build.mutation<User[] | ErrorResponse, string>({
-      query: (token) => ({
-        url: "/users",
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${request.token}`,
         },
       }),
     }),
@@ -113,8 +75,5 @@ const documentApi = API.injectEndpoints({
 });
 
 export const {
-  useGetProfileMutation,
-  useUpdateProfileMutation,
-  useChangePasswordMutation,
-  useGetUserListMutation
+  useUploadFileMutation,
 } = documentApi;

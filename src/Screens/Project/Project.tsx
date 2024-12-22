@@ -38,7 +38,7 @@ export const Project = (props: IProjectProps) => {
         </HStack>
       ) : (
         <>
-          <View className="bg-white h-full pt-8 px-4">
+          <View className="bg-white h-full pt-8 px-5">
             <View className="flex-row justify-center items-center mb-4">
               <Image
                 className="w-28 h-28"

@@ -7,19 +7,16 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { useChangePasswordMutation, useUpdateProfileMutation } from "@/Services/profile";
-import { removeToken, setCurGroup, setGroupList, setProfile } from "@/Store/reducers";
+import { removeToken, setCurGroup, setGroupList } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
-import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { Tab, TabView } from '@rneui/themed';
 import { LoadingProcess, SemiCircleProgress } from "@/Components";
 import { ProgressBar, MD3Colors } from 'react-native-paper';
 import { Dimensions } from "react-native";
 import {
   BarChart,
-  LineChart,
   PieChart,
+  ProgressChart,
 } from "react-native-chart-kit";
 import { current } from "@reduxjs/toolkit";
 import { Member, useAddMemberMutation, useDeleteMemberMutation, useGetGroupsMutation, User } from "@/Services/group";
@@ -37,7 +34,6 @@ const GroupGeneral = (props: {taskList: Task[]}) => {
   const highTaskCount = props.taskList.filter((task: any) => task.priority === "HIGH").length;
 
 
-
   const chartConfig = {
     backgroundGradientFrom: "#F8FBF6",
     backgroundGradientTo: "#F8FBF6",
@@ -46,7 +42,9 @@ const GroupGeneral = (props: {taskList: Task[]}) => {
     barPercentage: 0.5,
     useShadowColorFromDataset: false 
   };
+
   const screenWidth = Dimensions.get("window").width;
+
   const priorityData = {
     labels: ["Thấp", "Trung bình", "Cao"],
     datasets: [
@@ -87,19 +85,19 @@ const GroupGeneral = (props: {taskList: Task[]}) => {
       <Text className="text-xl text-[#3F6212] font-semibold mb-3">Mô tả nhóm</Text>
       <Text className="text-xl mb-5">{curGroup.description}</Text>
       {/* <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Tháng 10</Text> */}
-      <View className="mb-5">
+      {/* <View className="mb-5">
         <Text className="text-xl text-[#3F6212] font-semibold">Nhiệm vụ đã hoàn thành</Text>
         <View className="w-full flex items-center p-7">
           <SemiCircleProgress
-            percentage={doneTaskCount/taskCount*100}
+            percentage={parseFloat((doneTaskCount/taskCount*100).toFixed(1))}
             progressColor={"#3F6212"}
             interiorCircleColor= "#F8FBF6"
             progressWidth= {30}
           >
-            <Text style={{ fontSize: 32, color: "black" }}>{doneTaskCount/taskCount*100}%</Text>
+            <Text style={{ fontSize: 32, color: "black" }}>{parseFloat((doneTaskCount/taskCount*100).toFixed(1))}%</Text>
           </SemiCircleProgress>
         </View>
-      </View>
+      </View> */}
       <View className="mb-5">
         <Text className="text-xl text-[#3F6212] font-semibold mb-3">Trạng thái nhiệm vụ</Text>
         <PieChart
@@ -528,7 +526,7 @@ export const GroupDetail = (props: {
       </Pressable>
       <View className="w-full p-6">
           <View className="w-full mb-5">
-            <Text className="text-2xl font-semibold text-[#347928] mb-2">Dự án: Chưa tham gia</Text>
+            <Text className="text-2xl font-semibold text-[#347928] mb-2">Dự án: {curGroup.projectName ? curGroup.projectName : "Chưa tham gia"}</Text>
             <Text className="text-2xl font-semibold text-[#347928]">Nhóm: {curGroup.name}</Text>
           </View>
           <View className="h-[600px] overflow-hidden">

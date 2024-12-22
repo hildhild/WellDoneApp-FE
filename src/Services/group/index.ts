@@ -33,6 +33,8 @@ export interface Group {
   description: string | null,
   createdAt: string,
   updatedAt: string,
+  projectId: number,
+  projectName: string,
   user: Member []
 }
 
