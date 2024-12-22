@@ -14,7 +14,9 @@ import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { LoadingProcess } from "@/Components";
-
+import * as DocumentPicker from 'expo-document-picker';
+import { WebView } from 'react-native-webview';
+import * as FileSystem from 'expo-file-system';
 
 export const Document = (props: {
   onNavigate: (string: RootScreens) => void;
@@ -35,6 +37,36 @@ export const Document = (props: {
   });
   const [addGroupApi, {isLoading: addLoading}] = useAddGroupMutation();
   const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
+  const [file, setFile] = useState<any | null>(null);
+  const [pdfBase64, setPdfBase64] = useState<any>(null);
+
+  const pickDocument = async () => {
+    try {
+      const result: any = await DocumentPicker.getDocumentAsync({
+        type: '*/*', 
+        copyToCacheDirectory: true, 
+      });
+
+      if (!result.cancel) {
+        setFile(result.assets[0]);
+        try {
+          const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          setPdfBase64(base64);
+        } catch {
+          console.log("không ra")
+        }
+        console.log(`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(result.assets[0].uri)}`)
+        console.log('File picked:', result);
+      } else {
+        console.log(result);
+        console.log('User canceled file selection.');
+      }
+    } catch (error) {
+      console.error('Error picking document:', error);
+    }
+  };
 
   const handleCreateGroup = async () => {
     try {
@@ -86,10 +118,39 @@ export const Document = (props: {
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
         <Icon name="chevron-left" size={15} color="#000" />
       </Pressable>
-      <Pressable className="absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-900" onPress={() => navigation.goBack()}>
+      <Pressable className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-900" onPress={pickDocument}>
         <Icon name="plus" size={30} color="#fff" />
       </Pressable>
       <ScrollView className="w-full p-6">
+        <Text>File đã tải lên:</Text>
+        {
+          file 
+          && (
+          <Text style={{ marginTop: 20 }}>
+            Selected File: {file.name} ({file.size} bytes)
+          </Text>
+        )}
+        {
+          file
+          &&
+          pdfBase64
+          &&
+          <View>
+            <WebView
+              source={{ uri: pdfBase64 }}
+              style={{flex: 1}}
+            />
+          </View>
+          
+
+        }
+        <View className="my-8 bg-lime-800 p-8">
+          <WebView
+            source={{ uri: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }}
+            style={{flex: 1}}
+          />
+        </View>
+        <Text>{file?.uri}</Text>
         <View className="rounded-2xl bg-white overflow-hidden">
           <View className="bg-lime-500 flex-row py-3 px-5 justify-between items-center">
             <View className="flex-row gap-3 items-center">
