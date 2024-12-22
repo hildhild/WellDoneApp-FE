@@ -1,6 +1,6 @@
 import { i18n, LocalizationKey } from "@/Localization";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable, Modal, TextInput, Platform, Keyboard } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal, TextInput, Platform, Keyboard, RefreshControl } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { HStack, Spinner, Heading, Button } from "native-base";
 import { ErrorHandle, User } from "@/Services";
@@ -34,6 +34,13 @@ export const Group = (props: IGroupProps) => {
   const accessToken = useSelector((state: RootState) => state.profile.token);
   const dispatch = useDispatch();
   const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setRefect(!refetch);
+    setRefreshing(false);
+  };
 
   const getGroupList = async () => {
     const groupsResponse = await getGroups(
@@ -186,7 +193,12 @@ export const Group = (props: IGroupProps) => {
           <View className="w-full h-24 pb-4 flex justify-end items-center">
             <Text className="text-2xl font-bold px-10 text-center text-black">Nhóm</Text>
           </View>
-          <ScrollView className="px-6 py-3">
+          <ScrollView 
+            className="px-6 py-3"
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <Pressable className="w-full flex justify-center items-center bg-[#4D7C0F] p-3 rounded-xl mb-5" onPress={()=>props.onNavigate(RootScreens.ADD_GROUP)}><Text className="text-white text-lg font-semibold">Thêm nhóm</Text></Pressable>
             <View className="w-full flex-row justify-end mb-4">
               <Text className="text-[#2C6E35] font-semibold text-lg">Tổng số: {groupList.length}</Text>
@@ -238,6 +250,13 @@ export const Group = (props: IGroupProps) => {
                   </View>
                 </View>
               )
+            }
+            {
+              groupList.length === 0
+              &&
+              <View className="w-full flex items-center justify-center py-56">
+                <Text className="text-gray-400 font-semibold text-xl">Không có nhóm</Text>
+              </View>
             }
             <View className="mb-24"></View>
           </ScrollView>

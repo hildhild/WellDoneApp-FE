@@ -9,6 +9,7 @@ import { OtherContainer } from "./Other";
 import { ProjectContainer } from "./Project";
 import { GroupDetailContainer } from "./GroupDetail";
 import { AddGroupContainer } from "./AddGroup";
+import { DocumentContainer } from "./Document";
 
 export enum RootScreens {
   MAIN = "Main",
@@ -28,6 +29,7 @@ export enum RootScreens {
   GROUP_DETAIL = "GroupDetail",
   ADD_GROUP = "AddGroup",
   PROJECTCREATE = "ProjectCreate",
+  DOCUMENT = "Document",
 }
 
 export {
@@ -41,5 +43,6 @@ export {
   ProjectContainer,
   GroupDetailContainer,
   AddGroupContainer,
+  DocumentContainer
 };
 

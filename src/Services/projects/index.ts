@@ -1,6 +1,11 @@
 import { API } from "..";
 import { ErrorResponse } from "../profile";
 
+export interface UserGroup {
+  id: number;
+  name: string;
+}
+
 export interface CreateProjectRequest {
   token: string;
   data: {
@@ -41,8 +46,21 @@ export interface GetProjectListRequest {
   groupIdQuery?: string;
 }
 
-export interface GetProjectListResponse extends GetProjectList {}
-export type GetProjectList = GetProjectListItem[]
+export interface GetProjectListResponse {
+  id: number;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  groups: GroupCreateProject[];
+  userGroups: UserGroup [];
+  progress?: number;
+}
+
+export type GetProjectList = CreateProjectResponse[];
 
 export interface GetProjectListItem {
   id: number
