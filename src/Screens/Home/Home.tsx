@@ -1,7 +1,7 @@
 import Avatar from "@/Components/Avatar";
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
-import { CreateProjectResponse } from "@/Services/projects";
+import { CreateProjectResponse, GetMemOfProjectResponse } from "@/Services/projects";
 import { RootState } from "@/Store";
 import { setProjectId } from "@/Store/reducers";
 import { StatusBar } from "expo-status-bar";
@@ -16,14 +16,15 @@ import { RootScreens } from "..";
 import FeedItemContainer from "./FeedItem/FeedItemContainer";
 
 export interface IHomeProps {
+  listMember: GetMemOfProjectResponse | null;
   onNavigate: (screen: RootScreens) => void;
   data: CreateProjectResponse | undefined;
   isLoading: boolean;
 }
 
 export const Home = (props: IHomeProps) => {
-  const { data, isLoading, onNavigate } = props;
-  const flatGroupsList = data?.groups.map((group) => group.name).join(", ");
+  const { listMember, data, isLoading, onNavigate } = props;
+  const flatGroupsList = listMember?.map((item) => item.name).join(", ");
   const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.profile.name);
   return (

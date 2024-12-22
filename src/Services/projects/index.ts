@@ -1,7 +1,4 @@
-import { ProjectEditForm } from "@/Screens/Project/ProjectEdit/ProjectEditContainer";
 import { API } from "..";
-import { DocumentType, Priority, Status } from "@/Utils/constant";
-import { Group } from "../group";
 import { ErrorResponse } from "../profile";
 
 export interface CreateProjectRequest {
@@ -45,8 +42,35 @@ export interface GetProjectListRequest {
 }
 
 export interface GetProjectListResponse extends GetProjectList {}
-export type GetProjectList = CreateProjectResponse[];
+export type GetProjectList = GetProjectListItem[]
 
+export interface GetProjectListItem {
+  id: number
+  name: string
+  description: string
+  startDate: string
+  endDate: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  groups: Group[]
+  userGroups: UserGroup[]
+}
+
+export interface Group {
+  id: number
+  name: string
+  createdAt: string
+  updatedAt: string
+  description: string
+  user_id_create: number
+  projectId: number
+}
+
+export interface UserGroup {
+  id: number
+  name: string
+}
 export interface GetDetailProjectRequest {
   projectId: number;
   token: string;
@@ -60,6 +84,21 @@ export interface EditProjectRequest extends CreateProjectRequest {
 export interface DeleteProjectRequest {
   projectId: number;
   token: string;
+}
+
+export interface GetMemOfProjectRequest {
+  projectId: number;
+  token: string;
+}
+
+export type GetMemOfProjectResponse = Member[];
+export interface Member {
+  id: number;
+  name: string;
+  email: string;
+  dateofbirth?: string;
+  updatedAt: string;
+  role: string;
 }
 const projectApi = API.injectEndpoints({
   endpoints: (build) => ({
@@ -129,6 +168,18 @@ const projectApi = API.injectEndpoints({
         },
       }),
     }),
+    getMemOfProject: build.mutation<
+      GetMemOfProjectResponse | ErrorResponse,
+      GetMemOfProjectRequest
+    >({
+      query: (getMemOfProjectData) => ({
+        url: `/projects/${getMemOfProjectData.projectId}/members`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${getMemOfProjectData.token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -138,4 +189,5 @@ export const {
   useDeleteProjectMutation,
   useEditProjectMutation,
   useCreateProjectMutation,
+  useGetMemOfProjectMutation
 } = projectApi;

@@ -11,11 +11,11 @@ export const generateDate = (date: string) => {
 
 export const generateStatusText = (status: string) => {
   switch (status) {
-    case "new":
+    case "NOT_STARTED":
       return "Mới";
-    case "in_progress":
+    case "IN_PROGRESS":
       return "Đang thực hiện";
-    case "completed":
+    case "COMPLETED":
       return "Đã hoàn thành";
     default:
       return "Không xác định";

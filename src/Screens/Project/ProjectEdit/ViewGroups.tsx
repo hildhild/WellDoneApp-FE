@@ -12,6 +12,7 @@ interface IViewGroupsProps {
 
 const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
   const groupList = useSelector((state: RootState) => state.group.groupList);
+  console.log("groupList", groupList);
   const checkGroup = (groupId: number) => {
     return props.listGroupId.includes(groupId);
   };

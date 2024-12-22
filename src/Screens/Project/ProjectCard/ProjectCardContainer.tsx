@@ -1,14 +1,20 @@
 import { RootScreens } from "@/Screens";
-import { CreateProjectResponse, GroupCreateProject } from "@/Services/projects";
-import { setProjectId } from "@/Store/reducers";
-import React, { FC, memo, useCallback } from "react";
-import { Alert } from "react-native";
-import { useDispatch } from "react-redux";
-import ProjectCard from "./ProjectCard";
-import { useDeleteProjectMutation } from "@/Services/projects";
-import { useSelector } from "react-redux";
+import {
+  CreateProjectResponse,
+  GetMemOfProjectResponse,
+  GroupCreateProject,
+  useDeleteProjectMutation,
+  useGetMemOfProjectMutation,
+} from "@/Services/projects";
 import { RootState } from "@/Store";
+import { setProjectId } from "@/Store/reducers";
+import React, { FC, memo, useCallback, useEffect, useState } from "react";
+import { Alert, View, Text } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
+import ProjectCard from "./ProjectCard";
+import { useProjectMembers } from "@/Screens/Home";
+
 interface IProjectCardContainerProps {
   project: CreateProjectResponse;
   bgColor: string;
@@ -21,54 +27,42 @@ const ProjectCardContainer: FC<IProjectCardContainerProps> = ({
   onNavigate,
 }) => {
   const dispatch = useDispatch();
-  const [deleteProject] = useDeleteProjectMutation();
   const token = useSelector((state: RootState) => state.profile.token);
+  const [deleteProject] = useDeleteProjectMutation();
+  const listMember = useProjectMembers(project.id, token);
+
   const handleDeleteProject = useCallback(
     async (projectId: number) => {
-      const response = await deleteProject({
-        projectId: projectId,
-        token: token,
-      });
-      if (!response) {
-        Toast.success("Delete project successfully");
-      }
+      const response = await deleteProject({ projectId, token });
+      if (!response) Toast.success("Delete project successfully");
     },
     [deleteProject, token]
   );
+
   const handleDelete = (projectId: number) => {
     Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this project?",
+      "Xóa Dự án!",
+      "Bạn có chắc chắn muốn xóa dự án này?",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            handleDeleteProject(projectId);
-          },
-        },
+        { text: "Hủy", style: "cancel" },
+        { text: "OK", onPress: () => handleDeleteProject(projectId) },
       ],
       { cancelable: false }
     );
-  };
-  const handleAvatarStackClick = (users: GroupCreateProject[]) => {
-    console.log("Clicked on Avatar Stack. Show member list modal", users);
   };
 
   const handleNavigate = () => {
     dispatch(setProjectId({ id: project.id }));
     onNavigate(RootScreens.PROJECTDETAIL);
   };
+
   return (
     <ProjectCard
+      listMember={listMember || []}
       project={project}
       bgColor={bgColor}
       onNavigate={handleNavigate}
       onDelete={handleDelete}
-      onAvatarStackClick={() => handleAvatarStackClick(project.groups)}
     />
   );
 };

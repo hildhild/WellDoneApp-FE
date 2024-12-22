@@ -22,13 +22,14 @@ export const ProjectContainer = ({
   const [ProjectList, setProjectList] = useState<GetProjectList>([]);
   useEffect(() => {
     const fetchProjectList = async () => {
-      if (search === "") {
-        const response = await getProjectList({ token: token });
-        if (response && Array.isArray(response)) {
-          setProjectList(response);
-        } else {
-          setProjectList([]);
-        }
+      const response = await getProjectList({
+        token: token,
+        searchProjectNameQuery: search,
+      });
+      if (response && Array.isArray(response)) {
+        setProjectList(response);
+      } else {
+        setProjectList([]);
       }
     };
     fetchProjectList();
@@ -37,10 +38,12 @@ export const ProjectContainer = ({
   return (
     <>
       {ProjectList.length === 0 ? (
-        <View>
-          <Text>Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇</Text>
+        <View className="flex justify-center items-center h-full">
+          <Text className="p-16 text-center ">
+            Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇
+          </Text>
           <TouchableOpacity
-            className="w-32 h-32 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
+            className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
             onPress={() => onNavigate(RootScreens.PROJECTCREATE)}
           >
             <AntDesign name="plus" size={30} color="#fff" />

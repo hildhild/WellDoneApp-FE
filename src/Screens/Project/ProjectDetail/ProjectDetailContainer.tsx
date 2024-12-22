@@ -1,13 +1,16 @@
 import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "@/Screens";
-import { GetDetailProjectResponse, useGetDetailProjectMutation } from "@/Services/projects";
+import {
+  GetDetailProjectResponse,
+  useGetDetailProjectMutation,
+} from "@/Services/projects";
 import { RootState } from "@/Store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { FC, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { Toast } from "toastify-react-native";
 import ProjectDetail from "./ProjectDetail";
+import { useProjectMembers } from "@/Screens/Home";
 
 type ProjectDetailScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
@@ -17,53 +20,47 @@ type ProjectDetailScreenNavigatorProps = NativeStackScreenProps<
 const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
   navigation,
 }) => {
-  const onNavigate = (screen: RootScreens) => {
-    navigation.navigate(screen);
-  };
-  const id = useSelector((state: RootState) => state.project.id);
-  const token = useSelector((state: RootState) => state.profile.token);
-  const [projectInfo, setProjectInfo] = useState<GetDetailProjectResponse>();
-  const [getDetailProject, { isLoading }] =
-    useGetDetailProjectMutation();
-  const fetchProjectInfo = async () => {
-      if (id) {
-        const response = await getDetailProject({
-          projectId: id,
-          token: token,
-        }).unwrap();
-        if (response) {
-          if ("name" in response) {
-            setProjectInfo(response);
-          } else {
-            Toast.error("Không tìm thấy dự án", "center");
-          }
-        }
-        else[
-          Toast.error("Không tìm thấy dự án", "center")
-        ]
-      } else {
-        Toast.error("Không tìm thấy dự án", "center");
-      }
-    };
+  const { id: projectId } = useSelector((state: RootState) => state.project);
+  const { token } = useSelector((state: RootState) => state.profile);
 
-    useEffect(() => {
-      fetchProjectInfo();
+  const [projectInfo, setProjectInfo] =
+    useState<GetDetailProjectResponse | null>(null);
+  const [getDetailProject, { isLoading }] = useGetDetailProjectMutation();
+  const listMember = useProjectMembers(projectId, token);
+  const onNavigate = (screen: RootScreens) => navigation.navigate(screen);
+
+  const fetchProjectInfo = async () => {
+    if (projectId && token) {
+      const response = await getDetailProject({ projectId, token }).unwrap();
+      if ("name" in response) {
+        setProjectInfo(response);
+      }
     }
-    ,[fetchProjectInfo]);
-  
-return (
-  <>
-    {isLoading ? (
-      <Text>Loading...</Text>
-    ) : id ? (
-      <ProjectDetail onNavigate={onNavigate} project={projectInfo} />
-    ) : (
-      <View>
-        <Text>Không tìm thấy dự án</Text>
-      </View>
-    )}
-  </>
-);
+  };
+
+  useEffect(() => {
+    fetchProjectInfo();
+  }, [projectId, token, getDetailProject]);
+
+  const renderContent = () => {
+    if (isLoading) return <Text>Loading...</Text>;
+
+    if (projectInfo) {
+      return <ProjectDetail listMember={listMember || []} onNavigate={onNavigate} project={projectInfo} />;
+    }
+
+    return (
+      <>
+        <View className="flex justify-center items-center h-full">
+          <Text className="p-16 text-center ">
+            Không tìm thấy dự án. Vui lòng thử lại.
+          </Text>
+        </View>
+      </>
+    );
+  };
+
+  return <>{renderContent()}</>;
 };
 
 export default ProjectDetailContainer;

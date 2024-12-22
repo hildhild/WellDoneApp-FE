@@ -1,5 +1,6 @@
 import { RootScreens } from "@/Screens";
-import { StatusType } from "@/Utils/constant";
+import { RootState } from "@/Store";
+import { Status, StatusType } from "@/Utils/constant";
 import { generateStatusText } from "@/Utils/Funtions/generate";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
@@ -23,11 +24,9 @@ import DropDownPicker from "react-native-dropdown-picker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { ProjectCreateForm } from "./ProjectCreateContainer";
 import { useSelector } from "react-redux";
-import { RootState } from "@/Store";
 import ViewGroups from "../ProjectEdit/ViewGroups";
-import { Status } from "@/Utils/constant";
+import { ProjectCreateForm } from "./ProjectCreateContainer";
 
 interface IProjectCreateProps {
   onNavigate: (screen: RootScreens) => void;
@@ -45,10 +44,15 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
     formState: { errors },
   } = useForm<ProjectCreateForm>();
   const [open, setOpen] = useState(false);
-  const [statusValue, setStatusValue] = useState<Status>(StatusType.NOT_STARTED as Status);
+  const [statusValue, setStatusValue] = useState<Status>(
+    StatusType.NOT_STARTED as Status
+  );
   const [timeHours, setTimeHours] = useState<number>(0);
   const [items, setItems] = useState([
-    { label: generateStatusText(StatusType.NOT_STARTED), value: StatusType.NOT_STARTED },
+    {
+      label: generateStatusText(StatusType.NOT_STARTED),
+      value: StatusType.NOT_STARTED,
+    },
     {
       label: generateStatusText(StatusType.IN_PROGRESS),
       value: StatusType.IN_PROGRESS,
@@ -189,17 +193,19 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
               name="project_group_member"
               render={({ field: { onChange } }) => (
                 <View className="flex-row flex-wrap mb-4">
-                  {convertIDToName(groupDisplay).slice(0, 3).map((member, index) => (
-                    <View
-                      key={index}
-                      className="bg-gray-200 rounded-full px-2 py-1 mr-2 mb-2 flex-row items-center"
-                    >
-                      <Text className="text-caption-bold mr-1">
-                        {String(member)}
-                      </Text>
-                      <AntDesign name="checkcircle" size={12} color="green" />
-                    </View>
-                  ))}
+                  {convertIDToName(groupDisplay)
+                    .slice(0, 3)
+                    .map((member, index) => (
+                      <View
+                        key={index}
+                        className="bg-gray-200 rounded-full px-2 py-1 mr-2 mb-2 flex-row items-center"
+                      >
+                        <Text className="text-caption-bold mr-1">
+                          {String(member)}
+                        </Text>
+                        <AntDesign name="checkcircle" size={12} color="green" />
+                      </View>
+                    ))}
                   {openViewGroups && (
                     <ViewGroups
                       listGroupId={group.map((item) => item.id)}
@@ -222,11 +228,11 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
             <AntDesign name="edit" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        {/* {errors.project_group_member && (
+        {errors.project_group_member && (
           <Text className="text-danger-600 text-caption-bold mb-2">
             {errors.project_group_member.message}
           </Text>
-        )} */}
+        )}
         <View className="flex-row p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
           <View className="mr-2 justify-center">
             <StatusIcon />
