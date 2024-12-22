@@ -27,7 +27,7 @@ export const Home = (props: IHomeProps) => {
   const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.profile.name);
   return (
-    <View className="bg-neutral-100 pt-8 h-full">
+    <View className="bg-neutral-100 pt-8 h-full px-5">
       <StatusBar style="auto" />
       {isLoading ? (
         <HStack space={2} justifyContent="center">

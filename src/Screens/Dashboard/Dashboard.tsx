@@ -68,7 +68,7 @@ export const Dashboard = (props: IDashboardProps) => {
             <Text className="text-2xl font-bold px-10 text-center text-black">Bảng điều kiển</Text>
           </View>
           <ScrollView 
-            className="px-6 py-3"
+            className="px-5 py-3"
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
