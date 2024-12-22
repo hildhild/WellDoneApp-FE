@@ -52,6 +52,11 @@ export interface Task {
   
 }
 
+export interface getGroupTaskRequest{
+  groupId: number,
+  token: string
+}
+
 
 const taskApi = API.injectEndpoints({
   endpoints: (build) => ({
@@ -64,10 +69,20 @@ const taskApi = API.injectEndpoints({
         },
       }),
     }),
+    getGroupTask: build.mutation<Task[] | ErrorResponse, getGroupTaskRequest>({
+      query: (request) => ({
+        url: `/tasks/group/${request.groupId}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
   useGetMyTaskMutation,
+  useGetGroupTaskMutation
 } = taskApi;

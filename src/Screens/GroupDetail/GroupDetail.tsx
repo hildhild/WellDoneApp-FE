@@ -17,14 +17,26 @@ import { LoadingProcess, SemiCircleProgress } from "@/Components";
 import { ProgressBar, MD3Colors } from 'react-native-paper';
 import { Dimensions } from "react-native";
 import {
+  BarChart,
   LineChart,
+  PieChart,
 } from "react-native-chart-kit";
 import { current } from "@reduxjs/toolkit";
 import { Member, useAddMemberMutation, useDeleteMemberMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { Dropdown } from 'react-native-element-dropdown';
+import { Task, useGetGroupTaskMutation } from "@/Services/task";
 
-const GroupGeneral = () => {
+const GroupGeneral = (props: {taskList: Task[]}) => {
   const curGroup = useSelector((state: any) => state.group.curGroup);
+  const taskCount = props.taskList.length;
+  const doneTaskCount = props.taskList.filter((task: any) => task.status === "DONE").length;
+  const toDoTaskCount = props.taskList.filter((task: any) => task.status === "TODO").length;
+  const inProgressTaskCount = props.taskList.filter((task: any) => task.status === "IN_PROGRESS").length;
+  const lowTaskCount = props.taskList.filter((task: any) => task.priority === "LOW").length;
+  const mediumTaskCount = props.taskList.filter((task: any) => task.priority === "MEDIUM").length;
+  const highTaskCount = props.taskList.filter((task: any) => task.priority === "HIGH").length;
+
+
 
   const chartConfig = {
     backgroundGradientFrom: "#F8FBF6",
@@ -35,53 +47,79 @@ const GroupGeneral = () => {
     useShadowColorFromDataset: false 
   };
   const screenWidth = Dimensions.get("window").width;
-  const data = {
-    labels: ["Tuần 1", "Tuần 2", "Tuần 3", "Tuần 4"],
+  const priorityData = {
+    labels: ["Thấp", "Trung bình", "Cao"],
     datasets: [
       {
-        data: [20, 45, 28, 80],
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // optional
-        strokeWidth: 2 // optional
+        data: [lowTaskCount, mediumTaskCount, highTaskCount],
+        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, 
+        strokeWidth: 2 
       }
     ],
-    legend: ["Nhiệm vụ"] // optional
   };
+
+  const statusData = [
+    {
+      name: "Mới",
+      population: toDoTaskCount,
+      color: "gray",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15
+    },
+    {
+      name: "Đang làm",
+      population: inProgressTaskCount,
+      color: "blue",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15
+    },
+    {
+      name: "Xong",
+      population: doneTaskCount,
+      color: "green",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15
+    },
+  ];
 
   return (
     <ScrollView className="w-full h-full">
-      <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Mô tả nhóm</Text>
+      <Text className="text-xl text-[#3F6212] font-semibold mb-3">Mô tả nhóm</Text>
       <Text className="text-xl mb-5">{curGroup.description}</Text>
-      <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Tháng 10</Text>
+      {/* <Text className="text-2xl text-[#3F6212] font-semibold mb-3">Tháng 10</Text> */}
       <View className="mb-5">
         <Text className="text-xl text-[#3F6212] font-semibold">Nhiệm vụ đã hoàn thành</Text>
         <View className="w-full flex items-center p-7">
           <SemiCircleProgress
-            percentage={35}
+            percentage={doneTaskCount/taskCount*100}
             progressColor={"#3F6212"}
             interiorCircleColor= "#F8FBF6"
             progressWidth= {30}
           >
-            <Text style={{ fontSize: 32, color: "black" }}>35%</Text>
+            <Text style={{ fontSize: 32, color: "black" }}>{doneTaskCount/taskCount*100}%</Text>
           </SemiCircleProgress>
         </View>
-        <Text className="text-lg text-[#3F6212] font-semibold mb-2">Thời hạn</Text>
-        <ProgressBar progress={0.5} color="#3F6212" className="mb-2"/>
-        <View className="flex flex-row justify-between">
-          <Text className="text-lime-800 font-semibold">01/10/2024</Text>
-          <Text className="text-lime-800 font-semibold">31/10/2024</Text>
-        </View>
       </View>
-      <View>
-        <Text className="text-xl text-[#3F6212] font-semibold mb-3">Tiến độ</Text>
-        <View className="flex flex-row justify-between mb-2">
-          <Text>Tổng 30 nhiệm vụ</Text>
-          <Text className="text-[#868686]">Tháng trước 50 nhiệm vụ</Text>
-        </View>
-        <LineChart
-          data={data}
+      <View className="mb-5">
+        <Text className="text-xl text-[#3F6212] font-semibold mb-3">Trạng thái nhiệm vụ</Text>
+        <PieChart
+          data={statusData}
           width={screenWidth}
-          height={220}
+          height={150}
           chartConfig={chartConfig}
+          accessor={"population"}
+          backgroundColor={"transparent"}
+          absolute
+        />
+      </View>
+      <View className="mb-8">
+        <Text className="text-xl text-[#3F6212] font-semibold mb-3">Độ ưu tiên nhiệm vụ</Text>
+        <BarChart
+          data={priorityData}
+          width={screenWidth}
+          height={300}
+          chartConfig={chartConfig}
+          verticalLabelRotation={30}
         />
       </View>
     </ScrollView>
@@ -381,7 +419,7 @@ const GroupMember = () => {
   )
 };
 
-const GroupTask = () => {
+const GroupTask = (props: {taskList: Task[]}) => {
   
   return (
     <ScrollView className="w-full h-full">
@@ -390,29 +428,64 @@ const GroupTask = () => {
         <Text className="text-white text-lg font-semibold">Thêm nhiệm vụ</Text>
       </Pressable>
       <View className="w-full flex-row justify-end mb-4">
-        <Text className="text-[#2C6E35] font-semibold text-lg">Tổng số: 1</Text>
+        <Text className="text-[#2C6E35] font-semibold text-lg">Tổng số: {props.taskList.length}</Text>
       </View>
-      <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8">
-        <View className="flex flex-row mb-3 items-center">
-          <View className="w-[15%]">
-            <Icon name="angle-double-up" size={35} color="red" />
+      {
+        props.taskList.map((task: any) => 
+          <View key={task.id} className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8">
+            <View className="flex flex-row mb-3 items-center">
+              {
+                task.priority === "LOW"
+                ?
+                <View className="w-[15%]">
+                  <Icon name="angle-down" size={35} color="blue" />
+                </View>
+                :
+                task.priority === "HIGH" 
+                ?
+                <View className="w-[15%]">
+                  <Icon name="angle-up" size={35} color="red" />
+                </View>
+                :
+                <View className="w-[15%]">
+                  <Icon name="minus" size={35} color="#fdc609" />
+                </View>
+              }
+              <View className="w-[75%]">
+                <Text className="text-lg font-bold text-[#30411A]">{task.title}</Text>
+                <Text className=" text-[#30411A]">Hạn: {new Date(task.dueDate).toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh",})}</Text>
+              </View>
+              <View className="w-[10%] flex items-end">
+                <Ionicons name="information-circle-outline" size={30} color="lime-900" />
+              </View>
+            </View>
+            <View className="flex flex-row justify-between items-center">
+              <Text className="font-semibold text-[#30411A]">{task.assignees.length > 1 ? task.assignees[0].name + ",..." : task.assignees[0].name}</Text>
+              {
+                task.status === "TODO"
+                ?
+                <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-gray-100">
+                  <Icon name="circle" size={10} color="#757575"/>
+                  <Text className="text-gray-600 font-semibold">Mới</Text>
+                </View>
+                :
+                task.status === "IN_PROGRESS" 
+                ?
+                <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-blue-100">
+                  <Icon name="circle" size={10} color="#1E88E5"/>
+                  <Text className="text-blue-600 font-semibold">Đang làm</Text>
+                </View>
+                :
+                <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-[#64b44a]">
+                  <Icon name="circle" size={10} color="#347928"/>
+                  <Text className="text-[#347928] font-semibold">Xong</Text>
+                </View>
+              }
+            </View>
           </View>
-          <View className="w-[75%]">
-            <Text className="text-lg font-bold text-[#30411A]">Design new dashboard UI.</Text>
-            <Text className=" text-[#30411A]">Hạn: 3/12/2024</Text>
-          </View>
-          <View className="w-[10%] flex items-end">
-            <Ionicons name="information-circle-outline" size={25} color="lime-900" />
-          </View>
-        </View>
-        <View className="flex flex-row justify-between items-center">
-          <Text className="font-semibold text-[#30411A]">Alice Johnson</Text>
-          <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-[#64b44a]">
-            <Icon name="circle" size={10} color="#347928"/>
-            <Text className="text-[#347928] font-semibold">Hoàn thành</Text>
-          </View>
-        </View>
-      </View>
+        )
+      }
+      
     </ScrollView>
 )};
 
@@ -423,11 +496,30 @@ export const GroupDetail = (props: {
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
   const curGroup = useSelector((state: any) => state.group.curGroup);
+  const [getGroupTaskApi, {isLoading}] = useGetGroupTaskMutation();
+  const [taskList, setTaskList] = useState<Task[]>([])
+
+  const getGroupTask = async () => {
+    const res = await getGroupTaskApi(
+      {
+        groupId: curGroup.id,
+        token: accessToken
+      }
+    ).unwrap();
+    if (Array.isArray(res)) {
+      setTaskList(res)
+    }
+  }
+
+  useEffect(()=> {
+    getGroupTask();
+  }, [])
 
   const [index, setIndex] = useState(0);
 
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <LoadingProcess isVisible={isLoading} />
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Chi tiết nhóm</Text>
       </View>
@@ -436,14 +528,14 @@ export const GroupDetail = (props: {
       </Pressable>
       <View className="w-full p-6">
           <View className="w-full mb-5">
-            <Text className="text-3xl font-semibold text-[#347928] mb-2">Dự án: Chưa tham gia</Text>
-            <Text className="text-3xl font-semibold text-[#347928]">Nhóm: {curGroup.name}</Text>
+            <Text className="text-2xl font-semibold text-[#347928] mb-2">Dự án: Chưa tham gia</Text>
+            <Text className="text-2xl font-semibold text-[#347928]">Nhóm: {curGroup.name}</Text>
           </View>
           <View className="h-[600px] overflow-hidden">
             <Tab
               value={index}
               onChange={(e) => setIndex(e)}
-              className="h-12 mb-3 border-[1px] border-[#D0D5DD] rounded-xl overflow-hidden"
+              className="h-12 mb-5 border-[1px] border-[#D0D5DD] rounded-xl overflow-hidden"
               indicatorStyle={{
                 backgroundColor: 'transparent',
               }}
@@ -502,13 +594,13 @@ export const GroupDetail = (props: {
             </Tab>
             <TabView value={index} onChange={setIndex} animationType="spring">
               <TabView.Item style={{ width: '100%' }}>
-                <GroupGeneral/>
+                <GroupGeneral taskList={taskList}/>
               </TabView.Item>
               <TabView.Item style={{ width: '100%' }}>
                 <GroupMember/>
               </TabView.Item>
               <TabView.Item style={{ width: '100%' }}>
-                <GroupTask/>
+                <GroupTask taskList={taskList}/>
               </TabView.Item>
             </TabView>
           </View>

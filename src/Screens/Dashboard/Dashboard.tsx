@@ -11,6 +11,7 @@ import { useGetProjectListMutation } from "@/Services/projects";
 import { useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { useGetMyTaskMutation } from "@/Services/task";
+import { LoadingProcess } from "@/Components";
 
 export interface IDashboardProps {
   onNavigate: (screen: RootScreens) => void;
@@ -61,6 +62,7 @@ export const Dashboard = (props: IDashboardProps) => {
 
   return (
     <View style={styles.container}>
+      <LoadingProcess isVisible={isLoading} />
       <StatusBar style="auto" />
         <View className="bg-[#F8FBF6] w-full h-full relative">
           <View className="w-full h-24 pb-4 flex justify-end items-center">
