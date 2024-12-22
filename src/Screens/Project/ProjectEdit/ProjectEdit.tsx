@@ -1,13 +1,17 @@
 import { RootScreens } from "@/Screens";
-import { IProjectDetail } from "@/Services/projects";
+import { GetDetailProjectResponse } from "@/Services/projects";
+import { RootState } from "@/Store";
 import { StatusType } from "@/Utils/constant";
 import { generateStatusText } from "@/Utils/Funtions/generate";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import ArrowDown from "assets/icons/ProjectEdit/arrowDown";
 import ArrowUp from "assets/icons/ProjectEdit/arrowUp";
 import GroupsIcon from "assets/icons/ProjectEdit/groupsIcon";
+import StatusIcon from "assets/icons/ProjectEdit/statusIcon";
 import React, { FC, useState } from "react";
 import { Controller, set, useForm } from "react-hook-form";
 import {
@@ -21,16 +25,12 @@ import {
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import StatusIcon from "assets/icons/ProjectEdit/statusIcon";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { useSelector } from "react-redux";
 import { ProjectEditForm } from "./ProjectEditContainer";
 import ViewGroups from "./ViewGroups";
 
 interface IProjectEditProps {
-  project: IProjectDetail;
+  project: GetDetailProjectResponse;
   onNavigate: (screen: RootScreens) => void;
   onEditProject: (data: ProjectEditForm) => void;
   isLoading: boolean;
@@ -47,7 +47,15 @@ const ProjectEdit: FC<IProjectEditProps> = ({
   error,
 }) => {
   const groupData = project.groups.map((group) => group.id);
+  const group = useSelector((state: RootState) => state.group.groupList);
   const navigation = useNavigation();
+
+  const [groupDisplay, setGroupDisplay] = useState<string[]>([]);
+  const convertIDToName = (id: string[]) => {
+    return group
+      .filter((item) => id.includes(item.id.toString()))
+      .map((item) => item.name);
+  };
   const {
     control,
     handleSubmit,
@@ -57,17 +65,18 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       project_name: project?.name || "",
       project_description: project?.description || "",
       project_group_member: groupData || [],
-      project_status: project?.status || StatusType.NEW,
-      project_sum_hours: project?.sum_hours || 0,
-      project_start_date: project?.start_date || "",
-      project_end_date: project?.end_date || "",
+      project_status: project?.status || StatusType.NOT_STARTED,
+      project_start_date: project?.startDate || "",
+      project_end_date: project?.endDate || "",
     },
   });
   const [open, setOpen] = useState(false);
-  const [statusValue, setStatusValue] = useState<string | null>(project.status);
-  const [timeHours, setTimeHours] = useState<number>(project.sum_hours);
+  const [statusValue, setStatusValue] = useState(project.status);
   const [items, setItems] = useState([
-    { label: generateStatusText(StatusType.NEW), value: StatusType.NEW },
+    {
+      label: generateStatusText(StatusType.NOT_STARTED),
+      value: StatusType.NOT_STARTED,
+    },
     {
       label: generateStatusText(StatusType.IN_PROGRESS),
       value: StatusType.IN_PROGRESS,
@@ -77,8 +86,8 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       value: StatusType.COMPLETED,
     },
   ]);
-  const [startDate, setStartDate] = useState(new Date(project.start_date));
-  const [endDate, setEndDate] = useState(new Date(project.end_date));
+  const [startDate, setStartDate] = useState(new Date(project.startDate));
+  const [endDate, setEndDate] = useState(new Date(project.endDate));
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [openViewGroups, setOpenViewGroups] = useState(false);
@@ -89,23 +98,10 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       project_description: data.project_description,
       project_group_member: data.project_group_member,
       project_status: data.project_status,
-      project_sum_hours: timeHours,
       project_start_date: data.project_start_date,
       project_end_date: data.project_end_date,
     };
     onEditProject(transformedData);
-  };
-  const handleChange = (text: string) => {
-    if (!text) {
-      setTimeHours(0);
-      return;
-    } else {
-      if (parseInt(text) < 0) {
-        setTimeHours(0);
-      } else {
-        setTimeHours(parseInt(text));
-      }
-    }
   };
 
   const renderItem = () => (
@@ -200,25 +196,28 @@ const ProjectEdit: FC<IProjectEditProps> = ({
               name="project_group_member"
               render={({ field: { onChange } }) => (
                 <View className="flex-row flex-wrap mb-4">
-                  {project?.groups.slice(0, 3).map((member, index) => (
-                    <View
-                      key={index}
-                      className="bg-gray-200 rounded-full px-2 py-1 mr-2 mb-2 flex-row items-center"
-                    >
-                      <Text className="text-caption-bold mr-1">
-                        {String(member.name)}
-                      </Text>
-                      <AntDesign name="checkcircle" size={12} color="green" />
-                    </View>
-                  ))}
+                  {convertIDToName(groupDisplay as string[])
+                    .slice(0, 3)
+                    .map((member: string, index: number) => (
+                      <View
+                        key={index}
+                        className="bg-gray-200 rounded-full px-2 py-1 mr-2 mb-2 flex-row items-center"
+                      >
+                        <Text className="text-caption-bold mr-1">
+                          {String(member)}
+                        </Text>
+                        <AntDesign name="checkcircle" size={12} color="green" />
+                      </View>
+                    ))}
                   {openViewGroups && (
                     <ViewGroups
+                      onNavigate={onNavigate}
                       listGroupId={groupData}
                       closeModal={() => setOpenViewGroups(false)}
-                      handleSave={(listGroupName) => {
+                      handleSave={(listGroupName: string[]) => {
                         setOpenViewGroups(false);
                         onChange(listGroupName);
-                        console.log(listGroupName)
+                        setGroupDisplay(listGroupName);
                       }}
                     />
                   )}
@@ -295,37 +294,6 @@ const ProjectEdit: FC<IProjectEditProps> = ({
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
           <View className="flex-row items-center mb-2">
             <Text className="text-caption-regular text-neutral-500">
-              Thời gian (Giờ)
-            </Text>
-            <Text className="text-danger-600"> *</Text>
-          </View>
-          <Controller
-            control={control}
-            name="project_sum_hours"
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                keyboardType="numeric"
-                value={timeHours.toString()}
-                onChange={(e) => {
-                  const text = e.nativeEvent.text;
-                  setTimeHours(parseInt(text));
-                  onChange(text);
-                  handleChange(text);
-                }}
-                placeholder="Nhập số giờ"
-                defaultValue={project?.sum_hours.toString()}
-              />
-            )}
-          />
-        </View>
-        {errors.project_sum_hours && (
-          <Text className="text-danger-600 text-caption-bold mb-2">
-            {errors.project_sum_hours.message}
-          </Text>
-        )}
-        <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
-          <View className="flex-row items-center mb-2">
-            <Text className="text-caption-regular text-neutral-500">
               Ngày bắt đầu
             </Text>
             <Text className="text-danger-600"> *</Text>
@@ -352,7 +320,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                       onChange={(event, selectedDate) => {
                         if (selectedDate) {
                           setStartDate(selectedDate);
-                          onChange(selectedDate);
+                          onChange(selectedDate.toISOString());
                         }
                         setShowStartDatePicker(false);
                       }}
@@ -404,7 +372,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                       onChange={(event, selectedDate) => {
                         if (selectedDate) {
                           setEndDate(selectedDate);
-                          onChange(selectedDate);
+                          onChange(selectedDate.toISOString());
                         }
                         setShowEndDatePicker(false);
                       }}
