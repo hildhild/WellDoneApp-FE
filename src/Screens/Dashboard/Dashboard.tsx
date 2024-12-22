@@ -81,11 +81,11 @@ export const Dashboard = (props: IDashboardProps) => {
               <Text className="font-semibold text-lg mb-3">Dự án tham gia</Text>
               <View className="flex flex-row border-b-[0.5px] border-neutral-300 py-3">
                 <View className="w-[80%]"><Text className="text-sm">Dự án</Text></View>
-                <View className="w-[20%]"><Text className="text-sm">Trạng thái</Text></View>
+                <View className="w-[20%]"><Text className="text-sm">Nhóm</Text></View>
               </View>
               {
                 projectList.map((project: any) => 
-                <View className="flex flex-row items-center justify-center border-b-[0.5px] border-neutral-300 py-3">
+                <View key={project.id} className="flex flex-row items-center justify-center border-b-[0.5px] border-neutral-300 py-3">
                   <View className="w-[15%]">
                     <Image
                       className="w-[35px] h-[35px] object-cover rounded-full border-[1px] border-black"
@@ -93,7 +93,7 @@ export const Dashboard = (props: IDashboardProps) => {
                     />
                   </View>
                   <View className="w-[65%]"><Text>{project.name}</Text></View>
-                  <View className="w-[20%]"><Text className="font-semibold text-xs">{project.status}</Text></View>
+                  <View className="w-[20%]"><Text className="font-semibold">Group</Text></View>
                 </View>
                 )
               }
