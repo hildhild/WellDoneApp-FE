@@ -8,15 +8,11 @@ import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setGroupList } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
-import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
-import { TextInput } from "react-native";
 import { StyleSheet } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { LoadingProcess } from "@/Components";
 import * as DocumentPicker from 'expo-document-picker';
-import { WebView } from 'react-native-webview';
-import * as FileSystem from 'expo-file-system';
+import { useUploadFileMutation } from "@/Services/document";
 
 export const Document = (props: {
   onNavigate: (string: RootScreens) => void;
@@ -24,21 +20,9 @@ export const Document = (props: {
   const navigation = useNavigation();
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
-  const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>([]);
-  const [groupData, setGroupData] = useState<{name: string, description: string}>({
-    name: "",
-    description: ""
-  });
-  const userList = useSelector((state: any) => state.userList.userList).map((user: User) => {
-    return {
-      label: user.name,
-      value: user.id
-    };
-  });
-  const [addGroupApi, {isLoading: addLoading}] = useAddGroupMutation();
-  const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
-  const [file, setFile] = useState<any | null>(null);
-  const [pdfBase64, setPdfBase64] = useState<any>(null);
+  const [uploadFileApi, {isLoading: uploadLoading}] = useUploadFileMutation();
+  const [fileUpload, setFileUpload] = useState<any | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const pickDocument = async () => {
     try {
@@ -48,16 +32,11 @@ export const Document = (props: {
       });
 
       if (!result.cancel) {
-        setFile(result.assets[0]);
-        try {
-          const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-          setPdfBase64(base64);
-        } catch {
-          console.log("không ra")
-        }
-        console.log(`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(result.assets[0].uri)}`)
+        const file = result.assets[0];
+        setFileUpload(file);
+        const response = await fetch(file.uri);
+        const blob = await response.blob(); 
+        setFile(new File([blob], file.name || 'unknown', { type: file.mimeType || 'application/octet-stream' }));
         console.log('File picked:', result);
       } else {
         console.log(result);
@@ -68,50 +47,38 @@ export const Document = (props: {
     }
   };
 
-  const handleCreateGroup = async () => {
-    try {
-      const response = await addGroupApi({
-        data: {
-          name: groupData.name,
-          description: groupData.description,
-          list_user_members: selectedUsers.map((user: any) => {return user.id;})
-        },
-        token: accessToken
-      }).unwrap();
-      if ("id" in response) {
-        Toast.success("Thêm thành công");
-        const groupsResponse = await getGroups(
-          accessToken
-        ).unwrap();
-        if (Array.isArray(groupsResponse)) {
-          dispatch(
-            setGroupList(groupsResponse)
-          );
-          navigation.goBack();
+  const handleUploadFile = async () => {
+    if (file) {
+      try {
+        console.log("vô")
+        const response = await uploadFileApi({
+          data: {
+            file: file,
+            task_id: 4
+          },
+          token: accessToken
+        }).unwrap();
+        console.log("ra")
+        if ("id" in response) {
+          Toast.success("Tải lên thành công");
         }
-        else if (groupsResponse.message === "Group not found") {
-          dispatch(
-            setGroupList([])
+      } catch (err) {
+        if (err && typeof err === "object" && "data" in err) {
+          const errorData = err as ErrorHandle;
+          Toast.error(
+            String(errorData.data.message),
+            "top"
           );
-        } else {
-          Toast.error("Lỗi")
         }
-      }
-    } catch (err) {
-      if (err && typeof err === "object" && "data" in err) {
-        const errorData = err as ErrorHandle;
-        Toast.error(
-          String(errorData.data.message),
-          "top"
-        );
       }
     }
+
   }
 
 
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <LoadingProcess isVisible={addLoading || getLoading}/>
+      <LoadingProcess isVisible={uploadLoading}/>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Tài liệu</Text>
       </View>
@@ -124,33 +91,14 @@ export const Document = (props: {
       <ScrollView className="w-full p-6">
         <Text>File đã tải lên:</Text>
         {
-          file 
+          fileUpload 
           && (
           <Text style={{ marginTop: 20 }}>
-            Selected File: {file.name} ({file.size} bytes)
+            Selected File: {fileUpload.name} ({fileUpload.size} bytes)
           </Text>
         )}
-        {
-          file
-          &&
-          pdfBase64
-          &&
-          <View>
-            <WebView
-              source={{ uri: pdfBase64 }}
-              style={{flex: 1}}
-            />
-          </View>
-          
-
-        }
-        <View className="my-8 bg-lime-800 p-8">
-          <WebView
-            source={{ uri: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }}
-            style={{flex: 1}}
-          />
-        </View>
-        <Text>{file?.uri}</Text>
+        <Text>{fileUpload?.uri}</Text>
+        <Pressable onPress={handleUploadFile} className="p-8 bg-lime-500 mb-5"><Text>Tải lên</Text></Pressable>
         <View className="rounded-2xl bg-white overflow-hidden">
           <View className="bg-lime-500 flex-row py-3 px-5 justify-between items-center">
             <View className="flex-row gap-3 items-center">

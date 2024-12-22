@@ -87,7 +87,7 @@ export const Dashboard = (props: IDashboardProps) => {
                     <View className="w-[15%]"><Text>{task.id}</Text></View>
                     <View className="w-[50%]"><Text>{task.title}</Text></View>
                     <View className={`w-[25%] rounded-full flex-row justify-center ${task.status === "TODO" ? "bg-gray-100" : "bg-blue-100"}`}><Text className={`text-sm font-semibold ${task.status === "TODO" ? "text-gray-600" : "text-blue-600"}`}>{task.status === "TODO" ? "Mới" : "Đang làm"}</Text></View>
-                    <View className="w-[10%] flex-row justify-center"><Icon name={task.priority === "HIGH" ? "angle-up" : task.status === "LOW" ? "angle-down" : "minus"} size={20} color={task.status === "red" ? "angle-up" : task.status === "blue" ? "angle-down" : "#fdc609"} /></View>
+                    <View className="w-[10%] flex-row justify-center"><Icon name={task.priority === "HIGH" ? "angle-up" : task.priority === "LOW" ? "angle-down" : "minus"} size={20} color={task.priority === "HIGH" ? "red" : task.priority === "blue" ? "angle-down" : "#fdc609"} /></View>
                   </View>
                 )
               }
