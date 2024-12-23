@@ -24,14 +24,11 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
-  const [createProject] = useCreateProjectMutation();
+  const [createProject, {isLoading: isCreateProjectLoading}] = useCreateProjectMutation();
   const token = useSelector((state: RootState) => state.profile.token);
   const dispatch = useDispatch();
   const handleCreateProject = useCallback(
     async (formData: ProjectCreateForm) => {
-      const convertGroupMemberFromStringToNumber = formData.project_group_member.map(
-        (group) => parseInt(group.toString())
-      );
       try {
         const response = await createProject({
           token: token,
@@ -41,7 +38,7 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
             startDate: formData.project_start_date,
             endDate: formData.project_end_date,
             status: formData.project_status,
-            groupIds: convertGroupMemberFromStringToNumber,
+            groupIds: formData.project_group_member,
           },
         }).unwrap();
         if (response && "id" in response) {
@@ -64,6 +61,7 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
     <ProjectCreate
       onNavigate={onNavigate}
       onCreateProject={handleCreateProject}
+      isCreateProjectLoading={isCreateProjectLoading}
     />
   );
 };

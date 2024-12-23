@@ -27,7 +27,7 @@ export const Project = (props: IProjectProps) => {
   const { data, isLoading } = props;
 
   return (
-    <View className="flex align-center justify-center bg-neutral-100 relative">
+    <View className="flex align-center justify-center bg-neutral-100 relative h-full">
       <StatusBar style="auto" />
       {isLoading ? (
         <HStack space={2} justifyContent="center">
