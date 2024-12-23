@@ -1,3 +1,3 @@
 export const Config = {
-  API_URL: "https://welldone-be.onrender.com/",
+  API_URL: "https://welldone-be-uvn3.onrender.com/",
 };
