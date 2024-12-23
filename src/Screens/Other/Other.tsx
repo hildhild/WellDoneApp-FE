@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { removeToken } from "@/Store/reducers";
 import { Toast } from "toastify-react-native";
 
+const MyIcon = Icon as unknown as React.ComponentType<any>;
+
 type MenuItem = {
   iconName: string;
   title: string;
@@ -106,7 +108,7 @@ export const Other = (props: {
         otherMenus.map((menu, index) => <View key={index}>
           {
             menu.map((submenu, index) => <Pressable key={index} className="relative bg-white w-full h-[47px] flex-row flex items-center px-10 border-b-[1px] border-neutral-300" onPress={submenu.pressFunc}>
-              <Icon name={submenu.iconName} size={25} color={`${submenu.title === "Đăng xuất" ? "#DC2626" : "#65A30D"}`}/>
+              <MyIcon name={submenu.iconName} size={25} color={`${submenu.title === "Đăng xuất" ? "#DC2626" : "#65A30D"}`}/>
               <Text className={`absolute left-24 text-2xl ${submenu.title === "Đăng xuất" ? "text-[#DC2626]" : "text-black"}`}>{submenu.title}</Text>
             </Pressable>)
           }

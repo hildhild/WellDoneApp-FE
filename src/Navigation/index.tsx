@@ -10,7 +10,8 @@ import {
   ProjectContainer,
   AddGroupContainer,
   RootScreens,
-  DocumentContainer
+  DocumentContainer,
+  TaskDetailContainer
 } from "@/Screens";
 import ForgotPasswordContainer from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
 import LogInContainer from "@/Screens/Authentication/LogIn/LogInContainer";
@@ -49,6 +50,7 @@ export type RootStackParamList = {
   [RootScreens.ADD_GROUP]: undefined;
   [RootScreens.PROJECTCREATE]: undefined;
   [RootScreens.DOCUMENT]: undefined;
+  [RootScreens.TASK_DETAIL]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -175,6 +177,11 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.DOCUMENT}
           component={DocumentContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.TASK_DETAIL}
+          component={TaskDetailContainer}
           options={{}}
         />
       </RootStack.Navigator>

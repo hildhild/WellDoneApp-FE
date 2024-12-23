@@ -47,8 +47,19 @@ export interface Task {
   "createdAt": string,
   "updatedAt": string,
   "createdById": number,
+  "projectId": number,
   "assignees": Assignee [],
-  "createdBy": User
+  "createdBy": User,
+  "project": {
+    "id": number,
+    "name": string,
+    "description": string,
+    "startDate": string,
+    "endDate": string,
+    "status": string,
+    "createdAt": string,
+    "updatedAt": string
+  }
   
 }
 

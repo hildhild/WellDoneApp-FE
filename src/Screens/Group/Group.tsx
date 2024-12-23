@@ -19,6 +19,9 @@ export interface IGroupProps {
   onNavigate: (screen: RootScreens) => void;
 }
 
+const MyIcon = Icon as unknown as React.ComponentType<any>;
+
+
 export const Group = (props: IGroupProps) => {
   const [editGroup, setEditGroup] = useState<boolean>(false);
   const [deleteGroup, setDeleteGroup] = useState<boolean>(false);
@@ -243,7 +246,7 @@ export const Group = (props: IGroupProps) => {
                       <>
                         <Pressable className="w-[42%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>{setEditGroup(true); setGroupGeneral({id: group.id, name: group.name, description: group.description})}}><Text className="text-[#2C6E35] text-lg font-semibold">Chỉnh sửa</Text></Pressable>
                         <Pressable className="w-[10%] flex justify-center items-center" onPress={()=>{setDeleteGroup(true); setGroupGeneral({id: group.id, name: group.name, description: group.description})}}>
-                          <Icon name="trash" color="red" size={30}/>
+                          <MyIcon name="trash" color="red" size={30}/>
                         </Pressable>
                       </>
                     

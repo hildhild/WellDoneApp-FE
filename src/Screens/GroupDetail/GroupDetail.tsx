@@ -22,6 +22,10 @@ import { current } from "@reduxjs/toolkit";
 import { Member, useAddMemberMutation, useDeleteMemberMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { Dropdown } from 'react-native-element-dropdown';
 import { Task, useGetGroupTaskMutation } from "@/Services/task";
+import Avatar from "@/Components/Avatar";
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
+const MyIonicons = Ionicons as unknown as React.ComponentType<any>;
 
 const GroupGeneral = (props: {taskList: Task[]}) => {
   const curGroup = useSelector((state: any) => state.group.curGroup);
@@ -108,6 +112,7 @@ const GroupGeneral = (props: {taskList: Task[]}) => {
           accessor={"population"}
           backgroundColor={"transparent"}
           absolute
+          paddingLeft="0"
         />
       </View>
       <View className="mb-8">
@@ -118,6 +123,8 @@ const GroupGeneral = (props: {taskList: Task[]}) => {
           height={300}
           chartConfig={chartConfig}
           verticalLabelRotation={30}
+          yAxisLabel=""
+          yAxisSuffix=""
         />
       </View>
     </ScrollView>
@@ -261,7 +268,7 @@ const GroupMember = () => {
                     setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
                   }}
                   renderLeftIcon={() => (
-                    <Icon color="black" name="search" size={15} />
+                    <MyIcon color="black" name="search" size={15} />
                   )}
                 />
                 <ScrollView className="h-[300px]">
@@ -274,7 +281,7 @@ const GroupMember = () => {
                             <Text className="text-xs text-lime-800 font-semibold">Thành viên</Text>
                           </View>
                           <Pressable onPress={() => setSelectedUsers((prevUsers) => prevUsers.filter((userItem) => userItem.id !== user.id))}>
-                            <Icon name="trash" size={20}/>
+                            <MyIcon name="trash" size={20}/>
                           </Pressable>
                         </View>
                       </View>
@@ -375,7 +382,7 @@ const GroupMember = () => {
         curGroup.role === "Leader"
         &&
         <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5" onPress={()=>setAddMember(true)}>
-          <Ionicons name="person-add-outline" color="white" size={25}/>
+          <MyIonicons name="person-add-outline" color="white" size={25}/>
           <Text className="text-white text-lg font-semibold">Thêm thành viên</Text>
         </Pressable>
       }
@@ -387,10 +394,7 @@ const GroupMember = () => {
           <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-8" key={mem.id}>
             <View className="flex flex-row mb-3 items-center">
               <View className="w-[15%]">
-                <Image
-                  className="w-[40px] h-[40px] object-cover rounded-full border-[1px] border-black"
-                  source={require('assets/dark-logo.png')}
-                />
+                <Avatar name={mem.name} width={40} height={40}/>
               </View>
               <View className="w-[85%]">
                 <Text className="text-lg font-bold text-[#30411A]">{mem.name}</Text>
@@ -399,14 +403,14 @@ const GroupMember = () => {
             </View>
             <View className="flex-row gap-3 justify-end items-center">
               <Pressable className="w-[47%] flex flex-row gap-1 justify-center items-center bg-[#4D7C0F] p-2 rounded-xl" onPress={()=>{setIsViewInfo(true); setCurMember(mem);}}>
-                <Ionicons name="information-circle-outline" color="white" size={20}/>
+                <MyIonicons name="information-circle-outline" color="white" size={20}/>
                 <Text className="text-[#fff] font-semibold">Xem thông tin</Text>
               </Pressable>
               {
                 curGroup.role === "Leader" && mem.role !== "Leader"
                 &&
                 <Pressable className="w-[10%] flex justify-center items-center" onPress={()=>{setDeleteMember(true); setCurMember(mem);}}>
-                  <Icon name="trash" color="red" size={30}/>
+                  <MyIcon name="trash" color="red" size={30}/>
                 </Pressable>
               }
             </View>
@@ -422,7 +426,7 @@ const GroupTask = (props: {taskList: Task[]}) => {
   return (
     <ScrollView className="w-full h-full">
       <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5">
-        <Ionicons name="add-circle-outline" color="white" size={25}/>
+        <MyIonicons name="add-circle-outline" color="white" size={25}/>
         <Text className="text-white text-lg font-semibold">Thêm nhiệm vụ</Text>
       </Pressable>
       <View className="w-full flex-row justify-end mb-4">
@@ -436,17 +440,17 @@ const GroupTask = (props: {taskList: Task[]}) => {
                 task.priority === "LOW"
                 ?
                 <View className="w-[15%]">
-                  <Icon name="angle-down" size={35} color="blue" />
+                  <MyIcon name="angle-down" size={35} color="blue" />
                 </View>
                 :
                 task.priority === "HIGH" 
                 ?
                 <View className="w-[15%]">
-                  <Icon name="angle-up" size={35} color="red" />
+                  <MyIcon name="angle-up" size={35} color="red" />
                 </View>
                 :
                 <View className="w-[15%]">
-                  <Icon name="minus" size={35} color="#fdc609" />
+                  <MyIcon name="minus" size={35} color="#fdc609" />
                 </View>
               }
               <View className="w-[75%]">
@@ -454,7 +458,7 @@ const GroupTask = (props: {taskList: Task[]}) => {
                 <Text className=" text-[#30411A]">Hạn: {new Date(task.dueDate).toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh",})}</Text>
               </View>
               <View className="w-[10%] flex items-end">
-                <Ionicons name="information-circle-outline" size={30} color="lime-900" />
+                <MyIonicons name="information-circle-outline" size={30} color="lime-900" />
               </View>
             </View>
             <View className="flex flex-row justify-between items-center">
@@ -463,19 +467,19 @@ const GroupTask = (props: {taskList: Task[]}) => {
                 task.status === "TODO"
                 ?
                 <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-gray-100">
-                  <Icon name="circle" size={10} color="#757575"/>
+                  <MyIcon name="circle" size={10} color="#757575"/>
                   <Text className="text-gray-600 font-semibold">Mới</Text>
                 </View>
                 :
                 task.status === "IN_PROGRESS" 
                 ?
                 <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-blue-100">
-                  <Icon name="circle" size={10} color="#1E88E5"/>
+                  <MyIcon name="circle" size={10} color="#1E88E5"/>
                   <Text className="text-blue-600 font-semibold">Đang làm</Text>
                 </View>
                 :
                 <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-[#64b44a]">
-                  <Icon name="circle" size={10} color="#347928"/>
+                  <MyIcon name="circle" size={10} color="#347928"/>
                   <Text className="text-[#347928] font-semibold">Xong</Text>
                 </View>
               }
@@ -522,7 +526,7 @@ export const GroupDetail = (props: {
         <Text className="text-2xl font-bold px-10 text-center text-black">Chi tiết nhóm</Text>
       </View>
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
-        <Icon name="chevron-left" size={15} color="#000" />
+        <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
       <View className="w-full p-6">
           <View className="w-full mb-5">

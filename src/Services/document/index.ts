@@ -59,6 +59,7 @@ export const getFormDataDocument = (request: UploadFileRequest): FormData => {
   const formData = new FormData();
   formData.append('file', request.data.file);
   formData.append('task_id', request.data.task_id.toString());
+  console.log("vô tới đây")
   return formData;
 };
 
@@ -74,13 +75,14 @@ const documentApi = API.injectEndpoints({
         },
       }),
     }),
-    getFile: build.mutation<any | ErrorResponse, GetFileRequest>({
+    getFile: build.mutation<Blob | ErrorResponse, GetFileRequest>({
       query: (request) => ({
         url: `/documents/${request.documentId}`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${request.token}`,
         },
+        responseHandler: (response) => response.blob(),
       }),
     }),
   }),

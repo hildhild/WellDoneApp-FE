@@ -8,7 +8,7 @@ interface AvatarProps {
   height?: number;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ name, width, height }) => {
+const Avatar: React.FC<AvatarProps> = ({ name, width = 32, height = 32 }) => {
   const getInitials = (name: string) => {
     const trimmedName = name.trim();
     if (trimmedName.length === 1) {
@@ -28,7 +28,7 @@ const Avatar: React.FC<AvatarProps> = ({ name, width, height }) => {
         backgroundColor: generatePastelColor(),
       }}
     >
-      <Text className={`text-neutral-900 ${width && width > 50 ? "text-3xl" : "text-xl"} font-bold text-caption-regular`}>
+      <Text className={`text-neutral-900 ${width > 50 ? "text-3xl" : "text-xl"} font-bold`}>
         {getInitials(name)}
       </Text>
     </View>
