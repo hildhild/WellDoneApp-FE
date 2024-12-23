@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { removeToken, setCurGroup, setCurTask, setGroupList, toggleRefetch } from "@/Store/reducers";
+import { removeToken, setCurGroup, setCurGroupProjectId, setCurTask, setGroupList, toggleRefetch } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { Tab, TabView } from '@rneui/themed';
 import { LoadingProcess, SemiCircleProgress } from "@/Components";
@@ -431,10 +431,11 @@ const GroupMember = () => {
 
 const GroupTask = (props: {taskList: Task[], onNavigate: (string: RootScreens) => void;}) => {
   const dispatch = useDispatch();
+  const curGroup = useSelector((state: any) => state.group.curGroup)
   
   return (
     <ScrollView className="w-full h-full">
-      <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5" onPress={()=>props.onNavigate(RootScreens.ADD_TASK)}>
+      <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5" onPress={()=>{props.onNavigate(RootScreens.ADD_TASK); dispatch(setCurGroupProjectId(curGroup.projectId))}}>
         <MyIonicons name="add-circle-outline" color="white" size={25}/>
         <Text className="text-white text-lg font-semibold">Thêm nhiệm vụ</Text>
       </Pressable>

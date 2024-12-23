@@ -79,6 +79,19 @@ export interface deleteTaskRequest {
   token: string
 }
 
+export interface addTaskRequest {
+  data: {
+    "title": string,
+    "description": string,
+    "dueDate": string,
+    "priority": string,
+    "status": string,
+    "assigneeIds": number [],
+    "projectId": number
+  },
+  token: string
+}
+
 
 const taskApi = API.injectEndpoints({
   endpoints: (build) => ({
@@ -118,6 +131,16 @@ const taskApi = API.injectEndpoints({
         },
       }),
     }),
+    addTask: build.mutation<Task | ErrorResponse, addTaskRequest>({
+      query: (request) => ({
+        url: `/tasks`,
+        method: "POST",
+        body: request.data,
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -126,5 +149,6 @@ export const {
   useGetMyTaskMutation,
   useGetGroupTaskMutation,
   useGetProjectTaskMutation,
-  useDeleteTaskMutation
+  useDeleteTaskMutation,
+  useAddTaskMutation
 } = taskApi;
