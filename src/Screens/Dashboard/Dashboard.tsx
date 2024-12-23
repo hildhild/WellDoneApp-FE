@@ -69,7 +69,7 @@ export const Dashboard = (props: IDashboardProps) => {
       <StatusBar style="auto" />
         <View className="bg-[#F8FBF6] w-full h-full relative">
           <View className="w-full h-24 pb-4 flex justify-end items-center">
-            <Text className="text-2xl font-bold px-10 text-center text-black">Bảng điều kiển</Text>
+            <Text className="text-2xl font-bold px-10 text-center text-black">Bảng điều khiển</Text>
           </View>
           <ScrollView 
             className="px-5 py-3"

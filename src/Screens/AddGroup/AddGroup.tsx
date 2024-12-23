@@ -124,8 +124,11 @@ export const AddGroup = (props: {
             placeholder="Chọn thành viên"
             searchPlaceholder="Tìm kiếm..."
             onChange={item => {
-              setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
-            }}
+              if (selectedUsers.filter((user: any) => user.id === item.value).length > 0) {
+                Toast.error("Thành viên đã được chọn")
+              } else {
+                setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
+            }}}
             renderLeftIcon={() => (
               <MyIcon color="black" name="search" size={15} />
             )}

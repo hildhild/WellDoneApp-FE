@@ -1,7 +1,7 @@
 import { RootStackParamList } from "@/Navigation";
 import { ErrorHandle, useLogInMutation } from "@/Services";
 import { useGetProfileMutation, useGetUserListMutation } from "@/Services/profile";
-import { setGroupList, setProfile, setToken, setUserList } from "@/Store/reducers";
+import { setGroupList, setProfile, setProjectList, setToken, setUserList } from "@/Store/reducers";
 import {
   renderErrorMessageResponse,
   renderSuccessMessageResponse,
@@ -13,6 +13,7 @@ import { Toast } from "toastify-react-native";
 import { RootScreens } from "../..";
 import LogIn from "./LogIn";
 import { useGetGroupsMutation } from "@/Services/group";
+import { useGetProjectListMutation } from "@/Services/projects";
 
 export interface LogInForm {
   email: string;
@@ -29,6 +30,7 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
   const [getProfile] = useGetProfileMutation();
   const [getUserList] = useGetUserListMutation();
   const [getGroups] = useGetGroupsMutation();
+  const [getProjectsApi] = useGetProjectListMutation();
   const dispatch = useDispatch();
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
@@ -89,6 +91,16 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         if (Array.isArray(userListRes)) {
           dispatch(
             setUserList(userListRes)
+          );
+        }
+        const projectListRes = await getProjectsApi(
+          {
+            token: response.access_token
+          }
+        ).unwrap();
+        if (Array.isArray(projectListRes)) {
+          dispatch(
+            setProjectList(projectListRes)
           );
         }
       }

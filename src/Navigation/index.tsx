@@ -12,7 +12,8 @@ import {
   RootScreens,
   DocumentContainer,
   TaskDetailContainer,
-  StatisticContainer
+  StatisticContainer,
+  AddTaskContainer
 } from "@/Screens";
 import ForgotPasswordContainer from "@/Screens/Authentication/ForgotPassword/ForgotPasswordContainer";
 import LogInContainer from "@/Screens/Authentication/LogIn/LogInContainer";
@@ -53,6 +54,7 @@ export type RootStackParamList = {
   [RootScreens.DOCUMENT]: undefined;
   [RootScreens.TASK_DETAIL]: undefined;
   [RootScreens.STATISTIC]: undefined;
+  [RootScreens.ADD_TASK]: undefined;
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -189,6 +191,11 @@ const ApplicationNavigator = () => {
         <RootStack.Screen
           name={RootScreens.STATISTIC}
           component={StatisticContainer}
+          options={{}}
+        />
+        <RootStack.Screen
+          name={RootScreens.ADD_TASK}
+          component={AddTaskContainer}
           options={{}}
         />
       </RootStack.Navigator>
