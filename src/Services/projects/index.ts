@@ -14,7 +14,7 @@ export interface CreateProjectRequest {
     description: string;
     startDate: string;
     endDate: string;
-    status: string;
+    status: Status;
     groupIds: number[];
   };
 }
@@ -42,12 +42,11 @@ export interface GetProjectListResponse {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: Status;
   createdAt: string;
   updatedAt: string;
   groups: GroupCreateProject[];
   userGroups: UserGroup[];
-  progress?: number;
 }
 
 export interface Project {
@@ -56,7 +55,7 @@ export interface Project {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: Status;
   createdAt: string;
   updatedAt: string;
   groups: GroupCreateProject[];
@@ -72,7 +71,7 @@ export interface GetProjectListItem {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: Status;
   createdAt: string;
   updatedAt: string;
   groups: Group[];

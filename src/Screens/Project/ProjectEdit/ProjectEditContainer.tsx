@@ -25,7 +25,7 @@ export interface ProjectEditForm {
   project_name: string;
   project_description: string;
   project_group_member: number[];
-  project_status: string;
+  project_status: Status;
   project_start_date: string;
   project_end_date: string;
 }

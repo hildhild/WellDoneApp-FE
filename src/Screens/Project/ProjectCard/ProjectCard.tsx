@@ -2,7 +2,6 @@ import Avatar from "@/Components/Avatar";
 import AvatarStack from "@/Components/AvatarStack";
 import MembersModal from "@/Components/MembersModal";
 import {
-  CreateProjectResponse,
   GetMemOfProjectResponse,
   GetProjectListResponse,
 } from "@/Services/projects";
@@ -15,7 +14,6 @@ import {
 } from "@expo/vector-icons";
 import React, { memo, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import * as Progress from "react-native-progress";
 
 interface ProjectCardProps {
   listMember: GetMemOfProjectResponse;
@@ -97,16 +95,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         />
       )}
 
-      <View className="flex-col ml-auto mt-4 items-end">
-        <Progress.Bar
-          progress={project.progress ?? 0 / 100}
-          width={50}
-          height={2}
-          borderRadius={100}
-          unfilledColor="#e5e5e5"
-          color="#0a0a0a"
-        />
-      </View>
     </View>
   );
 };

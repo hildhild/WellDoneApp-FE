@@ -1,3 +1,4 @@
+import { Priority } from "@/Utils/constant";
 import { API } from "../base";
 import { User } from "../group";
 
@@ -42,7 +43,7 @@ export interface Task {
   "title": string,
   "description": string,
   "dueDate": string,
-  "priority": string,
+  "priority": Priority,
   "status": string,
   "createdAt": string,
   "updatedAt": string,
