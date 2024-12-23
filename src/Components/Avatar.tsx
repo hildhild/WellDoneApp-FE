@@ -15,20 +15,20 @@ const Avatar: React.FC<AvatarProps> = ({ name, width, height }) => {
       return trimmedName.toUpperCase();
     }
     const nameParts = trimmedName.split(" ");
-    const initials = nameParts[0].slice(0, 2).toUpperCase();
+    const initials = nameParts[0].slice(0, 1).toUpperCase();
     return initials;
   };
 
   return (
     <View
-      className="border border-neutral-300 rounded-full flex items-center justify-center"
+      className="rounded-full flex items-center justify-center"
       style={{
         width: width ?? 32,
         height: height ?? 32,
         backgroundColor: generatePastelColor(),
       }}
     >
-      <Text className="text-neutral-900 text-caption-regular">
+      <Text className={`text-neutral-900 ${width && width > 50 ? "text-3xl" : "text-xl"} font-bold text-caption-regular`}>
         {getInitials(name)}
       </Text>
     </View>

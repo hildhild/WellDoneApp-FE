@@ -13,6 +13,7 @@ import { RootState } from "@/Store";
 import { Group as GroupType, useDeleteGroupMutation, useGetGroupsMutation, useUpdateGroupMutation } from "@/Services/group";
 import { Toast } from "toastify-react-native";
 import { setCurGroup, setGroupList } from "@/Store/reducers";
+import Avatar from "@/Components/Avatar";
 
 export interface IGroupProps {
   onNavigate: (screen: RootScreens) => void;
@@ -208,10 +209,11 @@ export const Group = (props: IGroupProps) => {
                 <View className="bg-[#DCFCE7] rounded-xl p-5 mb-8" key={group.id}>
                   <View className="flex flex-row mb-5 items-center">
                     <View className="w-[40%]">
-                      <Image
+                      {/* <Image
                         className="w-[60px] h-[60px] object-cover rounded-full border-[1px] border-black"
                         source={require('assets/dark-logo.png')}
-                      />
+                      /> */}
+                      <Avatar name={group.name} width={60} height={60}/>
                     </View>
                     <View className="w-[60%]">
                       {/* <Text className="text-[#2C6E35] font-semibold mb-3">Đang thực hiện: 12</Text> */}

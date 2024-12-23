@@ -44,9 +44,14 @@ export interface UploadFileResponse {
 
 export interface UploadFileRequest {
   data: {
-    file: File,
+    file: any,
     task_id: number,
   },
+  token: string
+}
+
+export interface GetFileRequest {
+  documentId: number, 
   token: string
 }
 
@@ -54,7 +59,6 @@ export const getFormDataDocument = (request: UploadFileRequest): FormData => {
   const formData = new FormData();
   formData.append('file', request.data.file);
   formData.append('task_id', request.data.task_id.toString());
-  console.log(formData);
   return formData;
 };
 
@@ -70,10 +74,20 @@ const documentApi = API.injectEndpoints({
         },
       }),
     }),
+    getFile: build.mutation<any | ErrorResponse, GetFileRequest>({
+      query: (request) => ({
+        url: `/documents/${request.documentId}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
   useUploadFileMutation,
+  useGetFileMutation
 } = documentApi;

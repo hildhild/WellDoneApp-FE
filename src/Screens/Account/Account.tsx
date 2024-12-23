@@ -12,6 +12,7 @@ import { useChangePasswordMutation, useUpdateProfileMutation } from "@/Services/
 import { removeToken, setProfile } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
+import Avatar from "@/Components/Avatar";
 
 
 export const Account = (props: {
@@ -140,11 +141,12 @@ export const Account = (props: {
       </Pressable>
       <ScrollView>
         <View className="w-full flex justify-end items-center p-6">
-          <Image
+          {/* <Image
             className="w-[100px] h-[100px] object-cover rounded-full border-[1px] border-black mb-3"
             source={require('assets/dark-logo.png')}
-          />
-          <Text className="font-bold text-xl">{profile.name}</Text>
+          /> */}
+          <Avatar name={profile.name} width={100} height={100}/>
+          <Text className="font-bold text-xl mt-3">{profile.name}</Text>
           <Text className="text-[#ababab] text-lg">{profile.email}</Text>
           <View className="w-full mb-4">
               <Text className="mb-3 font-semibold text-neutral-500">Họ và tên:</Text>
