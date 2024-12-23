@@ -6,11 +6,12 @@ import {
 } from "@/Services/projects";
 import { RootState } from "@/Store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useCallback } from "react";
 import { Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import ProjectDetail from "./ProjectDetail";
 import { useProjectMembers } from "@/Screens/Home";
+import { useGetProjectTaskMutation, Task } from "@/Services/task";
 
 type ProjectDetailScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
@@ -25,36 +26,54 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
 
   const [projectInfo, setProjectInfo] =
     useState<GetDetailProjectResponse | null>(null);
+  const [taskList, setTaskList] = useState<Task[] | null>(null);
   const [getDetailProject, { isLoading }] = useGetDetailProjectMutation();
+  const [getTaskList, {isLoading: isTaskFetchingLoading}] = useGetProjectTaskMutation();
   const listMember = useProjectMembers(projectId, token);
   const onNavigate = (screen: RootScreens) => navigation.navigate(screen);
 
-  const fetchProjectInfo = async () => {
+  const fetchProjectInfo = useCallback(async () => {
     if (projectId && token) {
       const response = await getDetailProject({ projectId, token }).unwrap();
       if ("name" in response) {
         setProjectInfo(response);
       }
     }
-  };
+  }, [projectId, token, getDetailProject]);
+
+  const fetchTaskList = useCallback(async () => {
+    if (projectId && token) {
+      const response = await getTaskList({ projectId, token }).unwrap();
+      if (Array.isArray(response) && response.length > 0) {
+        setTaskList(response);
+      }
+    }
+  }, [projectId, token, getTaskList]);
 
   useEffect(() => {
     fetchProjectInfo();
-  }, [projectId, token, getDetailProject]);
+    fetchTaskList();
+  }, [projectId, token, fetchProjectInfo, fetchTaskList]);
 
   const renderContent = () => {
-    if (isLoading) return (
-      <>
-        <View className="flex justify-center items-center h-full">
-          <Text className="p-16 text-center ">
-            Loading...
-          </Text>
-        </View>
-      </>
-    );
+    if (isLoading || isTaskFetchingLoading)
+      return (
+        <>
+          <View className="flex justify-center items-center h-full">
+            <Text className="p-16 text-center ">Loading...</Text>
+          </View>
+        </>
+      );
 
-    if (projectInfo) {
-      return <ProjectDetail listMember={listMember || []} onNavigate={onNavigate} project={projectInfo} />;
+    if (projectInfo && listMember && taskList) {
+      return (
+        <ProjectDetail
+        taskList={taskList}
+          listMember={listMember}
+          onNavigate={onNavigate}
+          project={projectInfo}
+        />
+      );
     }
 
     return (

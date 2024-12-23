@@ -18,18 +18,7 @@ export interface CreateProjectRequest {
     groupIds: number[];
   };
 }
-export interface CreateProjectResponse {
-  id: number;
-  name: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  status: Status;
-  createdAt: string;
-  updatedAt: string;
-  groups: GroupCreateProject[];
-  progress?: number;
-}
+export interface CreateProjectResponse extends GetProjectListItem {}
 
 export interface GroupCreateProject {
   id: number;
@@ -126,12 +115,12 @@ export interface GetMemOfProjectRequest {
 
 export type GetMemOfProjectResponse = Member[];
 export interface Member {
-  id: number;
-  name: string;
-  email: string;
-  dateofbirth?: string;
-  updatedAt: string;
-  role: string;
+  dateofbirth?: string 
+  email: string
+  id: number
+  name: string
+  role: string
+  updatedAt: string
 }
 
 export interface AddGroupToProjectRequest {

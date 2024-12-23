@@ -1,32 +1,36 @@
 import CheckBox from "@/Components/CheckBox";
 import { RootScreens } from "@/Screens";
+import { Group } from "@/Services/group";
 import { RootState } from "@/Store";
 import { AntDesign } from "@expo/vector-icons";
-import React, { FC, memo, useState } from "react";
+import React, { FC, memo, useCallback, useState } from "react";
 import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 interface IViewGroupsProps {
   listGroupId: number[];
   closeModal: () => void;
-  handleSave: (listGroupName: string[]) => void;
+  handleSave: (listGroupName: number[]) => void;
   onNavigate: (screen: RootScreens) => void;
 }
 
 const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
   const groupList = useSelector((state: RootState) => state.group.groupList);
+  const filteredGroupList = groupList.filter(
+    (group: Group) => group.role === "Leader"
+  );
   const checkGroup = (groupId: number) => {
     return props.listGroupId.includes(groupId);
   };
 
-  const transformedGroupList = groupList.map((group) => ({
-    id: group.id.toString(),
+  const transformedGroupList = filteredGroupList.map((group: Group) => ({
+    id: group.id,
     name: group.name,
     selected: checkGroup(group.id),
   }));
 
   const [groups, setGroups] = useState(transformedGroupList);
 
-  const toggleSelection = (id: string) => {
+  const toggleSelection = (id: number) => {
     setGroups((prevGroups) =>
       prevGroups.map((group) =>
         group.id === id ? { ...group, selected: !group.selected } : group
@@ -65,7 +69,7 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
           </View>
           <FlatList
             data={groups}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             className="mb-3"
             renderItem={({ item }) => (
               <View className="p-3 bg-[#FBFCFB]">

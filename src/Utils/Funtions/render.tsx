@@ -7,13 +7,15 @@ import Png from "assets/documentType/png";
 import Ppt from "assets/documentType/ppt";
 import Xls from "assets/documentType/xls";
 import Zip from "assets/documentType/zip";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Priority, Role, Status } from "../constant";
 
 export const renderErrorMessageResponse = (
   responseString: string | string[]
 ) => {
-  const regex = /^Groups (\d+(, \d+)*) are already associated with other projects$/;
+  const regex =
+    /^Groups (\d+(, \d+)*) are already associated with other projects$/;
   if (
     (Array.isArray(responseString) &&
       "name must be longer than or equal to 2 characters" in responseString) ||
@@ -90,7 +92,7 @@ export const renderErrorMessageResponse = (
     responseString ===
     "You must be a leader in at least one of the specified groups"
   ) {
-    return "Hãy tạo nhóm mới trước khi tạo dự án bạn nhé!";
+    return "Chức vụ của bạn không phù hợp để thực hiện tác vụ này!";
   } else {
     return "Đã xảy ra lỗi, vui lòng thử lại!";
   }
@@ -120,7 +122,7 @@ export const renderSuccessMessageResponse = (
   }
 };
 
-export const renderStatusLabel = (status: string) => {
+export const renderStatusLabel = (status: Status) => {
   if (status === "COMPLETED") {
     return (
       <Text className="text-caption-bold font-medium text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
@@ -168,16 +170,33 @@ export const renderDocumentTypeIcon = (
   }
 };
 
-export const renderPriorityIcon = (priority: string) => {
-  if (priority === "High") {
+export const renderPriorityIcon = (priority: Priority) => {
+  if (priority === "HIGH") {
     return (
       <MaterialIcons name="keyboard-double-arrow-up" size={25} color="red" />
     );
   }
-  if (priority === "Medium") {
+  if (priority === "MEDIUM") {
     return <MaterialIcons name="keyboard-arrow-up" size={25} color="red" />;
   }
-  if (priority === "Low") {
+  if (priority === "LOW") {
     return <MaterialIcons name="arrow-drop-up" size={25} color="green" />;
+  }
+};
+
+export const renderRoleLabel = (role: Role) => {
+  if (role === "Leader") {
+    return (
+      <View className="flex-row items-center bg-primary-100 px-2 py-1 rounded-full">
+        <Text className="text-body-small-bold text-primary-500">Leader</Text>
+      </View>
+    );
+  }
+  if (role === "Member") {
+    return (
+      <View className="flex-row items-center bg-secondary-200 px-2 py-1 rounded-full">
+        <Text className="text-body-small-bold text-secondary-500">Member</Text>
+      </View>
+    );
   }
 };

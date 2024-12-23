@@ -50,10 +50,10 @@ const ProjectEdit: FC<IProjectEditProps> = ({
   const group = useSelector((state: RootState) => state.group.groupList);
   const navigation = useNavigation();
 
-  const [groupDisplay, setGroupDisplay] = useState<string[]>([]);
-  const convertIDToName = (id: string[]) => {
+  const [groupDisplay, setGroupDisplay] = useState<number[]>(groupData);
+  const convertIDToName = (id: number[]) => {
     return group
-      .filter((item) => id.includes(item.id.toString()))
+      .filter((item) => id.includes(item.id))
       .map((item) => item.name);
   };
   const {
@@ -97,7 +97,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       project_name: data.project_name,
       project_description: data.project_description,
       project_group_member: data.project_group_member,
-      project_status: data.project_status,
+      project_status: statusValue,
       project_start_date: data.project_start_date,
       project_end_date: data.project_end_date,
     };
@@ -196,7 +196,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
               name="project_group_member"
               render={({ field: { onChange } }) => (
                 <View className="flex-row flex-wrap mb-4">
-                  {convertIDToName(groupDisplay as string[])
+                  {convertIDToName(groupDisplay)
                     .slice(0, 3)
                     .map((member: string, index: number) => (
                       <View
@@ -214,10 +214,11 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                       onNavigate={onNavigate}
                       listGroupId={groupData}
                       closeModal={() => setOpenViewGroups(false)}
-                      handleSave={(listGroupName: string[]) => {
+                      handleSave={(listGroupName: number[]) => {
                         setOpenViewGroups(false);
                         onChange(listGroupName);
                         setGroupDisplay(listGroupName);
+                        console.log(listGroupName);
                       }}
                     />
                   )}

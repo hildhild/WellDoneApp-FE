@@ -25,7 +25,7 @@ export interface ProjectEditForm {
   project_name: string;
   project_description: string;
   project_group_member: number[];
-  project_status: Status;
+  project_status: string;
   project_start_date: string;
   project_end_date: string;
 }
@@ -50,12 +50,7 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
   const [getDetailProject, { isLoading: isGetDetailProjectLoading }] =
     useGetDetailProjectMutation();
 
-  const [deleteGroupFromProject] = useDeleteGroupFromProjectMutation();
-
   const handleEditProject = async (formData: ProjectEditForm) => {
-    const convertGroupMemberFromStringToNumber =
-      formData.project_group_member.map((group) => parseInt(group.toString()));
-
     try {
       const response = await editProject({
         token: token,
@@ -65,7 +60,7 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
           startDate: formData.project_start_date,
           endDate: formData.project_end_date,
           status: formData.project_status,
-          groupIds: convertGroupMemberFromStringToNumber,
+          groupIds: formData.project_group_member,
         },
         id: projectId!,
       }).unwrap();
@@ -75,7 +70,6 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
         navigation.navigate(RootScreens.PROJECTDETAIL);
       }
     } catch (err) {
-      console.log(err);
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as ErrorHandle;
         Toast.error(

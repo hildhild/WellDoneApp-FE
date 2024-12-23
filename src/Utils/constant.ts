@@ -31,7 +31,9 @@ export type DocumentType =
   | "xlsx"
   | "zip"
   | "jpg";
-export type Priority = "High" | "Medium" | "Low";
+export type Priority = "HIGH" | "MEDIUM" | "LOW";
+
+export type Role = "Leader" | "Member";
 
 // export const dataa: IProjectDetail = {
 //   id: "001",
