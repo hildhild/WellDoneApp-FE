@@ -5,20 +5,20 @@ import {
   renderStatusLabel,
 } from "@/Utils/Funtions/render";
 import { useNavigation } from "@react-navigation/native";
-import React, { FC, memo } from "react";
+import React, { FC, memo, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { RootScreens } from "@/Screens";
 import { useDispatch } from "react-redux";
-import { setProjectId } from "@/Store/reducers";
+import { setCurProject, setProjectId } from "@/Store/reducers";
 import {
-  CreateProjectResponse,
+  Project,
   GetMemOfProjectResponse,
 } from "@/Services/projects";
 interface IProjectDetailProps {
   listMember: GetMemOfProjectResponse;
   onNavigate: (screen: RootScreens) => void;
-  project: CreateProjectResponse;
+  project: Project;
 }
 
 const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
@@ -27,6 +27,10 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
   const flatGroupsList = props.listMember
     .map((member) => member.name)
     .join(", ");
+
+  useEffect(()=> {
+    dispatch(setCurProject(props.project))
+  }, [])
   return (
     <View className="bg-white h-full mt-8">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
@@ -66,7 +70,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
           {renderStatusLabel(props.project.status)}
         </View>
         <View className="flex-row justify-end">
-          <TouchableOpacity className="flex-row items-center bg-primary-500 p-2 w-28 text-neutral-100 text-body-small-regular rounded-lg mt-4">
+          <TouchableOpacity className="flex-row items-center bg-primary-500 p-2 w-28 text-neutral-100 text-body-small-regular rounded-lg mt-4" onPress={()=>props.onNavigate(RootScreens.STATISTIC)}>
             <Foundation name="graph-bar" size={24} color="black" />
             <Text> Thống kê</Text>
           </TouchableOpacity>

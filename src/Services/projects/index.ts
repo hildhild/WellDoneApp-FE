@@ -61,6 +61,20 @@ export interface GetProjectListResponse {
   progress?: number;
 }
 
+export interface Project {
+  id: number;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  groups: GroupCreateProject[];
+  userGroups: UserGroup[];
+  progress?: number;
+}
+
 export type GetProjectList = CreateProjectResponse[];
 export interface EditProjectResponse extends GetProjectListItem {}
 export interface GetProjectListItem {
@@ -135,7 +149,7 @@ const projectApi = API.injectEndpoints({
       }),
     }),
     getProjectList: build.mutation<
-      GetProjectListResponse | ErrorResponse,
+      GetProjectListResponse[] | ErrorResponse,
       GetProjectListRequest
     >({
       query: (projectListData) => ({

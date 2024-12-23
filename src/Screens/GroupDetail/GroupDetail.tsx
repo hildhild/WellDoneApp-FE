@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { removeToken, setCurGroup, setGroupList } from "@/Store/reducers";
+import { removeToken, setCurGroup, setCurTask, setGroupList } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { Tab, TabView } from '@rneui/themed';
 import { LoadingProcess, SemiCircleProgress } from "@/Components";
@@ -421,7 +421,8 @@ const GroupMember = () => {
   )
 };
 
-const GroupTask = (props: {taskList: Task[]}) => {
+const GroupTask = (props: {taskList: Task[], onNavigate: (string: RootScreens) => void;}) => {
+  const dispatch = useDispatch();
   
   return (
     <ScrollView className="w-full h-full">
@@ -457,9 +458,9 @@ const GroupTask = (props: {taskList: Task[]}) => {
                 <Text className="text-lg font-bold text-[#30411A]">{task.title}</Text>
                 <Text className=" text-[#30411A]">Hạn: {new Date(task.dueDate).toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh",})}</Text>
               </View>
-              <View className="w-[10%] flex items-end">
+              <Pressable className="w-[10%] flex items-end" onPress={() => {dispatch(setCurTask(task)); props.onNavigate(RootScreens.TASK_DETAIL);}}>
                 <MyIonicons name="information-circle-outline" size={30} color="lime-900" />
-              </View>
+              </Pressable>
             </View>
             <View className="flex flex-row justify-between items-center">
               <Text className="font-semibold text-[#30411A]">{task.assignees.length > 1 ? task.assignees[0].name + ",..." : task.assignees[0].name}</Text>
@@ -602,7 +603,7 @@ export const GroupDetail = (props: {
                 <GroupMember/>
               </TabView.Item>
               <TabView.Item style={{ width: '100%' }}>
-                <GroupTask taskList={taskList}/>
+                <GroupTask taskList={taskList} onNavigate={props.onNavigate}/>
               </TabView.Item>
             </TabView>
           </View>

@@ -8,10 +8,11 @@ import { RootScreens } from "..";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Image } from "react-native";
 import { useGetProjectListMutation } from "@/Services/projects";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { useGetMyTaskMutation } from "@/Services/task";
 import { LoadingProcess } from "@/Components";
+import { setCurTask } from "@/Store/reducers";
 
 export interface IDashboardProps {
   onNavigate: (screen: RootScreens) => void;
@@ -26,6 +27,7 @@ export const Dashboard = (props: IDashboardProps) => {
   const [projectList, setProjectList] = useState<any>([]);
   const [myTaskList, setMyTaskList] = useState<any>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useDispatch();
 
   const getProjectList = async () => {
     const res = await getProjectsApi({
@@ -85,12 +87,15 @@ export const Dashboard = (props: IDashboardProps) => {
               </View>
               {
                 myTaskList.map((task: any) => 
-                  <View key={task.id} className="flex flex-row items-center justify-center border-b-[0.5px] border-neutral-300 py-3">
+                  <Pressable key={task.id} className="flex flex-row items-center justify-center border-b-[0.5px] border-neutral-300 py-3" onPress={()=> {
+                    dispatch(setCurTask(task));
+                    props.onNavigate(RootScreens.TASK_DETAIL);
+                  }}>
                     <View className="w-[15%]"><Text>{task.id}</Text></View>
                     <View className="w-[50%]"><Text>{task.title}</Text></View>
                     <View className={`w-[25%] rounded-full flex-row justify-center ${task.status === "TODO" ? "bg-gray-100" : "bg-blue-100"}`}><Text className={`text-sm font-semibold ${task.status === "TODO" ? "text-gray-600" : "text-blue-600"}`}>{task.status === "TODO" ? "Mới" : "Đang làm"}</Text></View>
                     <View className="w-[10%] flex-row justify-center"><MyIcon name={task.priority === "HIGH" ? "angle-up" : task.priority === "LOW" ? "angle-down" : "minus"} size={20} color={task.priority === "HIGH" ? "red" : task.priority === "blue" ? "angle-down" : "#fdc609"} /></View>
-                  </View>
+                  </Pressable>
                 )
               }
               {
@@ -125,9 +130,6 @@ export const Dashboard = (props: IDashboardProps) => {
                 </View>
               }
             </View>
-            <Pressable onPress={() => props.onNavigate(RootScreens.TASK_DETAIL)} className="mb-32 bg-lime-200 p-4">
-              <Text>Nhiệm vụ</Text>
-            </Pressable>
           </ScrollView>
         </View>
     </View>

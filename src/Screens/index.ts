@@ -11,6 +11,7 @@ import { GroupDetailContainer } from "./GroupDetail";
 import { AddGroupContainer } from "./AddGroup";
 import { DocumentContainer } from "./Document";
 import { TaskDetailContainer } from "./TaskDetail";
+import { StatisticContainer } from "./Statistic";
 
 export enum RootScreens {
   MAIN = "Main",
@@ -32,6 +33,7 @@ export enum RootScreens {
   PROJECTCREATE = "ProjectCreate",
   DOCUMENT = "Document",
   TASK_DETAIL = "TaskDetail",
+  STATISTIC = "Statistic"
 }
 
 export {
@@ -46,6 +48,7 @@ export {
   GroupDetailContainer,
   AddGroupContainer,
   DocumentContainer,
-  TaskDetailContainer
+  TaskDetailContainer,
+  StatisticContainer
 };
 
