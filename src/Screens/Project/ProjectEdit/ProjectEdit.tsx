@@ -1,3 +1,4 @@
+import { LoadingProcess } from "@/Components";
 import { RootScreens } from "@/Screens";
 import { GetDetailProjectResponse } from "@/Services/projects";
 import { RootState } from "@/Store";
@@ -106,6 +107,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
 
   const renderItem = () => (
     <View className="px-4 pt-8">
+      <LoadingProcess isVisible={isLoading} />
       <View className="flex-row justify-between items-center mb-6">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons

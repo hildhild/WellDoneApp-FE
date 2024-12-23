@@ -94,7 +94,7 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
   }, [projectId, token]);
 
   const renderContent = () => {
-    if (isEditing || isGetDetailProjectLoading) return <Text>Loading...</Text>;
+    if (isGetDetailProjectLoading) return <Text>Loading...</Text>;
 
     if (!projectId || !projectInfo) {
       return (
