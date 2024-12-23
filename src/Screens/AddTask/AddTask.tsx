@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, Modal, KeyboardAvoidingView, Platform } from "react-native";
 import { Button, ScrollView } from "native-base";
 import { RootScreens } from "..";
@@ -6,7 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setProjectList } from "@/Store/reducers";
+import { setCurGroupProjectId, setProjectList, toggleRefetch } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { TextInput } from "react-native";
@@ -16,6 +17,7 @@ import { Group, Member, useAddGroupMutation, useGetGroupsMutation, User } from "
 import { LoadingProcess } from "@/Components";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Project, useGetMemOfProjectMutation } from "@/Services/projects";
+import { useAddTaskMutation } from "@/Services/task";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
 
@@ -26,10 +28,6 @@ export const AddTask = (props: {
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
   const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>([]);
-  const [groupData, setGroupData] = useState<{name: string, description: string}>({
-    name: "",
-    description: ""
-  });
   const [userList, setUserList] = useState<any>([])
   const projectList = useSelector((state: any) => state.project.projectList).map((project: Project) => {
     return {
@@ -37,9 +35,10 @@ export const AddTask = (props: {
       value: project.id
     };
   });
-  const [addGroupApi, {isLoading: addLoading}] = useAddGroupMutation();
+  const [addTaskApi, {isLoading: addLoading}] = useAddTaskMutation();
   const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
   const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
+  const curGroupProjectId = useSelector((state: any) => state.group.curGroupProjectId);
   const [formData, setFormData] = useState<any>({
     "title": "",
     "description": "",
@@ -47,38 +46,28 @@ export const AddTask = (props: {
     "priority": "HIGH",
     "status": "TODO",
     "assigneeIds": [],
-    "projectId": null
+    "projectId": curGroupProjectId
   }
   )
-  const [getProjectMemberApi, {isLoading: getMemberLoading}] = useGetMemOfProjectMutation()
+  const [getProjectMemberApi, {isLoading: getMemberLoading}] = useGetMemOfProjectMutation();
 
-  const handleCreateGroup = async () => {
+  const handleCreateTask = async () => {
     try {
-      const response = await addGroupApi({
-        data: {
-          name: groupData.name,
-          description: groupData.description,
-          list_user_members: selectedUsers.map((user: any) => {return user.id;})
-        },
+      const response = await addTaskApi({
+        data: formData,
         token: accessToken
       }).unwrap();
       if ("id" in response) {
-        Toast.success("Thêm thành công");
-        const groupsResponse = await getGroups(
+        const response = await getGroups(
           accessToken
         ).unwrap();
-        if (Array.isArray(groupsResponse)) {
+        if (Array.isArray(response)) {
+          Toast.success("Thêm thành công");
           dispatch(
-            setProjectList(groupsResponse)
+            toggleRefetch()
           );
+          dispatch(setCurGroupProjectId(null));
           navigation.goBack();
-        }
-        else if (groupsResponse.message === "Group not found") {
-          dispatch(
-            setProjectList([])
-          );
-        } else {
-          Toast.error("Lỗi")
         }
       }
     } catch (err) {
@@ -101,7 +90,7 @@ export const AddTask = (props: {
   const getProjectMember = async (projectId: number) => {
     try {
       const response = await getProjectMemberApi({
-        projectId: formData.projectId,
+        projectId: projectId,
         token: accessToken
       }).unwrap();
       if (Array.isArray(response)) {
@@ -122,6 +111,12 @@ export const AddTask = (props: {
       }
     }
   }
+
+  useEffect(()=> {
+    if (curGroupProjectId) {
+      getProjectMember(curGroupProjectId);
+    }
+  }, [])
 
 
   return (
@@ -156,7 +151,7 @@ export const AddTask = (props: {
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
         <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
-      <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
+      <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={handleCreateTask}>
         <MyIcon name="save" size={20} color="#000" />
       </Pressable>
       <ScrollView className="w-full p-6">
@@ -194,8 +189,8 @@ export const AddTask = (props: {
             placeholder="Chọn dự án"
             searchPlaceholder="Tìm kiếm..."
             onChange={item => {
-                setFormData({...formData, projectId: parseInt(item.value)});
-                getProjectMember(parseInt(item.value));
+              setFormData({...formData, projectId: parseInt(item.value)});
+              getProjectMember(parseInt(item.value));
             }}
             renderLeftIcon={() => (
               <MyIcon name="folder" size={20} color="#84cc16"/>
@@ -248,15 +243,15 @@ export const AddTask = (props: {
             data={[
               {
                 label: "Mới",
-                value: "MỚI"
+                value: "TODO"
               },
               {
                 label: "Đang làm",
-                value: "MỚI"
+                value: "IN_PROGRESS"
               },
               {
-                label: "Mới",
-                value: "MỚI"
+                label: "Xong",
+                value: "DONE"
               }
             ]}
             maxHeight={300}
@@ -264,14 +259,12 @@ export const AddTask = (props: {
             valueField="value"
             placeholder="Chọn trạng thái"
             onChange={item => {
-              if (selectedUsers.filter((user: any) => user.id === item.value).length > 0) {
-                Toast.error("Thành viên đã được chọn")
-              } else {
-                setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
-            }}}
+              setFormData({...formData, status: item.value});
+            }}
             renderLeftIcon={() => (
               <MyIcon color="#84cc16" name="line-chart" size={20} />
             )}
+            value={formData.status}
           />
           <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">Độ ưu tiên</Text>
           <Dropdown
@@ -280,25 +273,34 @@ export const AddTask = (props: {
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
             iconStyle={styles.iconStyle}
-            data={userList}
-            search
+            data={[
+              {
+                label: "Cao",
+                value: "HIGH"
+              },
+              {
+                label: "Trung bình",
+                value: "MEDIUM"
+              },
+              {
+                label: "Thấp",
+                value: "LOW"
+              }
+            ]}
             maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder="Chọn thành viên"
-            searchPlaceholder="Tìm kiếm..."
+            placeholder="Chọn độ ưu tiên"
             onChange={item => {
-              if (selectedUsers.filter((user: any) => user.id === item.value).length > 0) {
-                Toast.error("Thành viên đã được chọn")
-              } else {
-                setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
-            }}}
+              setFormData({...formData, priority: item.value});
+            }}
             renderLeftIcon={() => (
-              <MyIcon color="black" name="search" size={15} />
+              <MyIcon color="#84cc16" name="sort-amount-desc" size={20} />
             )}
+            value={formData.priority}
           />
           <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">Hạn</Text>
-          <View className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white flex-row" >
+          <View className="mb-16 text-neutral-700 text-body-base-regular rounded-xl p-4 border-[1px] border-gray-300 bg-white flex-row" >
               <TextInput
                 placeholder="Ngày sinh"
                 editable={false}
@@ -318,8 +320,6 @@ export const AddTask = (props: {
             </Pressable>
           </View>
         </View>
-        
-
       </ScrollView>
     </KeyboardAvoidingView>
     

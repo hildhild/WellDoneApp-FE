@@ -3,7 +3,7 @@ import MembersModal from "@/Components/MembersModal";
 import { RootScreens } from "@/Screens";
 import { GetMemOfProjectResponse, Project } from "@/Services/projects";
 import { Task } from "@/Services/task";
-import { setCurProject, setProjectId } from "@/Store/reducers";
+import { setCurProject, setCurTask, setProjectId } from "@/Store/reducers";
 import { renderPriorityIcon, renderStatusLabel } from "@/Utils/Funtions/render";
 import {
   AntDesign,
@@ -13,7 +13,7 @@ import {
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, memo, useEffect } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 interface IProjectDetailProps {
   listMember: GetMemOfProjectResponse;
@@ -33,7 +33,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
     dispatch(setCurProject(props.project));
   }, []);
   return (
-    <View className="bg-white h-full mt-8">
+    <View className="bg-white h-full mt-8 px-4">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
@@ -105,7 +105,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
             <Text className="text-body-small-regular text-neutral-500">
               Tasks
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>props.onNavigate(RootScreens.ADD_TASK)}>
               <Text className="text-body-small-regular text-neutral-500">
                 Thêm nhiệm vụ
               </Text>
@@ -114,9 +114,13 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
 
           <ScrollView className="p-4">
             {props.taskList.map((task) => (
-              <View
+              <Pressable
                 key={task.id}
-                className="flex-row items-center bg-neutral-100 p-3 rounded-lg mb-2"
+                className="flex-row items-center bg-neutral-100 py-3 rounded-lg mb-2"
+                onPress={()=> {
+                  dispatch(setCurTask(task));
+                  props.onNavigate(RootScreens.TASK_DETAIL);
+                }}
               >
                 <View
                   className={`w-10 h-10 rounded-full items-center justify-center mr-4`}
@@ -149,8 +153,9 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                   display="row"
                 />
                 {renderPriorityIcon(task.priority)}
-              </View>
+              </Pressable>
             ))}
+            <View className="mb-16"></View>
           </ScrollView>
         </View>
       </ScrollView>
