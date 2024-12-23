@@ -31,7 +31,6 @@ const ProjectCardContainer: FC<IProjectCardContainerProps> = ({
   const token = useSelector((state: RootState) => state.profile.token);
   const [deleteProject] = useDeleteProjectMutation();
   const listMember = useProjectMembers(project.id, token);
-
   const handleDeleteProject = useCallback(
     async (projectId: number) => {
       const response = await deleteProject({ projectId, token });

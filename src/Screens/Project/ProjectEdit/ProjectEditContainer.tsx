@@ -2,6 +2,7 @@ import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "@/Screens";
 import {
   GetDetailProjectResponse,
+  useDeleteGroupFromProjectMutation,
   useEditProjectMutation,
   useGetDetailProjectMutation,
 } from "@/Services/projects";
@@ -13,7 +14,7 @@ import {
   renderSuccessMessageResponse,
 } from "@/Utils/Funtions/render";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
@@ -50,8 +51,6 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
     useGetDetailProjectMutation();
 
   const handleEditProject = async (formData: ProjectEditForm) => {
-    const convertGroupMemberFromStringToNumber =
-      formData.project_group_member.map((group) => parseInt(group.toString()));
     try {
       const response = await editProject({
         token: token,
@@ -61,7 +60,7 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
           startDate: formData.project_start_date,
           endDate: formData.project_end_date,
           status: formData.project_status,
-          groupIds: convertGroupMemberFromStringToNumber,
+          groupIds: formData.project_group_member,
         },
         id: projectId!,
       }).unwrap();
@@ -95,7 +94,7 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
   }, [projectId, token]);
 
   const renderContent = () => {
-    if (isEditing || isGetDetailProjectLoading) return <Text>Loading...</Text>;
+    if (isGetDetailProjectLoading) return <Text>Loading...</Text>;
 
     if (!projectId || !projectInfo) {
       return (

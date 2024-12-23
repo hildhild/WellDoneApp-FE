@@ -14,22 +14,11 @@ export interface CreateProjectRequest {
     description: string;
     startDate: string;
     endDate: string;
-    status: string;
+    status: Status;
     groupIds: number[];
   };
 }
-export interface CreateProjectResponse {
-  id: number;
-  name: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  status: Status;
-  createdAt: string;
-  updatedAt: string;
-  groups: GroupCreateProject[];
-  progress?: number;
-}
+export interface CreateProjectResponse extends GetProjectListItem {}
 
 export interface GroupCreateProject {
   id: number;
@@ -53,12 +42,11 @@ export interface GetProjectListResponse {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: Status;
   createdAt: string;
   updatedAt: string;
   groups: GroupCreateProject[];
   userGroups: UserGroup[];
-  progress?: number;
 }
 
 export interface Project {
@@ -67,7 +55,7 @@ export interface Project {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: Status;
   createdAt: string;
   updatedAt: string;
   groups: GroupCreateProject[];
@@ -83,7 +71,7 @@ export interface GetProjectListItem {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: Status;
   createdAt: string;
   updatedAt: string;
   groups: Group[];
@@ -126,13 +114,29 @@ export interface GetMemOfProjectRequest {
 
 export type GetMemOfProjectResponse = Member[];
 export interface Member {
-  id: number;
-  name: string;
-  email: string;
-  dateofbirth?: string;
-  updatedAt: string;
-  role: string;
+  dateofbirth?: string 
+  email: string
+  id: number
+  name: string
+  role: string
+  updatedAt: string
 }
+
+export interface AddGroupToProjectRequest {
+  projectId: number;
+  token: string;
+  data: {
+    groupId: number;
+  };
+}
+
+export interface DeleteGroupFromProjectRequest {
+  projectId: number;
+  groupId: number;
+  token: string;
+}
+
+export interface DeleteGroupFromResponse extends GetProjectListItem {}
 const projectApi = API.injectEndpoints({
   endpoints: (build) => ({
     createProject: build.mutation<
@@ -216,6 +220,28 @@ const projectApi = API.injectEndpoints({
         },
       }),
     }),
+    // addGroupToProject: build.mutation<AddGroupToProjectResponse | ErrorResponse, AddGroupToProjectRequest>({
+    //   query: (addGroupToProjectData) => ({
+    //     url: `/projects/${addGroupToProjectData.projectId}/groups`,
+    //     method: "POST",
+    //     body: addGroupToProjectData.data,
+    //     headers: {
+    //       Authorization: `Bearer ${addGroupToProjectData.token}`,
+    //     },
+    //   }),
+    // }),
+    deleteGroupFromProject: build.mutation<
+      DeleteGroupFromResponse | ErrorResponse,
+      DeleteGroupFromProjectRequest
+    >({
+      query: (deleteGroupFromProjectData) => ({
+        url: `/projects/${deleteGroupFromProjectData.projectId}/groups/${deleteGroupFromProjectData.groupId}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${deleteGroupFromProjectData.token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -226,4 +252,5 @@ export const {
   useEditProjectMutation,
   useCreateProjectMutation,
   useGetMemOfProjectMutation,
+  useDeleteGroupFromProjectMutation,
 } = projectApi;

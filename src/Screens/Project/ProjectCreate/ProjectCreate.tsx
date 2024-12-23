@@ -25,15 +25,18 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { useSelector } from "react-redux";
 import ViewGroups from "../ProjectEdit/ViewGroups";
 import { ProjectCreateForm } from "./ProjectCreateContainer";
+import { LoadingProcess } from "@/Components";
 
 interface IProjectCreateProps {
   onNavigate: (screen: RootScreens) => void;
   onCreateProject: (data: ProjectCreateForm) => void;
+  isCreateProjectLoading: boolean;
 }
 
 const ProjectCreate: FC<IProjectCreateProps> = ({
   onNavigate,
   onCreateProject,
+  isCreateProjectLoading,
 }) => {
   const navigation = useNavigation();
   const {
@@ -45,7 +48,6 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
   const [statusValue, setStatusValue] = useState<Status>(
     StatusType.NOT_STARTED as Status
   );
-  const [timeHours, setTimeHours] = useState<number>(0);
   const [items, setItems] = useState([
     {
       label: generateStatusText(StatusType.NOT_STARTED),
@@ -65,39 +67,34 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const group = useSelector((state: RootState) => state.group.groupList);
-  const convertIDToName = (id: string[]) => {
+  const convertIDToName = (id: number[]) => {
     return group
-      .filter((item) => id.includes(item.id.toString()))
+      .filter((item) => id.includes(item.id))
       .map((item) => item.name);
   };
   const [openViewGroups, setOpenViewGroups] = useState(false);
-  const [groupDisplay, setGroupDisplay] = useState<string[]>([]);
+  const [groupDisplay, setGroupDisplay] = useState<number[]>([]);
   const onSubmit = (data: ProjectCreateForm) => {
     const transformedData: ProjectCreateForm = {
       project_name: data.project_name,
       project_description: data.project_description,
       project_group_member: data.project_group_member,
       project_status: statusValue,
-      project_start_date: data.project_start_date === undefined ? new Date().toISOString() : data.project_start_date,
-      project_end_date: data.project_end_date === undefined ? new Date().toISOString() : data.project_end_date,
+      project_start_date:
+        data.project_start_date === undefined
+          ? new Date().toISOString()
+          : data.project_start_date,
+      project_end_date:
+        data.project_end_date === undefined
+          ? new Date().toISOString()
+          : data.project_end_date,
     };
     onCreateProject(transformedData);
-  };
-  const handleChange = (text: string) => {
-    if (!text) {
-      setTimeHours(0);
-      return;
-    } else {
-      if (parseInt(text) < 0) {
-        setTimeHours(0);
-      } else {
-        setTimeHours(parseInt(text));
-      }
-    }
   };
 
   const renderItem = () => (
     <View className="px-4 pt-8">
+      <LoadingProcess isVisible={isCreateProjectLoading} />
       <View className="flex-row justify-between items-center mb-6">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons

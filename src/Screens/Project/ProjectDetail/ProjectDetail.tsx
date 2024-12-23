@@ -1,24 +1,25 @@
 import AvatarStack from "@/Components/AvatarStack";
+import MembersModal from "@/Components/MembersModal";
+import { RootScreens } from "@/Screens";
+import { GetMemOfProjectResponse, Project } from "@/Services/projects";
+import { Task } from "@/Services/task";
+import { setCurProject, setProjectId } from "@/Store/reducers";
+import { renderPriorityIcon, renderStatusLabel } from "@/Utils/Funtions/render";
 import {
-  renderDocumentTypeIcon,
-  renderPriorityIcon,
-  renderStatusLabel,
-} from "@/Utils/Funtions/render";
+  AntDesign,
+  Foundation,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, memo, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
-import { RootScreens } from "@/Screens";
 import { useDispatch } from "react-redux";
-import { setCurProject, setProjectId } from "@/Store/reducers";
-import {
-  Project,
-  GetMemOfProjectResponse,
-} from "@/Services/projects";
 interface IProjectDetailProps {
   listMember: GetMemOfProjectResponse;
   onNavigate: (screen: RootScreens) => void;
   project: Project;
+  taskList: Task[];
 }
 
 const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
@@ -27,10 +28,10 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
   const flatGroupsList = props.listMember
     .map((member) => member.name)
     .join(", ");
-
-  useEffect(()=> {
-    dispatch(setCurProject(props.project))
-  }, [])
+  const [openModal, setOpenModal] = React.useState(false);
+  useEffect(() => {
+    dispatch(setCurProject(props.project));
+  }, []);
   return (
     <View className="bg-white h-full mt-8">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
@@ -70,7 +71,10 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
           {renderStatusLabel(props.project.status)}
         </View>
         <View className="flex-row justify-end">
-          <TouchableOpacity className="flex-row items-center bg-primary-500 p-2 w-28 text-neutral-100 text-body-small-regular rounded-lg mt-4" onPress={()=>props.onNavigate(RootScreens.STATISTIC)}>
+          <TouchableOpacity
+            className="flex-row items-center bg-primary-500 p-2 w-28 text-neutral-100 text-body-small-regular rounded-lg mt-4"
+            onPress={() => props.onNavigate(RootScreens.STATISTIC)}
+          >
             <Foundation name="graph-bar" size={24} color="black" />
             <Text> Thống kê</Text>
           </TouchableOpacity>
@@ -78,7 +82,16 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         <Text className="text-body-small-regular text-neutral-500  mt-4">
           Thành viên
         </Text>
-        <AvatarStack users={flatGroupsList.split(",")} display="row" />
+        <TouchableOpacity onPress={() => setOpenModal(true)}>
+          <AvatarStack users={flatGroupsList.split(",")} display="row" />
+        </TouchableOpacity>
+        {openModal && (
+          <MembersModal
+            projectName={props.project.name}
+            members={props.listMember}
+            closeModal={() => setOpenModal(false)}
+          />
+        )}
 
         <Text className="text-body-small-regular text-neutral-500 mt-4">
           Mô tả dự án
@@ -87,20 +100,6 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
           {props.project.description}
         </Text>
 
-        <Text className="text-body-small-regular text-neutral-500  mt-4">
-          Tài liệu
-        </Text>
-        {/* <ScrollView horizontal className="flex-row">
-          <View className="flex-row mt-2 space-x-4">
-            {props.project.documents.map((doc) => (
-              <TouchableOpacity key={doc.id}>
-                <View className="items-center w-20 h-20">
-                  {renderDocumentTypeIcon(doc.type)}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView> */}
         <View className="mt-6">
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-body-small-regular text-neutral-500">
@@ -113,48 +112,46 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
             </TouchableOpacity>
           </View>
 
-          {/* <ScrollView className="p-4">
-            {props.project.tasks.map((task) => (
+          <ScrollView className="p-4">
+            {props.taskList.map((task) => (
               <View
                 key={task.id}
                 className="flex-row items-center bg-neutral-100 p-3 rounded-lg mb-2"
               >
                 <View
-                  className={`w-6 h-6 rounded-full items-center justify-center mr-4`}
+                  className={`w-10 h-10 rounded-full items-center justify-center mr-4`}
                 >
-                  {task.status === "completed" && (
-                    <AntDesign name="checkcircle" size={20} color="green" />
+                  {task.status === "DONE" && (
+                    <AntDesign name="checkcircle" size={25} color="green" />
                   )}
-                  {(task.status === "in_progress" || task.status === "new") && (
-                    <AntDesign name="checkcircleo" size={20} color="black" />
+                  {(task.status === "IN_PROGRESS" || task.status === "TODO") && (
+                    <AntDesign name="checkcircleo" size={25} color="black" />
                   )}
                 </View>
 
                 <View className="flex-1">
                   <View className="flex-col">
                     <Text className="font-medium text-neutral-900">
-                      {task.name}
+                      {task.title}
                     </Text>
-                    <Text className="text-sm text-neutral-500">
-                      #{task.task_code}
-                    </Text>
+                    <Text className="text-sm text-neutral-500">#{task.id}</Text>
                   </View>
                   <View className="flex-row items-center">
-                    <IonIcons name="flag-outline" size={20} color="black" />
+                    <Ionicons name="flag-outline" size={20} color="black" />
                     <Text className="text-sm text-neutral-500">
-                      {task.sum_hours} hr
+                      {task.dueDate}
                     </Text>
                   </View>
                 </View>
                 <AvatarStack
-                  users={task.members.map((member) => member.name)}
+                  users={task.assignees.map((member) => member.name)}
                   maxVisible={2}
                   display="row"
                 />
                 {renderPriorityIcon(task.priority)}
               </View>
             ))}
-          </ScrollView> */}
+          </ScrollView>
         </View>
       </ScrollView>
     </View>

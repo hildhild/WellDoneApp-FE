@@ -1,7 +1,10 @@
 import Avatar from "@/Components/Avatar";
 import AvatarStack from "@/Components/AvatarStack";
 import { i18n, LocalizationKey } from "@/Localization";
-import { CreateProjectResponse, GetMemOfProjectResponse } from "@/Services/projects";
+import {
+  CreateProjectResponse,
+  GetMemOfProjectResponse,
+} from "@/Services/projects";
 import { RootState } from "@/Store";
 import { setProjectId } from "@/Store/reducers";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -13,6 +16,7 @@ import * as Progress from "react-native-progress";
 import { useDispatch, useSelector } from "react-redux";
 import { RootScreens } from "..";
 import FeedItemContainer from "./FeedItem/FeedItemContainer";
+import MembersModal from "@/Components/MembersModal";
 
 export interface IHomeProps {
   listMember: GetMemOfProjectResponse | null;
@@ -26,6 +30,7 @@ export const Home = (props: IHomeProps) => {
   const flatGroupsList = listMember?.map((item) => item.name).join(", ");
   const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.profile.name);
+  const [openModal, setOpenModal] = React.useState(false);
   return (
     <View className="bg-neutral-100 pt-8 h-full px-5">
       <StatusBar style="auto" />
@@ -85,16 +90,8 @@ export const Home = (props: IHomeProps) => {
                   {data?.name}
                 </Text>
                 <View className="flex-row items-center space-x-4 p-4">
-                  <Progress.Bar
-                    progress={(data?.progress ?? 0) / 100}
-                    width={200}
-                    height={15}
-                    borderRadius={100}
-                    unfilledColor="#f87171"
-                    color="#fee2e2"
-                  />
-                  <Text className="text-primary-200 text-body-base-bold ml-2 mb-4">
-                    {data?.progress}%
+                  <Text className="text-neutral-100 text-body-base-bold ml-2 mb-4">
+                    {data?.description}
                   </Text>
                 </View>
                 <View className="flex-row items-center space-x-4 p-2">
@@ -119,10 +116,18 @@ export const Home = (props: IHomeProps) => {
                   </TouchableOpacity>
                 </View>
               </View>
-
-              <AvatarStack
-                users={flatGroupsList ? flatGroupsList.split(",") : []}
-              />
+              <TouchableOpacity onPress={() => setOpenModal(true)}>
+                <AvatarStack
+                  users={flatGroupsList ? flatGroupsList.split(",") : []}
+                />
+              </TouchableOpacity>
+              {openModal && (
+                <MembersModal
+                  projectName={data?.name ?? ""}
+                  members={listMember ?? []}
+                  closeModal={() => setOpenModal(false)}
+                />
+              )}
             </View>
           </View>
         </>
