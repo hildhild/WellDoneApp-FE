@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { removeToken, setCurGroup, setCurTask, setGroupList } from "@/Store/reducers";
+import { removeToken, setCurGroup, setCurTask, setGroupList, toggleRefetch } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { Tab, TabView } from '@rneui/themed';
 import { LoadingProcess, SemiCircleProgress } from "@/Components";
@@ -147,7 +147,8 @@ const GroupMember = () => {
   const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
-  const [refetch, setRefect] = useState<boolean>(false);
+  // const [refetch, setRefect] = useState<boolean>(false);
+  const refetch = useSelector((state: any) => state.group.refetch);
   const [deleteMember, setDeleteMember] = useState<boolean>(false);
   const [addMember, setAddMember] = useState<boolean>(false);
   const userList = useSelector((state: any) => state.userList.userList).map((user: User) => {
@@ -198,7 +199,8 @@ const GroupMember = () => {
         userId: curMember.id
       }).unwrap();
       if (!res) {
-        setRefect(!refetch);
+        // setRefect(!refetch);
+        dispatch(toggleRefetch());
         Toast.success("Xóa thành công");
       } 
     } catch (err) {
@@ -223,7 +225,7 @@ const GroupMember = () => {
         groupId: curGroup.id
       }).unwrap();
       if ("id" in res) {
-        setRefect(!refetch);
+        dispatch(toggleRefetch());
         Toast.success("Thêm thành viên thành công");
       } 
     } catch (err) {
@@ -501,6 +503,7 @@ export const GroupDetail = (props: {
   const curGroup = useSelector((state: any) => state.group.curGroup);
   const [getGroupTaskApi, {isLoading}] = useGetGroupTaskMutation();
   const [taskList, setTaskList] = useState<Task[]>([])
+  const refetch = useSelector((state: any) => state.group.refetch);
 
   const getGroupTask = async () => {
     const res = await getGroupTaskApi(
@@ -516,7 +519,7 @@ export const GroupDetail = (props: {
 
   useEffect(()=> {
     getGroupTask();
-  }, [])
+  }, [refetch])
 
   const [index, setIndex] = useState(0);
 

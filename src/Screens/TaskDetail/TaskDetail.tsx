@@ -6,14 +6,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setGroupList } from "@/Store/reducers";
+import { setGroupList, toggleRefetch } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { StyleSheet } from 'react-native';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { LoadingProcess } from "@/Components";
 import * as DocumentPicker from 'expo-document-picker';
 import { useGetFileMutation, useUploadFileMutation } from "@/Services/document";
-import { Task } from "@/Services/task";
+import { Task, useDeleteTaskMutation } from "@/Services/task";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const MyIonicons = Ionicons as unknown as React.ComponentType<any>;
@@ -26,59 +26,11 @@ export const TaskDetail = (props: {
   const navigation = useNavigation();
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
-  const [uploadFileApi, {isLoading: uploadLoading}] = useUploadFileMutation();
-  const [getFileApi, {isLoading: getLoading}] = useGetFileMutation();
+  const [deleteTaskApi, {isLoading: deleteLoading}] = useDeleteTaskMutation();
   const [fileUpload, setFileUpload] = useState<any | null>(null);
   const [isUpload, setIsUpload] = useState<boolean>(false);
   const task = useSelector((state: any) => state.task.curTask);
-  // const [task, setTask] = useState<Task>(  {
-  //   "id": 4,
-  //   "title": "Ngủ",
-  //   "description": "string",
-  //   "dueDate": "2024-12-22T10:39:07.067Z",
-  //   "priority": "MEDIUM",
-  //   "status": "TODO",
-  //   "createdAt": "2024-12-22T16:26:14.810Z",
-  //   "updatedAt": "2024-12-22T16:26:14.810Z",
-  //   "createdById": 9,
-  //   "projectId": 6,
-  //   "assignees": [
-  //     {
-  //       "id": 9,
-  //       "name": "Lê Đình Huy",
-  //       "email": "huy.ledinh@hcmut.edu.vn",
-  //       "dateofbirth": "2030-12-20T08:53:19.000Z",
-  //       "updatedAt": "2024-12-23T07:52:30.849Z",
-  //       "role": "Leader"
-  //     }
-  //   ],
-  //   "createdBy": {
-  //     "id": 9,
-  //     "name": "Lê Đình Huy",
-  //     "dateofbirth": "2030-12-20T08:53:19.000Z",
-  //     "email": "huy.ledinh@hcmut.edu.vn",
-  //     "password": "$2b$10$lwQBXZakcg6eqaXwQoyXEeaSYfh4sXmDfKBBJti0qSHk5KNQPKOAu",
-  //     "createdAt": "2024-12-16T02:12:02.818Z",
-  //     "updatedAt": "2024-12-23T07:52:30.849Z",
-  //     "isActive": true,
-  //     "isEmailVerified": true,
-  //     "verificationCode": null,
-  //     "verificationCodeExpiresAt": null,
-  //     "status": "OFFLINE",
-  //     "passwordResetCode": null,
-  //     "passwordResetCodeExpiresAt": null
-  //   },
-  //   "project": {
-  //     "id": 6,
-  //     "name": "WellDone",
-  //     "description": "string",
-  //     "startDate": "2024-12-22T01:39:34.345Z",
-  //     "endDate": "2024-12-22T01:39:34.345Z",
-  //     "status": "NOT_STARTED",
-  //     "createdAt": "2024-12-22T01:39:51.790Z",
-  //     "updatedAt": "2024-12-22T01:39:51.790Z"
-  //   }
-  // })
+  const [deleteTask, setDeleteTask] = useState<boolean>(false);
 
   const [curMember, setCurMember] = useState<any>({
     "id": null ,
@@ -90,114 +42,33 @@ export const TaskDetail = (props: {
   });
   const [isViewInfo, setIsViewInfo] = useState<boolean>(false);
 
-  const pickDocument = async () => {
+  const handleDeleteTask = async () => {
+    setDeleteTask(false);
     try {
-      const result: any = await DocumentPicker.getDocumentAsync({
-        type: '*/*', 
-        copyToCacheDirectory: true, 
-      });
-
-      if (!result.cancel) {
-        const file = result.assets[0];
-        if (!["application/pdf", "application/docs", "application/txt"].includes(file.mimeType)) {
-          Toast.error("Chỉ chấp nhận pdf, txt và docs")
-        } else {
-          setFileUpload(file);
-        }
-        console.log('File picked:', result);
-      } else {
-        console.log(result);
-        console.log('User canceled file selection.');
+      const res = await deleteTaskApi({
+        token: accessToken,
+        taskId: task.id
+      }).unwrap();
+      if (!res) {
+        Toast.success("Xóa thành công");
+        dispatch(toggleRefetch());
+        navigation.goBack();
+      } 
+    } catch (err) {
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          String(errorData.data.message),
+          "top"
+        );
       }
-    } catch (error) {
-      // console.error('Error picking document:', error);
-      Toast.error("Vui lòng tải tệp lên")
-    }
-  };
-
-  const handleUploadFile = async () => {
-    if (fileUpload) {
-      try {
-        console.log(fileUpload.type, fileUpload.mimeType)
-        const response = await uploadFileApi({
-          data: {
-            file:  {
-              uri: fileUpload.uri,
-              name: fileUpload.name,
-              type: fileUpload.mimeType,
-            },
-            task_id: 4
-          },
-          token: accessToken
-        }).unwrap();
-        if ("id" in response) {
-          Toast.success(`Tải lên thành công ${response.id}`);
-          setIsUpload(false);
-        }
-      } catch (err) {
-        if (err && typeof err === "object" && "data" in err) {
-          const errorData = err as ErrorHandle;
-          Toast.error(
-            String(errorData.data.message),
-            "top"
-          );
-        }
-      }
-    } else {
-      Toast.error("Vui lòng tải tệp lên")
     }
   }
 
 
+
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isUpload}
-        >
-        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
-          <View className="bg-white w-[90%] p-4 rounded-2xl">
-            <View className="mb-3">
-              <View className="w-full flex-col justify-center items-center mb-3">
-                <Text className="font-bold text-2xl mb-5">Tải tài liệu lên</Text>
-                <View className="h-[100px]">
-                  {
-                    fileUpload
-                    ?
-                    <View className="w-full gap-3 flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
-                      <Text className="font-semibold w-[80%]">{fileUpload.name}</Text>
-                      <View className="flex-row gap-3 items-center">
-                        <View className={`rounded-full p-2 ${fileUpload.mimeType === "application/pdf" ? "bg-[#F0463C]" : fileUpload.mimeType === "application/txt" ? "bg-[#454140]" : "bg-[#5991F8]"}`}>
-                          <Text className="text-xs text-white font-semibold">{fileUpload.mimeType === "application/pdf" ? "pdf" : fileUpload.mimeType === "application/txt" ? "txt" : "docs"}</Text>
-                        </View>
-                      </View>
-                      <Pressable onPress={() => setFileUpload(null)}>
-                        <MyIcon name="trash" size={25}/>
-                      </Pressable>
-                    </View>
-                    :
-                    <View className="w-full h-[100px] flex justify-center items-center">
-                      <Text className="text-xl">Chưa tải lên tệp nào</Text>
-                    </View>
-                  }
-                </View>
-              </View>
-            </View>
-            <View className="w-full flex-row gap-3 justify-end items-center">
-              <Pressable className="!rounded-xl !bg-gray-300 px-5 py-3" onPress={()=>setIsUpload(false)}>
-                <Text className="text-black font-semibold">Hủy bỏ</Text>
-              </Pressable>
-              <Pressable className="!rounded-xl px-5 py-3 bg-blue-600" onPress={pickDocument}>
-                <Text className="text-white font-semibold">Tải lên</Text>
-              </Pressable>
-              <Pressable className="!rounded-xl px-5 py-3 bg-lime-600" onPress={handleUploadFile}>
-                <Text className="text-white font-semibold">Xác nhận</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
       <Modal
         animationType="fade"
         transparent={true}
@@ -237,14 +108,39 @@ export const TaskDetail = (props: {
           </View>
         </View>
       </Modal>
-      <LoadingProcess isVisible={uploadLoading}/>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={deleteTask}
+        >
+        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
+          <View className="bg-white w-[90%] p-4 rounded-2xl">
+            <View className="mb-3">
+              <View className="w-full flex-col justify-center items-center mb-3">
+                <Text className="font-bold text-2xl mb-5">Xóa nhiệm vụ</Text>
+                <Text className="text-xl text-center">Bạn có chắc chắn muốn xóa nhiệm vụ số {task.id} không?</Text>
+              </View>
+            </View>
+            
+            <View className="w-full flex-row gap-3 justify-end items-center">
+              <Pressable className="!rounded-xl !bg-gray-300 px-5 py-3" onPress={()=>setDeleteTask(false)}>
+                <Text className="text-black font-semibold">Hủy bỏ</Text>
+              </Pressable>
+              <Pressable className="!rounded-xl px-5 py-3" style={{ backgroundColor: "red"}} onPress={handleDeleteTask}>
+                <Text className="text-white font-semibold">Xóa</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <LoadingProcess isVisible={deleteLoading}/>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Chi tiết nhiệm vụ</Text>
       </View>
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
         <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
-      <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
+      <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={()=>setDeleteTask(true)}>
         <MyIcon name="trash" size={25} color="red" />
       </Pressable>
       <Pressable className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-500" onPress={()=>setIsUpload(true)}>
