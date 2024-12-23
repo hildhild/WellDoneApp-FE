@@ -7,12 +7,15 @@ import { useNavigation } from '@react-navigation/native';
 import Entypo from "react-native-vector-icons/Entypo";
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useChangePasswordMutation, useUpdateProfileMutation } from "@/Services/profile";
 import { removeToken, setProfile } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import Avatar from "@/Components/Avatar";
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
+const MyEntypo = Entypo as unknown as React.ComponentType<any>;
 
 
 export const Account = (props: {
@@ -103,7 +106,7 @@ export const Account = (props: {
     }
   }
 
-  const handleChangeDateOfBirth = (event: any, selectedDate: Date) => {
+  const handleChangeDateOfBirth = (event: DateTimePickerEvent, selectedDate: Date | undefined): void => {
     if (selectedDate) {
       setProfileData({...profileData, dateOfBirth: selectedDate}); 
     }
@@ -137,7 +140,7 @@ export const Account = (props: {
         <Text className="text-2xl font-bold px-10 text-center text-black">Tài khoản</Text>
       </View>
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
-        <Icon name="chevron-left" size={15} color="#000" />
+        <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
       <ScrollView>
         <View className="w-full flex justify-end items-center p-6">
@@ -169,7 +172,7 @@ export const Account = (props: {
                     onPress={() => {if(editable) {setOpenDatePicker(true)}}}
                   />
                 <Pressable onPress={() => {if(editable) {setOpenDatePicker(true)}}}>
-                  <Icon name="calendar" size={20}/>
+                  <MyIcon name="calendar" size={20}/>
                 </Pressable>
               </View>
               <Text className="mb-3 font-semibold text-neutral-500">Email:</Text>
@@ -203,7 +206,7 @@ export const Account = (props: {
                       <TouchableOpacity
                         onPress={() => setPasswordVisible(!passwordVisible)}
                       >
-                        <Entypo
+                        <MyEntypo
                           name={passwordVisible ? "eye" : "eye-with-line"}
                           size={16}
                           color="black"
@@ -223,7 +226,7 @@ export const Account = (props: {
                       <TouchableOpacity
                         onPress={() => setPasswordVisible(!passwordVisible)}
                       >
-                        <Entypo
+                        <MyEntypo
                           name={passwordVisible ? "eye" : "eye-with-line"}
                           size={16}
                           color="black"
@@ -243,7 +246,7 @@ export const Account = (props: {
                       <TouchableOpacity
                         onPress={() => setPasswordVisible(!passwordVisible)}
                       >
-                        <Entypo
+                        <MyEntypo
                           name={passwordVisible ? "eye" : "eye-with-line"}
                           size={16}
                           color="black"

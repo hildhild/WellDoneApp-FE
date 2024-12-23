@@ -15,6 +15,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { LoadingProcess } from "@/Components";
 
+const MyIcon = Icon as unknown as React.ComponentType<any>;
 
 export const AddGroup = (props: {
   onNavigate: (string: RootScreens) => void;
@@ -84,7 +85,7 @@ export const AddGroup = (props: {
         <Text className="text-2xl font-bold px-10 text-center text-black">Thêm nhóm</Text>
       </View>
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
-        <Icon name="chevron-left" size={15} color="#000" />
+        <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
       <ScrollView className="w-full p-6">
         <View className="mb-3">
@@ -126,7 +127,7 @@ export const AddGroup = (props: {
               setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
             }}
             renderLeftIcon={() => (
-              <Icon color="black" name="search" size={15} />
+              <MyIcon color="black" name="search" size={15} />
             )}
           />
           {
@@ -138,7 +139,7 @@ export const AddGroup = (props: {
                     <Text className="text-xs text-lime-800 font-semibold">Thành viên</Text>
                   </View>
                   <Pressable onPress={() => setSelectedUsers((prevUsers) => prevUsers.filter((userItem) => userItem.id !== user.id))}>
-                    <Icon name="trash" size={20}/>
+                    <MyIcon name="trash" size={20}/>
                   </Pressable>
                 </View>
               </View>

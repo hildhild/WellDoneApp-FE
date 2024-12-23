@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Pressable, Modal, KeyboardAvoidingView, Platform } from "react-native";
 import { Button, ScrollView } from "native-base";
 import { RootScreens } from "..";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +13,10 @@ import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/grou
 import { LoadingProcess } from "@/Components";
 import * as DocumentPicker from 'expo-document-picker';
 import { useGetFileMutation, useUploadFileMutation } from "@/Services/document";
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
 
 export const Document = (props: {
   onNavigate: (string: RootScreens) => void;
@@ -24,6 +28,50 @@ export const Document = (props: {
   const [getFileApi, {isLoading: getLoading}] = useGetFileMutation();
   const [fileUpload, setFileUpload] = useState<any | null>(null);
   const [isUpload, setIsUpload] = useState<boolean>(false);
+
+
+  const blobToBase64 = async (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result?.toString().split(',')[1];
+        if (base64) {
+          resolve(base64);
+        } else {
+          reject(new Error('Failed to convert blob to base64'));
+        }
+      };
+      reader.onerror = () => {
+        reject(new Error('Error reading blob'));
+      };
+      reader.readAsDataURL(blob);
+    });
+  };
+  
+
+  const downloadBlob = async (blob: any, filename: string) => {
+    try {
+      const fileUri = `${FileSystem.documentDirectory}${filename}`;
+      const base64 = await blobToBase64(blob);
+  
+      await FileSystem.writeAsStringAsync(fileUri, base64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      console.log('File saved to:', fileUri);
+  
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri);
+        console.log("share");
+      } else {
+        console.log('Sharing is not available on this device');
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
+  
+  
 
   const pickDocument = async () => {
     try {
@@ -85,13 +133,21 @@ export const Document = (props: {
 
   const handleGetFile = async () => {
     try {
+      console.log(1);
       const response = await getFileApi({
-        documentId: 17,
+        documentId: 20,
         token: accessToken
       }).unwrap();
-      if (response) {
-        console.log("file", response, typeof(response));
+      console.log(2);
+      if (response instanceof Blob) {
+        const url = URL.createObjectURL(response);
+        console.log("url: " , url)
+
+        downloadBlob(response, "file.pdf");
+        Toast.success("Tải xuống thành công");
+        console.log(response);
       }
+      console.log(3)
     } catch (err) {
       console.log("lỗi", err, typeof(err));
       if (err && typeof err === "object" && "data" in err) {
@@ -130,7 +186,7 @@ export const Document = (props: {
                         </View>
                       </View>
                       <Pressable onPress={() => setFileUpload(null)}>
-                        <Icon name="trash" size={25}/>
+                        <MyIcon name="trash" size={25}/>
                       </Pressable>
                     </View>
                     :
@@ -155,15 +211,15 @@ export const Document = (props: {
           </View>
         </View>
       </Modal>
-      <LoadingProcess isVisible={uploadLoading}/>
+      <LoadingProcess isVisible={uploadLoading || getLoading}/>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Tài liệu</Text>
       </View>
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
-        <Icon name="chevron-left" size={15} color="#000" />
+        <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
       <Pressable className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-900" onPress={()=>setIsUpload(true)}>
-        <Icon name="plus" size={30} color="#fff" />
+        <MyIcon name="plus" size={30} color="#fff" />
       </Pressable>
       <ScrollView className="w-full p-6">
         {/* <Text>File đã tải lên:</Text>
@@ -180,27 +236,27 @@ export const Document = (props: {
         <View className="rounded-2xl bg-white overflow-hidden">
           <View className="bg-lime-500 flex-row py-3 px-5 justify-between items-center">
             <View className="flex-row gap-3 items-center">
-              <Icon name="calendar" size={20} color="#fff" />
+              <MyIcon name="calendar" size={20} color="#fff" />
               <Text className="text-white">19/07/2022</Text>
             </View>
             <View className="flex-row gap-6 items-center">
-              <Icon name="info-circle" size={25} color="#fff" />
-              <Icon name="trash" size={25} color="#fff" />
+              <MyIcon name="info-circle" size={25} color="#fff" />
+              <MyIcon name="trash" size={25} color="#fff" />
             </View>
           </View>
           <View className="px-5">
             <View className="flex-row items-center border-b-[1px] border-gray-300 py-5 px-3">
-              <Icon name="dot-circle-o" size={25} color="#24A19C" />
+              <MyIcon name="dot-circle-o" size={25} color="#24A19C" />
               <Text className="ml-5 text-xl font-semibold">Project_Plan_V1.docx</Text>
             </View>
             <View className="p-3 flex-row items-center justify-between">
               <View className="flex-row items-center gap-5">
                 <View className="flex-row items-center">
-                  <Icon name="clock-o" size={20} color="#65A30D" />
+                  <MyIcon name="clock-o" size={20} color="#65A30D" />
                   <Text className="text-lime-600 ml-3">08.30 PM</Text>
                 </View>
                 <View className="flex-row items-center">
-                  <Icon name="download" size={20} color="#65A30D" />
+                  <MyIcon name="download" size={20} color="#65A30D" />
                   <Text className="text-lime-600 ml-3">2</Text>
                 </View>
               </View>
