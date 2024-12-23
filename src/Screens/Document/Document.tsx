@@ -12,7 +12,7 @@ import { StyleSheet } from 'react-native';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { LoadingProcess } from "@/Components";
 import * as DocumentPicker from 'expo-document-picker';
-import { useUploadFileMutation } from "@/Services/document";
+import { useGetFileMutation, useUploadFileMutation } from "@/Services/document";
 
 export const Document = (props: {
   onNavigate: (string: RootScreens) => void;
@@ -21,8 +21,9 @@ export const Document = (props: {
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
   const [uploadFileApi, {isLoading: uploadLoading}] = useUploadFileMutation();
+  const [getFileApi, {isLoading: getLoading}] = useGetFileMutation();
   const [fileUpload, setFileUpload] = useState<any | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+  const [isUpload, setIsUpload] = useState<boolean>(false);
 
   const pickDocument = async () => {
     try {
@@ -33,34 +34,40 @@ export const Document = (props: {
 
       if (!result.cancel) {
         const file = result.assets[0];
-        setFileUpload(file);
-        const response = await fetch(file.uri);
-        const blob = await response.blob(); 
-        setFile(new File([blob], file.name || 'unknown', { type: file.mimeType || 'application/octet-stream' }));
+        if (!["application/pdf", "application/docs", "application/txt"].includes(file.mimeType)) {
+          Toast.error("Chỉ chấp nhận pdf, txt và docs")
+        } else {
+          setFileUpload(file);
+        }
         console.log('File picked:', result);
       } else {
         console.log(result);
         console.log('User canceled file selection.');
       }
     } catch (error) {
-      console.error('Error picking document:', error);
+      // console.error('Error picking document:', error);
+      Toast.error("Vui lòng tải tệp lên")
     }
   };
 
   const handleUploadFile = async () => {
-    if (file) {
+    if (fileUpload) {
       try {
-        console.log("vô")
+        console.log(fileUpload.type, fileUpload.mimeType)
         const response = await uploadFileApi({
           data: {
-            file: file,
+            file:  {
+              uri: fileUpload.uri,
+              name: fileUpload.name,
+              type: fileUpload.mimeType,
+            },
             task_id: 4
           },
           token: accessToken
         }).unwrap();
-        console.log("ra")
         if ("id" in response) {
-          Toast.success("Tải lên thành công");
+          Toast.success(`Tải lên thành công ${response.id}`);
+          setIsUpload(false);
         }
       } catch (err) {
         if (err && typeof err === "object" && "data" in err) {
@@ -71,13 +78,83 @@ export const Document = (props: {
           );
         }
       }
+    } else {
+      Toast.error("Vui lòng tải tệp lên")
     }
+  }
 
+  const handleGetFile = async () => {
+    try {
+      const response = await getFileApi({
+        documentId: 17,
+        token: accessToken
+      }).unwrap();
+      if (response) {
+        console.log("file", response, typeof(response));
+      }
+    } catch (err) {
+      console.log("lỗi", err, typeof(err));
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          String(errorData.data.message),
+          "top"
+        );
+        // Toast.error("Lỗi tải xuống")
+      }
+    }
   }
 
 
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isUpload}
+        >
+        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
+          <View className="bg-white w-[90%] p-4 rounded-2xl">
+            <View className="mb-3">
+              <View className="w-full flex-col justify-center items-center mb-3">
+                <Text className="font-bold text-2xl mb-5">Tải tài liệu lên</Text>
+                <View className="h-[100px]">
+                  {
+                    fileUpload
+                    ?
+                    <View className="w-full gap-3 flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
+                      <Text className="font-semibold w-[80%]">{fileUpload.name}</Text>
+                      <View className="flex-row gap-3 items-center">
+                        <View className={`rounded-full p-2 ${fileUpload.mimeType === "application/pdf" ? "bg-[#F0463C]" : fileUpload.mimeType === "application/txt" ? "bg-[#454140]" : "bg-[#5991F8]"}`}>
+                          <Text className="text-xs text-white font-semibold">{fileUpload.mimeType === "application/pdf" ? "pdf" : fileUpload.mimeType === "application/txt" ? "txt" : "docs"}</Text>
+                        </View>
+                      </View>
+                      <Pressable onPress={() => setFileUpload(null)}>
+                        <Icon name="trash" size={25}/>
+                      </Pressable>
+                    </View>
+                    :
+                    <View className="w-full h-[100px] flex justify-center items-center">
+                      <Text className="text-xl">Chưa tải lên tệp nào</Text>
+                    </View>
+                  }
+                </View>
+              </View>
+            </View>
+            <View className="w-full flex-row gap-3 justify-end items-center">
+              <Pressable className="!rounded-xl !bg-gray-300 px-5 py-3" onPress={()=>setIsUpload(false)}>
+                <Text className="text-black font-semibold">Hủy bỏ</Text>
+              </Pressable>
+              <Pressable className="!rounded-xl px-5 py-3 bg-blue-600" onPress={pickDocument}>
+                <Text className="text-white font-semibold">Tải lên</Text>
+              </Pressable>
+              <Pressable className="!rounded-xl px-5 py-3 bg-lime-600" onPress={handleUploadFile}>
+                <Text className="text-white font-semibold">Xác nhận</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <LoadingProcess isVisible={uploadLoading}/>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Tài liệu</Text>
@@ -85,20 +162,21 @@ export const Document = (props: {
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
         <Icon name="chevron-left" size={15} color="#000" />
       </Pressable>
-      <Pressable className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-900" onPress={pickDocument}>
+      <Pressable className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-900" onPress={()=>setIsUpload(true)}>
         <Icon name="plus" size={30} color="#fff" />
       </Pressable>
       <ScrollView className="w-full p-6">
-        <Text>File đã tải lên:</Text>
+        {/* <Text>File đã tải lên:</Text>
         {
           fileUpload 
           && (
           <Text style={{ marginTop: 20 }}>
             Selected File: {fileUpload.name} ({fileUpload.size} bytes)
           </Text>
-        )}
-        <Text>{fileUpload?.uri}</Text>
-        <Pressable onPress={handleUploadFile} className="p-8 bg-lime-500 mb-5"><Text>Tải lên</Text></Pressable>
+        )} */}
+        {/* <Text>{fileUpload?.uri}</Text> */}
+        {/* <Pressable onPress={handleUploadFile} className="p-8 bg-lime-500 mb-5"><Text>Tải lên</Text></Pressable> */}
+        <Pressable onPress={handleGetFile} className="p-8 bg-lime-500 mb-5"><Text>Tải xuống</Text></Pressable>
         <View className="rounded-2xl bg-white overflow-hidden">
           <View className="bg-lime-500 flex-row py-3 px-5 justify-between items-center">
             <View className="flex-row gap-3 items-center">
