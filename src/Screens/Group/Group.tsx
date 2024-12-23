@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Store";
 import { Group as GroupType, useDeleteGroupMutation, useGetGroupsMutation, useUpdateGroupMutation } from "@/Services/group";
 import { Toast } from "toastify-react-native";
-import { setCurGroup, setGroupList } from "@/Store/reducers";
+import { setCurGroup, setGroupList, toggleRefetch } from "@/Store/reducers";
 import Avatar from "@/Components/Avatar";
 
 export interface IGroupProps {
@@ -25,7 +25,7 @@ const MyIcon = Icon as unknown as React.ComponentType<any>;
 export const Group = (props: IGroupProps) => {
   const [editGroup, setEditGroup] = useState<boolean>(false);
   const [deleteGroup, setDeleteGroup] = useState<boolean>(false);
-  const [refetch, setRefect] = useState<boolean>(false);
+  const refetch = useSelector((state: any) => state.group.refetch);
   const groupList = useSelector((state: RootState) => state.group.groupList);
   const [groupGeneral, setGroupGeneral] = useState<any>({
     id: null,
@@ -42,7 +42,7 @@ export const Group = (props: IGroupProps) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    setRefect(!refetch);
+    dispatch(toggleRefetch());
     setRefreshing(false);
   };
 
@@ -85,7 +85,7 @@ export const Group = (props: IGroupProps) => {
         groupId: groupGeneral.id
       }).unwrap();
       if ("id" in res) {
-        setRefect(!refetch);
+        dispatch(toggleRefetch());
         Toast.success("Chỉnh sửa thành công");
       }
     } catch (err) {
@@ -108,7 +108,7 @@ export const Group = (props: IGroupProps) => {
         groupId: groupGeneral.id
       }).unwrap();
       if (!res) {
-        setRefect(!refetch);
+        dispatch(toggleRefetch());
         Toast.success("Xóa thành công");
       } 
     } catch (err) {
