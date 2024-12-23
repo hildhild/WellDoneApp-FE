@@ -87,20 +87,6 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
           {props.project.description}
         </Text>
 
-        <Text className="text-body-small-regular text-neutral-500  mt-4">
-          Tài liệu
-        </Text>
-        {/* <ScrollView horizontal className="flex-row">
-          <View className="flex-row mt-2 space-x-4">
-            {props.project.documents.map((doc) => (
-              <TouchableOpacity key={doc.id}>
-                <View className="items-center w-20 h-20">
-                  {renderDocumentTypeIcon(doc.type)}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView> */}
         <View className="mt-6">
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-body-small-regular text-neutral-500">

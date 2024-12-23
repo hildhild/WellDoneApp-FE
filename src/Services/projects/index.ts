@@ -133,6 +133,22 @@ export interface Member {
   updatedAt: string;
   role: string;
 }
+
+export interface AddGroupToProjectRequest {
+  projectId: number;
+  token: string;
+  data: {
+    groupId: number;
+  };
+}
+
+export interface DeleteGroupFromProjectRequest {
+  projectId: number;
+  groupId: number;
+  token: string;
+}
+
+export interface DeleteGroupFromResponse extends GetProjectListItem {}
 const projectApi = API.injectEndpoints({
   endpoints: (build) => ({
     createProject: build.mutation<
@@ -216,6 +232,28 @@ const projectApi = API.injectEndpoints({
         },
       }),
     }),
+    // addGroupToProject: build.mutation<AddGroupToProjectResponse | ErrorResponse, AddGroupToProjectRequest>({
+    //   query: (addGroupToProjectData) => ({
+    //     url: `/projects/${addGroupToProjectData.projectId}/groups`,
+    //     method: "POST",
+    //     body: addGroupToProjectData.data,
+    //     headers: {
+    //       Authorization: `Bearer ${addGroupToProjectData.token}`,
+    //     },
+    //   }),
+    // }),
+    deleteGroupFromProject: build.mutation<
+      DeleteGroupFromResponse | ErrorResponse,
+      DeleteGroupFromProjectRequest
+    >({
+      query: (deleteGroupFromProjectData) => ({
+        url: `/projects/${deleteGroupFromProjectData.projectId}/groups/${deleteGroupFromProjectData.groupId}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${deleteGroupFromProjectData.token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -226,4 +264,5 @@ export const {
   useEditProjectMutation,
   useCreateProjectMutation,
   useGetMemOfProjectMutation,
+  useDeleteGroupFromProjectMutation,
 } = projectApi;

@@ -2,6 +2,7 @@ import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "@/Screens";
 import {
   GetDetailProjectResponse,
+  useDeleteGroupFromProjectMutation,
   useEditProjectMutation,
   useGetDetailProjectMutation,
 } from "@/Services/projects";
@@ -13,7 +14,7 @@ import {
   renderSuccessMessageResponse,
 } from "@/Utils/Funtions/render";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
@@ -49,9 +50,12 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
   const [getDetailProject, { isLoading: isGetDetailProjectLoading }] =
     useGetDetailProjectMutation();
 
+  const [deleteGroupFromProject] = useDeleteGroupFromProjectMutation();
+
   const handleEditProject = async (formData: ProjectEditForm) => {
     const convertGroupMemberFromStringToNumber =
       formData.project_group_member.map((group) => parseInt(group.toString()));
+
     try {
       const response = await editProject({
         token: token,
@@ -71,6 +75,7 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
         navigation.navigate(RootScreens.PROJECTDETAIL);
       }
     } catch (err) {
+      console.log(err);
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as ErrorHandle;
         Toast.error(
