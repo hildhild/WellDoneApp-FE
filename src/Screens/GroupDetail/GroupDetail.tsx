@@ -267,8 +267,14 @@ const GroupMember = () => {
                   placeholder="Chọn thành viên"
                   searchPlaceholder="Tìm kiếm..."
                   onChange={item => {
-                    setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
-                  }}
+                    if (curGroup.user.filter((user: any) => user.id === item.value).length > 0) {
+                      Toast.error("Thành viên đã có trong nhóm")
+                    }
+                    else if (selectedUsers.filter((user: any) => user.id === item.value).length > 0) {
+                      Toast.error("Thành viên đã được chọn")
+                    } else {
+                      setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
+                  }}}
                   renderLeftIcon={() => (
                     <MyIcon color="black" name="search" size={15} />
                   )}
@@ -428,7 +434,7 @@ const GroupTask = (props: {taskList: Task[], onNavigate: (string: RootScreens) =
   
   return (
     <ScrollView className="w-full h-full">
-      <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5">
+      <Pressable className="w-full flex flex-row justify-center gap-4 items-center bg-[#4D7C0F] p-3 rounded-xl mb-5" onPress={()=>props.onNavigate(RootScreens.ADD_TASK)}>
         <MyIonicons name="add-circle-outline" color="white" size={25}/>
         <Text className="text-white text-lg font-semibold">Thêm nhiệm vụ</Text>
       </Pressable>

@@ -28,6 +28,7 @@ export const Document = (props: {
   const [getFileApi, {isLoading: getLoading}] = useGetFileMutation();
   const [fileUpload, setFileUpload] = useState<any | null>(null);
   const [isUpload, setIsUpload] = useState<boolean>(false);
+  const curTask = useSelector((state: any) => state.task.curTask);
 
 
   const blobToBase64 = async (blob: Blob): Promise<string> => {
@@ -93,8 +94,9 @@ export const Document = (props: {
         console.log('User canceled file selection.');
       }
     } catch (error) {
-      // console.error('Error picking document:', error);
-      Toast.error("Vui lòng tải tệp lên")
+      if (!fileUpload) {
+        Toast.error("Vui lòng tải tệp lên")
+      }
     }
   };
 
@@ -109,13 +111,14 @@ export const Document = (props: {
               name: fileUpload.name,
               type: fileUpload.mimeType,
             },
-            task_id: 4
+            task_id: curTask.id
           },
           token: accessToken
         }).unwrap();
         if ("id" in response) {
           Toast.success(`Tải lên thành công ${response.id}`);
           setIsUpload(false);
+          console.log("upload res", response);
         }
       } catch (err) {
         if (err && typeof err === "object" && "data" in err) {
@@ -174,7 +177,8 @@ export const Document = (props: {
             <View className="mb-3">
               <View className="w-full flex-col justify-center items-center mb-3">
                 <Text className="font-bold text-2xl mb-5">Tải tài liệu lên</Text>
-                <View className="h-[100px]">
+                <Text className="text-red-500 font-semibold">Lưu ý: Tên file phải không dấu</Text>
+                <View>
                   {
                     fileUpload
                     ?
