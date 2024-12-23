@@ -93,7 +93,11 @@ export const renderErrorMessageResponse = (
     "You must be a leader in at least one of the specified groups"
   ) {
     return "Chức vụ của bạn không phù hợp để thực hiện tác vụ này!";
-  } else {
+  }
+  else if (responseString === "One or more groups not found") {
+    return "Một hoặc nhiều nhóm không tồn tại. Vui lòng kiểm tra lại!";
+  }
+  else {
     return "Đã xảy ra lỗi, vui lòng thử lại!";
   }
 };
