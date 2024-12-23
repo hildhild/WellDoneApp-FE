@@ -30,54 +30,56 @@ export const TaskDetail = (props: {
   const [getFileApi, {isLoading: getLoading}] = useGetFileMutation();
   const [fileUpload, setFileUpload] = useState<any | null>(null);
   const [isUpload, setIsUpload] = useState<boolean>(false);
-  const [task, setTask] = useState<Task>(  {
-    "id": 4,
-    "title": "Ngủ",
-    "description": "string",
-    "dueDate": "2024-12-22T10:39:07.067Z",
-    "priority": "MEDIUM",
-    "status": "TODO",
-    "createdAt": "2024-12-22T16:26:14.810Z",
-    "updatedAt": "2024-12-22T16:26:14.810Z",
-    "createdById": 9,
-    "projectId": 6,
-    "assignees": [
-      {
-        "id": 9,
-        "name": "Lê Đình Huy",
-        "email": "huy.ledinh@hcmut.edu.vn",
-        "dateofbirth": "2030-12-20T08:53:19.000Z",
-        "updatedAt": "2024-12-23T07:52:30.849Z",
-        "role": "Leader"
-      }
-    ],
-    "createdBy": {
-      "id": 9,
-      "name": "Lê Đình Huy",
-      "dateofbirth": "2030-12-20T08:53:19.000Z",
-      "email": "huy.ledinh@hcmut.edu.vn",
-      "password": "$2b$10$lwQBXZakcg6eqaXwQoyXEeaSYfh4sXmDfKBBJti0qSHk5KNQPKOAu",
-      "createdAt": "2024-12-16T02:12:02.818Z",
-      "updatedAt": "2024-12-23T07:52:30.849Z",
-      "isActive": true,
-      "isEmailVerified": true,
-      "verificationCode": null,
-      "verificationCodeExpiresAt": null,
-      "status": "OFFLINE",
-      "passwordResetCode": null,
-      "passwordResetCodeExpiresAt": null
-    },
-    "project": {
-      "id": 6,
-      "name": "WellDone",
-      "description": "string",
-      "startDate": "2024-12-22T01:39:34.345Z",
-      "endDate": "2024-12-22T01:39:34.345Z",
-      "status": "NOT_STARTED",
-      "createdAt": "2024-12-22T01:39:51.790Z",
-      "updatedAt": "2024-12-22T01:39:51.790Z"
-    }
-  })
+  const task = useSelector((state: any) => state.task.curTask);
+  // const [task, setTask] = useState<Task>(  {
+  //   "id": 4,
+  //   "title": "Ngủ",
+  //   "description": "string",
+  //   "dueDate": "2024-12-22T10:39:07.067Z",
+  //   "priority": "MEDIUM",
+  //   "status": "TODO",
+  //   "createdAt": "2024-12-22T16:26:14.810Z",
+  //   "updatedAt": "2024-12-22T16:26:14.810Z",
+  //   "createdById": 9,
+  //   "projectId": 6,
+  //   "assignees": [
+  //     {
+  //       "id": 9,
+  //       "name": "Lê Đình Huy",
+  //       "email": "huy.ledinh@hcmut.edu.vn",
+  //       "dateofbirth": "2030-12-20T08:53:19.000Z",
+  //       "updatedAt": "2024-12-23T07:52:30.849Z",
+  //       "role": "Leader"
+  //     }
+  //   ],
+  //   "createdBy": {
+  //     "id": 9,
+  //     "name": "Lê Đình Huy",
+  //     "dateofbirth": "2030-12-20T08:53:19.000Z",
+  //     "email": "huy.ledinh@hcmut.edu.vn",
+  //     "password": "$2b$10$lwQBXZakcg6eqaXwQoyXEeaSYfh4sXmDfKBBJti0qSHk5KNQPKOAu",
+  //     "createdAt": "2024-12-16T02:12:02.818Z",
+  //     "updatedAt": "2024-12-23T07:52:30.849Z",
+  //     "isActive": true,
+  //     "isEmailVerified": true,
+  //     "verificationCode": null,
+  //     "verificationCodeExpiresAt": null,
+  //     "status": "OFFLINE",
+  //     "passwordResetCode": null,
+  //     "passwordResetCodeExpiresAt": null
+  //   },
+  //   "project": {
+  //     "id": 6,
+  //     "name": "WellDone",
+  //     "description": "string",
+  //     "startDate": "2024-12-22T01:39:34.345Z",
+  //     "endDate": "2024-12-22T01:39:34.345Z",
+  //     "status": "NOT_STARTED",
+  //     "createdAt": "2024-12-22T01:39:51.790Z",
+  //     "updatedAt": "2024-12-22T01:39:51.790Z"
+  //   }
+  // })
+
   const [curMember, setCurMember] = useState<any>({
     "id": null ,
     "name": "",
@@ -256,19 +258,19 @@ export const TaskDetail = (props: {
               task.priority === "HIGH"
               ?
               <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-red-100">
-                <MyIcon name="angle-up" size={10} color="#E53935"/>
+                <MyIcon name="angle-up" size={15} color="#E53935"/>
                 <Text className="text-red-600 font-semibold">Cao</Text>
               </View>
               :
               task.priority === "LOW" 
               ?
               <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-blue-100">
-                <MyIcon name="angle-down" size={10} color="#1E88E5"/>
+                <MyIcon name="angle-down" size={15} color="#1E88E5"/>
                 <Text className="text-blue-600 font-semibold">Thấp</Text>
               </View>
               :
               <View className="px-5 flex flex-row gap-1 justify-center items-center py-2 rounded-full bg-yellow-100">
-                <MyIcon name="minus" size={10} color="#C88B08"/>
+                <MyIcon name="minus" size={15} color="#C88B08"/>
                 <Text className="text-yellow-600 font-semibold">Trung bình</Text>
               </View>
             }

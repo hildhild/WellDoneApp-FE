@@ -68,6 +68,11 @@ export interface getGroupTaskRequest{
   token: string
 }
 
+export interface getProjectTaskRequest{
+  projectId: number,
+  token: string
+}
+
 
 const taskApi = API.injectEndpoints({
   endpoints: (build) => ({
@@ -89,11 +94,21 @@ const taskApi = API.injectEndpoints({
         },
       }),
     }),
+    getProjectTask: build.mutation<Task[] | ErrorResponse, getProjectTaskRequest>({
+      query: (request) => ({
+        url: `/tasks/project/${request.projectId}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
   useGetMyTaskMutation,
-  useGetGroupTaskMutation
+  useGetGroupTaskMutation,
+  useGetProjectTaskMutation
 } = taskApi;
