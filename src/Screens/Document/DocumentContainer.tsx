@@ -155,7 +155,7 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
         }).unwrap();
 
         if (response instanceof Blob) {
-          await downloadFile(response, `file_${documentID}`);
+          await downloadFile(response, `file_${documentID}.pdf`);
         } else {
           const errorMessage =
             response.message || "File not found or no longer available";
