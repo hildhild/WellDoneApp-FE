@@ -58,7 +58,6 @@ export const Home = (props: IHomeProps) => {
               <Avatar name={name} width={70} height={70} />
             </TouchableOpacity>
           </View>
-
           <View className="bg-white rounded-lg mb-8">
             <View className="flex-row justify-between">
               <Text className="text-heading4 font-bold mb-4 p-4">Bảng tin</Text>
@@ -76,59 +75,66 @@ export const Home = (props: IHomeProps) => {
             <View className="flex-row justify-between">
               <FeedItemContainer onNavigate={onNavigate} />
             </View>
-          </View>
-
+          </View>{" "}
           <View className="rounded-lg mb-8">
             <Text className="text-heading4 font-bold p-4">Dự án gần đây</Text>
-            <View className="p-4 flex-row items-center rounded-2xl border border-neutral-300 bg-neutral-900">
-              <Image
-                source={require("assets/Group Rectangle.png")}
-                className="absolute top-2 right-2 w-32 h-32"
-              />
-              <View className="flex-1">
-                <Text className="text-warning-100 font-bold text-body-large-semibold mb-4 p-4">
-                  {data?.name}
-                </Text>
-                <View className="flex-row items-center space-x-4 p-4">
-                  <Text className="text-neutral-100 text-body-base-bold ml-2 mb-4">
-                    {data?.description}
+            {data ? (
+              <View className="p-4 flex-row items-center rounded-2xl border border-neutral-300 bg-neutral-900">
+                <Image
+                  source={require("assets/Group Rectangle.png")}
+                  className="absolute top-2 right-2 w-32 h-32"
+                />
+                <View className="flex-1">
+                  <Text className="text-warning-100 font-bold text-body-large-semibold mb-4 p-4">
+                    {data?.name}
                   </Text>
-                </View>
-                <View className="flex-row items-center space-x-4 p-2">
-                  <TouchableOpacity
-                    className="bg-primary-200 w-[155px] px-4 py-2 rounded-3xl mb-4 flex-row justify-between"
-                    onPress={() => {
-                      if (data?.id) {
-                        dispatch(setProjectId({ id: data.id }));
-                        onNavigate(RootScreens.PROJECTDETAIL);
-                      }
-                    }}
-                  >
-                    <Text className="text-center text-neutral-900 text-body-base-regular ">
-                      Open Project
+                  <View className="flex-row items-center space-x-4 p-4">
+                    <Text className="text-neutral-100 text-body-base-bold ml-2 mb-4">
+                      {data?.description}
                     </Text>
-                    <AntDesign
-                      name="arrowright"
-                      size={24}
-                      color="black"
-                      style={{ marginLeft: -50 }}
-                    />
-                  </TouchableOpacity>
+                  </View>
+                  <View className="flex-row items-center space-x-4 p-2">
+                    <TouchableOpacity
+                      className="bg-primary-200 w-[155px] px-4 py-2 rounded-3xl mb-4 flex-row justify-between"
+                      onPress={() => {
+                        if (data?.id) {
+                          dispatch(setProjectId({ id: data.id }));
+                          onNavigate(RootScreens.PROJECTDETAIL);
+                        }
+                      }}
+                    >
+                      <Text className="text-center text-neutral-900 text-body-base-regular ">
+                        Open Project
+                      </Text>
+                      <AntDesign
+                        name="arrowright"
+                        size={24}
+                        color="black"
+                        style={{ marginLeft: -50 }}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
+                <TouchableOpacity onPress={() => setOpenModal(true)}>
+                  <AvatarStack
+                    users={flatGroupsList ? flatGroupsList.split(",") : []}
+                  />
+                </TouchableOpacity>
+                {openModal && (
+                  <MembersModal
+                    projectName={data?.name ?? ""}
+                    members={listMember ?? []}
+                    closeModal={() => setOpenModal(false)}
+                  />
+                )}
               </View>
-              <TouchableOpacity onPress={() => setOpenModal(true)}>
-                <AvatarStack
-                  users={flatGroupsList ? flatGroupsList.split(",") : []}
-                />
-              </TouchableOpacity>
-              {openModal && (
-                <MembersModal
-                  projectName={data?.name ?? ""}
-                  members={listMember ?? []}
-                  closeModal={() => setOpenModal(false)}
-                />
-              )}
-            </View>
+            ) : (
+              <View className="p-4 flex-row items-center rounded-2xl">
+                <Text className="text-neutral-900 text-body-base-regular mb-4 p-4">
+                  Bạn chưa tham gia dự án nào
+                </Text>
+              </View>
+            )}
           </View>
         </>
       )}
