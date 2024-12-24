@@ -13,7 +13,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import React, { memo, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 
 interface ProjectCardProps {
   listMember: GetMemOfProjectResponse;
@@ -57,10 +57,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </View>
       </View>
 
-      <View className="flex-row items-center mb-1">
+      <View className="flex-row items-center justify-between mb-1">
         <Text className="text-heading4 font-bold text-neutral-800">
           {project.name}
         </Text>
+        {renderStatusLabel(project.status)}
       </View>
 
       <View className="flex-row items-center justify-between mb-1">
@@ -71,22 +72,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             {generateDate(project.endDate)}
           </Text>
         </View>
-        {renderStatusLabel(project.status)}
       </View>
 
       <Text className="text-body-large-regular text-gray-700 mb-2">
         {project.description}
       </Text>
 
-      <View className="w-[170px]">
-        <TouchableOpacity onPress={() => setOpenModal(true)}>
-          <AvatarStack
-            users={flatMembersList.split(",")}
-            maxVisible={5}
-            display="row"
-          />
-        </TouchableOpacity>
-      </View>
+      <Pressable onPress={() => setOpenModal(true)} className="w-[auto]">
+        <AvatarStack
+          users={flatMembersList.split(",")}
+          maxVisible={5}
+          display="row"
+        />
+      </Pressable>
       {openModal && (
         <MembersModal
           projectName={project.name}
