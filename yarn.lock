@@ -3126,7 +3126,7 @@
   dependencies:
     "@sentry/types" "8.40.0"
 
-"@sentry/react-native@^6.4.0":
+"@sentry/react-native@^6.3.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@sentry/react-native/-/react-native-6.4.0.tgz#9e2ba145e4a5d8419c22ebee56ec8acbe9a7bcd2"
   integrity sha512-nV1czQrPC+gF59N264u+C0yu6i0ohxHSk7+8gJm4zezQPfPr8h+XIO+uCINrMlm9VswI6cJBkqvjr8JL2873jg==
@@ -10317,10 +10317,10 @@ react-native-safe-area-context@4.12.0:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-4.12.0.tgz#17868522a55bbc6757418c94a1b4abdda6b045d9"
   integrity sha512-ukk5PxcF4p3yu6qMZcmeiZgowhb5AsKRnil54YFUUAXVIS7PJcMHGGC+q44fCiBg44/1AJk5njGMez1m9H0BVQ==
 
-react-native-screens@~4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.1.0.tgz#3f703a1bb4fd65fd7963e616ddc373a97809c254"
-  integrity sha512-tCBwe7fRMpoi/nIgZxE86N8b2SH8d5PlfGaQO8lgqlXqIyvwqm3u1HJCaA0tsacPyzhW7vVtRfQyq9e1j0S2gA==
+react-native-screens@~4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.4.0.tgz#3fcbcdf1bbb1be2736b10d43edc3d4e69c37b5aa"
+  integrity sha512-c7zc7Zwjty6/pGyuuvh9gK3YBYqHPOxrhXfG1lF4gHlojQSmIx2piNbNaV+Uykj+RDTmFXK0e/hA+fucw/Qozg==
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
@@ -10330,7 +10330,7 @@ react-native-size-matters@^0.4.0:
   resolved "https://registry.yarnpkg.com/react-native-size-matters/-/react-native-size-matters-0.4.2.tgz#4348bdd6fc47383f60326d58ad69870c998a5f9a"
   integrity sha512-DKE3f/sdcozd24oASgkP1iGg+YU3HoajRa5k3a4wkRzpiqREq8SGX12Y5zBgAt/8IivLQoTMYkyQu1/Giuy+zQ==
 
-react-native-svg@^15.10.1:
+react-native-svg@^15.8.1:
   version "15.10.1"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-15.10.1.tgz#5df51fca80cb1912648d058b67903f05eac0b8a6"
   integrity sha512-Hqz/doQciVFK/Df2v+wsW96oY5jxlta7rZ31KQYo78dlgvAHEaGr6paEOAMvlIruw7EHNQ0Vc1ZmJPJF2kfIPQ==
