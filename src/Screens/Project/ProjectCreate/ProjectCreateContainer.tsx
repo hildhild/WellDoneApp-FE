@@ -24,7 +24,8 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
-  const [createProject, {isLoading: isCreateProjectLoading}] = useCreateProjectMutation();
+  const [createProject, { isLoading: isCreateProjectLoading }] =
+    useCreateProjectMutation();
   const token = useSelector((state: RootState) => state.profile.token);
   const dispatch = useDispatch();
   const handleCreateProject = useCallback(

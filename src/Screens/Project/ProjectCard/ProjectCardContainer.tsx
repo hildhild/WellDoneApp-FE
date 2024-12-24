@@ -29,12 +29,15 @@ const ProjectCardContainer: FC<IProjectCardContainerProps> = ({
 }) => {
   const dispatch = useDispatch();
   const token = useSelector((state: RootState) => state.profile.token);
-  const [deleteProject, {isLoading: isDeleteProjectLoading}] = useDeleteProjectMutation();
+  const [deleteProject, { isLoading: isDeleteProjectLoading }] =
+    useDeleteProjectMutation();
   const listMember = useProjectMembers(project.id, token);
   const handleDeleteProject = useCallback(
     async (projectId: number) => {
       const response = await deleteProject({ projectId, token });
-      if ("data" in response && response.data === null) Toast.success("Delete project successfully");
+      if ("data" in response && response.data === null) {
+        Toast.success("Xóa dự án thành công!");
+      }
     },
     [deleteProject, token]
   );
@@ -58,7 +61,7 @@ const ProjectCardContainer: FC<IProjectCardContainerProps> = ({
 
   return (
     <ProjectCard
-    isDeleteProjectLoading={isDeleteProjectLoading}
+      isDeleteProjectLoading={isDeleteProjectLoading}
       listMember={listMember || []}
       project={project}
       bgColor={bgColor}

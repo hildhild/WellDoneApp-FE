@@ -93,11 +93,14 @@ export const renderErrorMessageResponse = (
     "You must be a leader in at least one of the specified groups"
   ) {
     return "Chức vụ của bạn không phù hợp để thực hiện tác vụ này!";
-  }
-  else if (responseString === "One or more groups not found") {
+  } else if (responseString === "One or more groups not found") {
     return "Một hoặc nhiều nhóm không tồn tại. Vui lòng kiểm tra lại!";
-  }
-  else {
+  } else if (
+    responseString === "File not found or no longer available" ||
+    responseString === "File not found"
+  ) {
+    return "Tệp không tồn tại hoặc không còn khả dụng";
+  } else {
     return "Đã xảy ra lỗi, vui lòng thử lại!";
   }
 };
