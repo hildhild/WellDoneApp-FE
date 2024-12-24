@@ -1,23 +1,20 @@
-import React, { memo } from "react";
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  RefreshControl,
-} from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { GetListDocumentResponseItem } from "@/Services/document";
-import ModalUpload from "@/Components/ModalUpload";
 import { LoadingProcess } from "@/Components";
-import {
-  generateDate,
-  generateDateTime,
-  generateTime,
-} from "@/Utils/Funtions/generate";
-import { MyIcon } from "@/Components/ModalUpload";
 import Avatar from "@/Components/Avatar";
 import MembersModal from "@/Components/MembersModal";
+import ModalUpload, { MyIcon } from "@/Components/ModalUpload";
+import { GetListDocumentResponseItem } from "@/Services/document";
+import {
+  generateDate,
+  generateTime,
+} from "@/Utils/Funtions/generate";
+import React, { memo } from "react";
+import {
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface DocumentProps {
   isDocumentloading: boolean;
@@ -55,6 +52,8 @@ const Document: React.FC<DocumentProps> = ({
   onRefresh,
 }) => {
   const [openModal, setOpenModal] = React.useState(false);
+
+  const sortedDocumentList = [...documentList].sort((a, b) => b.id - a.id);
 
   return (
     <View className="bg-[#F8FBF6] w-full h-full relative mb-32">
@@ -102,11 +101,8 @@ const Document: React.FC<DocumentProps> = ({
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          {documentList.map((doc) => (
-            <View
-              key={doc.id}
-              className="rounded-2xl bg-white overflow-hidden mb-4"
-            >
+          {sortedDocumentList.map((doc) => (
+            <View key={doc.id} className="rounded-2xl bg-white overflow-hidden mb-4">
               <View className="bg-lime-500 flex-row py-3 px-5 justify-between items-center">
                 <View className="flex-row gap-3 items-center">
                   <MyIcon name="calendar" size={20} color="#fff" />

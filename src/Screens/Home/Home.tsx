@@ -58,7 +58,6 @@ export const Home = (props: IHomeProps) => {
               <Avatar name={name} width={70} height={70} />
             </TouchableOpacity>
           </View>
-
           <View className="bg-white rounded-lg mb-8">
             <View className="flex-row justify-between">
               <Text className="text-heading4 font-bold mb-4 p-4">Bảng tin</Text>
@@ -76,8 +75,7 @@ export const Home = (props: IHomeProps) => {
             <View className="flex-row justify-between">
               <FeedItemContainer onNavigate={onNavigate} />
             </View>
-          </View>
-
+          </View>{" "}
           <View className="rounded-lg mb-8">
             <Text className="text-heading4 font-bold p-4">Dự án gần đây</Text>
             {

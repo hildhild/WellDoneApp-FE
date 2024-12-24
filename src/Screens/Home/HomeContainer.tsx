@@ -11,7 +11,13 @@ import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { AntDesign } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, ScrollView, RefreshControl } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
@@ -21,7 +27,9 @@ import { LoadingProcess } from "@/Components";
 type HomeScreenNavigatorProps = NativeStackScreenProps<RootStackParamList>;
 
 const useRecentProject = (token: string) => {
-  const [data, setData] = useState<CreateProjectResponse | undefined>(undefined);
+  const [data, setData] = useState<CreateProjectResponse | undefined>(
+    undefined
+  );
   const [getProjectList, { isLoading }] = useGetProjectListMutation();
   const dispatch = useDispatch();
 
@@ -49,7 +57,9 @@ const useRecentProject = (token: string) => {
 };
 
 export const useProjectMembers = (projectID: number | null, token: string) => {
-  const [listMember, setListMember] = useState<GetMemOfProjectResponse | null>(null);
+  const [listMember, setListMember] = useState<GetMemOfProjectResponse | null>(
+    null
+  );
   const [getMemOfProject] = useGetMemOfProjectMutation();
 
   useEffect(() => {
