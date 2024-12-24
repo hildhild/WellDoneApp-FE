@@ -1,16 +1,15 @@
-
 import { Project } from "@/Services/projects";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface ProjectState {
   id: number | null;
   curProject: Project | null;
-  projectList: Project []
+  projectList: Project[];
 }
 
 const initialState: ProjectState = {
   id: null,
   curProject: null,
-  projectList: []
+  projectList: [],
 };
 const slice = createSlice({
   name: "project",
@@ -31,11 +30,7 @@ const slice = createSlice({
     },
   },
 });
-export const {
-  setProjectId,
-  clearProjectId,
-  setCurProject,
-  setProjectList
-} = slice.actions;
+export const { setProjectId, clearProjectId, setCurProject, setProjectList } =
+  slice.actions;
 
 export const projectReducers = slice.reducer;

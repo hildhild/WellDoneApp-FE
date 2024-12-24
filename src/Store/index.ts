@@ -12,7 +12,17 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
-import { homeReducers, themeReducers, userReducers, profileReducers, notificationReducers, projectReducers, groupReducers, userListReducers, taskReducers} from "./reducers";
+import {
+  homeReducers,
+  themeReducers,
+  userReducers,
+  profileReducers,
+  notificationReducers,
+  projectReducers,
+  groupReducers,
+  userListReducers,
+  taskReducers,
+} from "./reducers";
 
 const reducers = combineReducers({
   api: API.reducer,
@@ -40,7 +50,15 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) => {
     const middlewares = getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, "api/executeMutation/fulfilled"],
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER,
+          "api/executeMutation/fulfilled",
+        ],
         ignoredPaths: ["api.mutations"],
       },
     }).concat(API.middleware);
