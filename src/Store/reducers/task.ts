@@ -12,7 +12,7 @@ const slice = createSlice({
   name: "task",
   initialState,
   reducers: {
-    setCurTask: (state, action: PayloadAction<Task>) => {
+    setCurTask: (state, action: PayloadAction<Task | null>) => {
       state.curTask = action.payload;
     }
   },

@@ -92,6 +92,21 @@ export interface addTaskRequest {
   token: string
 }
 
+export interface editTaskRequest {
+  data: {
+    "title": string,
+    "description": string,
+    "dueDate": string,
+    "priority": string,
+    "status": string,
+    "assigneeIds": number [],
+    "projectId": number
+  },
+  token: string,
+  taskId: number
+}
+
+
 
 const taskApi = API.injectEndpoints({
   endpoints: (build) => ({
@@ -141,6 +156,16 @@ const taskApi = API.injectEndpoints({
         },
       }),
     }),
+    editTask: build.mutation<Task | ErrorResponse, editTaskRequest>({
+      query: (request) => ({
+        url: `/tasks/${request.taskId}`,
+        method: "PATCH",
+        body: request.data,
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+        },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -150,5 +175,6 @@ export const {
   useGetGroupTaskMutation,
   useGetProjectTaskMutation,
   useDeleteTaskMutation,
-  useAddTaskMutation
+  useAddTaskMutation,
+  useEditTaskMutation
 } = taskApi;
