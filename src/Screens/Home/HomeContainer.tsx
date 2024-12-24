@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
 import { Home } from "./Home";
+import { LoadingProcess } from "@/Components";
 
 type HomeScreenNavigatorProps = NativeStackScreenProps<RootStackParamList>;
 
@@ -90,33 +91,38 @@ export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
     setRefreshing(false);
   };
 
+  useEffect(()=>{
+    fetchRecentProject();
+  }, [])
+
   useEffect(() => {
     if (data) {
       setProjectID(data.id);
     }
   }, [data]);
 
-  if (isLoading) {
-    return (
-      <View className="flex justify-center items-center h-full">
-        <Text>Loading...</Text>
-      </View>
-    );
-  } else if (!data) {
-    return (
-      <View className="flex justify-center items-center h-full">
-        <Text className="p-16 text-center">
-          Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇
-        </Text>
-        <TouchableOpacity
-          className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
-          onPress={() => onNavigate(RootScreens.PROJECTCREATE)}
-        >
-          <AntDesign name="plus" size={30} color="#fff" />
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <View className="flex justify-center items-center h-full">
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
+  //  else if (!data) {
+  //   return (
+  //     <View className="flex justify-center items-center h-full">
+  //       <Text className="p-16 text-center">
+  //         Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇
+  //       </Text>
+  //       <TouchableOpacity
+  //         className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
+  //         onPress={() => onNavigate(RootScreens.PROJECTCREATE)}
+  //       >
+  //         <AntDesign name="plus" size={30} color="#fff" />
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
+  // }
 
   return (
     <ScrollView
@@ -125,6 +131,7 @@ export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
+      <LoadingProcess isVisible={isLoading}/>
       <Home
         onNavigate={onNavigate}
         listMember={listMember}

@@ -11,7 +11,7 @@ import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from "react-native-progress";
 import { useDispatch, useSelector } from "react-redux";
 import { RootScreens } from "..";
@@ -80,7 +80,10 @@ export const Home = (props: IHomeProps) => {
 
           <View className="rounded-lg mb-8">
             <Text className="text-heading4 font-bold p-4">Dự án gần đây</Text>
-            <View className="p-4 flex-row items-center rounded-2xl border border-neutral-300 bg-neutral-900">
+            {
+              data 
+              ?
+              <View className="p-4 flex-row items-center rounded-2xl border border-neutral-300 bg-neutral-900">
               <Image
                 source={require("assets/Group Rectangle.png")}
                 className="absolute top-2 right-2 w-32 h-32"
@@ -129,6 +132,15 @@ export const Home = (props: IHomeProps) => {
                 />
               )}
             </View>
+            :
+            <View className="p-4 flex-row items-center rounded-2xl justify-between">
+              <Text className="text-lg font-semibold text-gray-500">Không có dự án</Text>
+              <Pressable onPress={()=>onNavigate(RootScreens.PROJECTCREATE)}>
+                <Text className="text-lg font-semibold text-lime-500">Tạo mới</Text>
+              </Pressable>
+            </View>
+            }
+            
           </View>
         </>
       )}
