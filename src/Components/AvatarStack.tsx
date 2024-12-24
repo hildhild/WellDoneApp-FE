@@ -24,11 +24,7 @@ const AvatarStack: React.FC<AvatarStackProps> = ({
         display === "col"
           ? "flex-col items-center space-y-[-7]"
           : "flex-row items-center space-x-[-7]"
-      } ${
-        remainingCount > 0
-        &&
-        "!w-[100px]"
-      }
+      } 
       `}
     >
       {visibleUsers.map((user, index) => (
@@ -36,7 +32,7 @@ const AvatarStack: React.FC<AvatarStackProps> = ({
           key={index}
           style={{
             zIndex: visibleUsers.length + index,
-            marginTop: display === "col" ? -7 : 0,
+            marginTop: display === "col" ? index === 0 ? 0 : -7 : 0,
           }}
         >
           <Avatar name={user} />

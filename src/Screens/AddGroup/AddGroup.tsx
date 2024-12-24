@@ -36,6 +36,7 @@ export const AddGroup = (props: {
   });
   const [addGroupApi, {isLoading: addLoading}] = useAddGroupMutation();
   const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
+  const user = useSelector((state: any) => state.profile);
 
   const handleCreateGroup = async () => {
     try {
@@ -124,7 +125,10 @@ export const AddGroup = (props: {
             placeholder="Chọn thành viên"
             searchPlaceholder="Tìm kiếm..."
             onChange={item => {
-              if (selectedUsers.filter((user: any) => user.id === item.value).length > 0) {
+              if (item.value === user.id) {
+                Toast.error("Bản thân mặc định được thêm")
+              }
+              else if (selectedUsers.filter((user: any) => user.id === item.value).length > 0) {
                 Toast.error("Thành viên đã được chọn")
               } else {
                 setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
@@ -133,6 +137,14 @@ export const AddGroup = (props: {
               <MyIcon color="black" name="search" size={15} />
             )}
           />
+          <View className="flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
+            <Text className="font-semibold">{user?.name}</Text>
+            <View className="flex-row gap-3 items-center">
+              <View className="rounded-full p-2 bg-lime-200">
+                <Text className="text-xs text-lime-800 font-semibold">Thành viên</Text>
+              </View>
+            </View>
+          </View>
           {
             selectedUsers.map((user: any) => 
               <View key={user.id} className="flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">

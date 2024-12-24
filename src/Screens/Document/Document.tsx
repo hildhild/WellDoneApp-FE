@@ -61,7 +61,6 @@ const Document: React.FC<DocumentProps> = ({
       >
         <MyIcon name="chevron-left" size={15} color="#000" />
       </TouchableOpacity>
-
       <TouchableOpacity
         className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-900"
         onPress={() => setIsUpload(true)}
@@ -79,11 +78,14 @@ const Document: React.FC<DocumentProps> = ({
               <View className="flex-row gap-3 items-center">
                 <MyIcon name="calendar" size={20} color="#fff" />
                 <Text className="text-neutral-100 text-body-small-bold">
-                  {generateDate(new Date().toISOString())}
-                </Text>{" "}
+                  {generateDate(new Date().toISOString())} {" "}
+                </Text>
               </View>
               <View className="flex-row gap-6 items-center">
-                <MyIcon name="info-circle" size={25} color="#fff" />
+                <TouchableOpacity onPress={() => onGetFile(doc.id)}>
+                  <MyIcon name="download" size={25} color="#fff" />
+                </TouchableOpacity>
+                {/* <MyIcon name="info-circle" size={25} color="#fff" /> */}
                 <MyIcon name="trash" size={25} color="#fff" />
               </View>
             </View>
@@ -100,14 +102,12 @@ const Document: React.FC<DocumentProps> = ({
                       08.30 PM
                     </Text>
                   </View>
-                  <View className="flex-row items-center">
-                    <TouchableOpacity onPress={() => onGetFile(doc.id)}>
-                      <MyIcon name="download" size={20} color="#65A30D" />
-                    </TouchableOpacity>
+                  {/* <View className="flex-row items-center"> */}
+                    
                     {/* <Text className="text-primary-900 text-body-small-regular ml-3">
                       2
                     </Text> */}
-                  </View>
+                  {/* </View> */}
                 </View>
                 <View>
                   <TouchableOpacity onPress={() => setOpenModal(true)}>

@@ -25,6 +25,16 @@ interface ProjectCardProps {
   onDelete: (id: number) => void;
 }
 
+const widthOfListMember = (length : number) => {
+  if (length === 1) return "w-[46px]"
+  else if (length === 2) return "w-[78px]";
+  else if (length === 3) return "w-[110px]";
+  else if (length === 4) return "w-[142px]";
+  else if (length === 5) return "w-[174px]";
+  else return "w-[230px]";
+
+}
+
 const ProjectCard: React.FC<ProjectCardProps> = ({
   isDeleteProjectLoading,
   listMember,
@@ -35,6 +45,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   const flatMembersList = listMember.map((member) => member.name).join(", ");
   const [openModal, setOpenModal] = useState(false);
+
   return (
     <View
       style={{ backgroundColor: bgColor }}
@@ -82,7 +93,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         {project.description}
       </Text>
 
-      <Pressable onPress={() => setOpenModal(true)} className="w-[auto]">
+      <Pressable onPress={() => setOpenModal(true)} className={`${widthOfListMember(listMember.length)}`}>
         <AvatarStack
           users={flatMembersList.split(",")}
           maxVisible={5}

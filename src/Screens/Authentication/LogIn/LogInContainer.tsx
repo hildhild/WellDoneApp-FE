@@ -54,6 +54,7 @@ const LogInContainer = ({ navigation }: LogInScreenNavigatorProps) => {
         if ("name" in profileResponse) {
           dispatch(
             setProfile({
+              id: profileResponse.id,
               name: profileResponse.name,
               dateOfBirth: profileResponse.dateofbirth,
               email: profileResponse.email,
