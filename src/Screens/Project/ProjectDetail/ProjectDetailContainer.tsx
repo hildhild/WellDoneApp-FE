@@ -25,7 +25,7 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
   const { token } = useSelector((state: RootState) => state.profile);
 
   const [projectInfo, setProjectInfo] =
-    useState<GetDetailProjectResponse | null>(null);
+  useState<GetDetailProjectResponse | null>(null);
   const [taskList, setTaskList] = useState<Task[] | null>(null);
   const [getDetailProject, { isLoading }] = useGetDetailProjectMutation();
   const [getTaskList, {isLoading: isTaskFetchingLoading}] = useGetProjectTaskMutation();
@@ -64,7 +64,7 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
           </View>
         </>
       );
-
+    console.log(123, projectInfo, listMember, taskList);
     if (projectInfo && listMember && taskList) {
       return (
         <ProjectDetail

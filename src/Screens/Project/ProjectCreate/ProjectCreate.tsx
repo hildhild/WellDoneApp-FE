@@ -114,9 +114,9 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
           source={require("assets/dark-logo.png")}
           className="rounded-full w-32 h-32"
         />
-        <TouchableOpacity onPress={() => {}}>
+        {/* <TouchableOpacity onPress={() => {}}>
           <Text className="text-sm text-gray-600">Thay đổi ảnh</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <View>

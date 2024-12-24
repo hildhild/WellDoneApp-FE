@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setGroupList, toggleRefetch } from "@/Store/reducers";
+import { setCurTask, setGroupList, toggleRefetch } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { StyleSheet } from 'react-native';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
@@ -52,6 +52,7 @@ export const TaskDetail = (props: {
       if (!res) {
         Toast.success("Xóa thành công");
         dispatch(toggleRefetch());
+        dispatch(setCurTask(null));
         navigation.goBack();
       } 
     } catch (err) {
@@ -137,13 +138,16 @@ export const TaskDetail = (props: {
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Chi tiết nhiệm vụ</Text>
       </View>
-      <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
+      <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => {
+        navigation.goBack();
+        dispatch(setCurTask(null));
+      }}>
         <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
       <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={()=>setDeleteTask(true)}>
         <MyIcon name="trash" size={25} color="red" />
       </Pressable>
-      <Pressable className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-500" onPress={()=>setIsUpload(true)}>
+      <Pressable className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-500" onPress={()=>props.onNavigate(RootScreens.EDIT_TASK)}>
         <MyIcon name="pencil" size={30} color="#fff" />
       </Pressable>
       <ScrollView className="w-full p-6">
