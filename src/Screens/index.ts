@@ -13,6 +13,8 @@ import { DocumentContainer } from "./Document";
 import { TaskDetailContainer } from "./TaskDetail";
 import { StatisticContainer } from "./Statistic";
 import { AddTaskContainer } from "./AddTask";
+import { EditTaskContainer } from "./EditTask";
+
 export enum RootScreens {
   MAIN = "Main",
   WELCOME = "Welcome",
@@ -34,7 +36,8 @@ export enum RootScreens {
   DOCUMENT = "Document",
   TASK_DETAIL = "TaskDetail",
   STATISTIC = "Statistic",
-  ADD_TASK = "AddTask"
+  ADD_TASK = "AddTask",
+  EDIT_TASK = "EditTask"
 }
 
 export {
@@ -51,6 +54,7 @@ export {
   DocumentContainer,
   TaskDetailContainer,
   StatisticContainer,
-  AddTaskContainer
+  AddTaskContainer,
+  EditTaskContainer
 };
 

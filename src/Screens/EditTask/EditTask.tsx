@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurGroupProjectId, setProjectList, toggleRefetch } from "@/Store/reducers";
+import { setCurGroupProjectId, setCurTask, setProjectList, toggleRefetch } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { TextInput } from "react-native";
@@ -17,17 +17,16 @@ import { Group, Member, useAddGroupMutation, useGetGroupsMutation, User } from "
 import { LoadingProcess } from "@/Components";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Project, useGetMemOfProjectMutation } from "@/Services/projects";
-import { useAddTaskMutation } from "@/Services/task";
+import { useAddTaskMutation, useEditTaskMutation } from "@/Services/task";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
 
-export const AddTask = (props: {
+export const EditTask = (props: {
   onNavigate: (string: RootScreens) => void;
 }) => {
   const navigation = useNavigation();
   const accessToken = useSelector((state: any) => state.profile.token);
   const dispatch = useDispatch();
-  const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>([]);
   const [userList, setUserList] = useState<any>([])
   const projectList = useSelector((state: any) => state.project.projectList).map((project: Project) => {
     return {
@@ -35,34 +34,43 @@ export const AddTask = (props: {
       value: project.id
     };
   });
-  const [addTaskApi, {isLoading: addLoading}] = useAddTaskMutation();
+  const [editTaskApi, {isLoading: editLoading}] = useEditTaskMutation();
   const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
   const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
   const curGroupProjectId = useSelector((state: any) => state.group.curGroupProjectId);
+  const task = useSelector((state: any) => state.task.curTask);
   const [formData, setFormData] = useState<any>({
-    "title": "",
-    "description": "",
-    "dueDate": new Date(),
-    "priority": "HIGH",
-    "status": "TODO",
-    "assigneeIds": [],
-    "projectId": curGroupProjectId
+    "title": task.title,
+    "description": task.description,
+    "dueDate": new Date(task.dueDate),
+    "priority": task.priority,
+    "status": task.status,
+    "assigneeIds": task.assignees.map((user: any) => user.id),
+    "projectId": curGroupProjectId ? curGroupProjectId : task ? task.projectId : curGroupProjectId
   }
-  )
+  );
+  const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>(task ? task.assignees.map((user: any) => {
+    return {
+      name: user.name,
+      id: user.id
+    };
+  }): []);
   const [getProjectMemberApi, {isLoading: getMemberLoading}] = useGetMemOfProjectMutation();
 
-  const handleCreateTask = async () => {
+  const handleEditTask = async () => {
     try {
-      const response = await addTaskApi({
+      const response = await editTaskApi({
         data: formData,
-        token: accessToken
+        token: accessToken,
+        taskId: task.id
       }).unwrap();
       if ("id" in response) {
-        Toast.success("Thêm thành công");
+        Toast.success("Chỉnh sửa thành công");
         dispatch(
           toggleRefetch()
         );
         dispatch(setCurGroupProjectId(null));
+        dispatch(setCurTask(response));
         navigation.goBack();
       }
     } catch (err) {
@@ -110,6 +118,8 @@ export const AddTask = (props: {
   useEffect(()=> {
     if (curGroupProjectId) {
       getProjectMember(curGroupProjectId);
+    } else if (task) {
+      getProjectMember(task.projectId);
     }
   }, [])
 
@@ -139,14 +149,14 @@ export const AddTask = (props: {
           </View>
         </View>
       </Modal>
-      <LoadingProcess isVisible={addLoading || getLoading}/>
+      <LoadingProcess isVisible={editLoading || getLoading}/>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
-        <Text className="text-2xl font-bold px-10 text-center text-black">Thêm nhiệm vụ</Text>
+        <Text className="text-2xl font-bold px-10 text-center text-black">Chỉnh sửa nhiệm vụ</Text>
       </View>
       <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
         <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
-      <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={handleCreateTask}>
+      <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={handleEditTask}>
         <MyIcon name="save" size={20} color="#000" />
       </Pressable>
       <ScrollView className="w-full p-6">
@@ -221,7 +231,10 @@ export const AddTask = (props: {
               <View key={user.id} className="flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
                 <Text className="font-semibold">{user.name}</Text>
                 <View className="flex-row gap-3 items-center">
-                  <Pressable onPress={() => setSelectedUsers((prevUsers) => prevUsers.filter((userItem) => userItem.id !== user.id))}>
+                  <Pressable onPress={() => { 
+                    setSelectedUsers((prevUsers) => prevUsers.filter((userItem: any) => userItem.id !== user.id));
+                    setFormData({...formData, assigneeIds: formData.assigneeIds.filter((id: number) => id !== user.id)});
+                  }}>
                     <MyIcon name="trash" size={20}/>
                   </Pressable>
                 </View>
