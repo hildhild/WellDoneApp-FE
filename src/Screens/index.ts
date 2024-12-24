@@ -9,7 +9,7 @@ import { OtherContainer } from "./Other";
 import { ProjectContainer } from "./Project";
 import { GroupDetailContainer } from "./GroupDetail";
 import { AddGroupContainer } from "./AddGroup";
-import { DocumentContainer } from "./Document";
+import DocumentContainer from "./Document/DocumentContainer";
 import { TaskDetailContainer } from "./TaskDetail";
 import { StatisticContainer } from "./Statistic";
 import { AddTaskContainer } from "./AddTask";

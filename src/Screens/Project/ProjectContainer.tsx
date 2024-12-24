@@ -57,7 +57,7 @@ export const ProjectContainer = ({
     <>
       {ProjectList?.length === 0 ? (
         <View className="flex justify-center items-center h-full">
-          <Text className="p-16 text-center ">
+          <Text className="p-16 text-center">
             Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇
           </Text>
           <TouchableOpacity

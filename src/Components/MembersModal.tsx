@@ -3,12 +3,17 @@ import React, { memo } from "react";
 import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 import Avatar from "./Avatar";
 import { renderRoleLabel } from "@/Utils/Funtions/render";
+import { UserSignUpInformation } from "@/Services";
 
 interface ProjectModalProps {
-  projectName: string;
-  members: Member[];
+  projectName?: string;
+  members: Member[] | UserSignUpInformation | null;
   closeModal: () => void;
 }
+
+const isUserSignUpInformation = (member: any): member is UserSignUpInformation => {
+  return (member as UserSignUpInformation).id !== undefined;
+};
 
 const MembersModal: React.FC<ProjectModalProps> = ({
   projectName,
@@ -28,15 +33,13 @@ const MembersModal: React.FC<ProjectModalProps> = ({
     </View>
   );
 
-  if (projectName === "" || members.length === 0) {
+  if (!members) {
     return (
-      <>
-        <View className="flex-row justify-center items-center h-full">
-          <Text className="text-neutral-100">
-            Không tìm thấy thành viên để hiển thị!
-          </Text>
-        </View>
-      </>
+      <View className="flex-row justify-center items-center h-full">
+        <Text className="text-neutral-100">
+          Không tìm thấy thành viên để hiển thị!
+        </Text>
+      </View>
     );
   }
 
@@ -49,17 +52,36 @@ const MembersModal: React.FC<ProjectModalProps> = ({
     >
       <View className="flex-1 justify-center items-center bg-black/50">
         <View className="bg-neutral-100 w-4/5 rounded-lg p-5 max-h-4/5">
-          <View className="mb-5 items-center">
-            <Text className="text-xl font-bold text-center">{projectName}</Text>
-          </View>
+          {projectName && (
+            <View className="mb-5 items-center">
+              <Text className="text-xl font-bold text-center">
+                {projectName}
+              </Text>
+            </View>
+          )}
 
+          {/* Render members when it's an array of Member */}
           <FlatList
-            data={members}
+            data={Array.isArray(members) ? members : []}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={{ flexGrow: 1 }}
             style={{ marginBottom: 5 }}
           />
+
+          {/* Render member if it's a single instance of UserSignUpInformation */}
+          {isUserSignUpInformation(members) && (
+            <View key={members.id} className="flex-row items-center mb-4">
+              <Avatar name={members.name} width={40} height={40} />
+              <View className="ml-3 flex-1">
+                <Text className="text-body-base-bold">{members.name}</Text>
+                <Text className="text-body-small-regular text-neutral-600">
+                  {members.email}
+                </Text>
+              </View>
+              {renderRoleLabel(members.status)}
+            </View>
+          )}
 
           <View className="flex-row justify-center">
             <TouchableOpacity
