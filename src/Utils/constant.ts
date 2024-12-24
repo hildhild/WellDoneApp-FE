@@ -35,6 +35,8 @@ export type Priority = "HIGH" | "MEDIUM" | "LOW";
 
 export type Role = "Leader" | "Member";
 
+export type UserStatus = "OFFLINE" | "ONLINE" | "AWAY" | "BUSY";
+
 // export const dataa: IProjectDetail = {
 //   id: "001",
 //   name: "Project Phoenix",

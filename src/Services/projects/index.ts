@@ -1,4 +1,4 @@
-import { Status } from "@/Utils/constant";
+import { Role, Status } from "@/Utils/constant";
 import { API } from "..";
 import { ErrorResponse } from "../profile";
 
@@ -118,7 +118,7 @@ export interface Member {
   email: string
   id: number
   name: string
-  role: string
+  role: Role
   updatedAt: string
 }
 

@@ -1,3 +1,4 @@
+import { LoadingProcess } from "@/Components";
 import Avatar from "@/Components/Avatar";
 import AvatarStack from "@/Components/AvatarStack";
 import MembersModal from "@/Components/MembersModal";
@@ -16,6 +17,7 @@ import React, { memo, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface ProjectCardProps {
+  isDeleteProjectLoading: boolean;
   listMember: GetMemOfProjectResponse;
   project: GetProjectListResponse;
   bgColor: string;
@@ -24,6 +26,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
+  isDeleteProjectLoading,
   listMember,
   project,
   bgColor,
@@ -37,6 +40,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       style={{ backgroundColor: bgColor }}
       className="rounded-lg p-4 mb-4 shadow-md"
     >
+      <LoadingProcess isVisible={isDeleteProjectLoading} />
       <View className="flex-row justify-between items-center mb-2">
         <Avatar name={project.name} width={70} height={70} />
         <View className="flex-row">
@@ -94,7 +98,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           closeModal={() => setOpenModal(false)}
         />
       )}
-
     </View>
   );
 };
