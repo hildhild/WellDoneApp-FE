@@ -11,7 +11,7 @@ import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { AntDesign } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView, RefreshControl } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
@@ -20,9 +20,7 @@ import { Home } from "./Home";
 type HomeScreenNavigatorProps = NativeStackScreenProps<RootStackParamList>;
 
 const useRecentProject = (token: string) => {
-  const [data, setData] = useState<CreateProjectResponse | undefined>(
-    undefined
-  );
+  const [data, setData] = useState<CreateProjectResponse | undefined>(undefined);
   const [getProjectList, { isLoading }] = useGetProjectListMutation();
   const dispatch = useDispatch();
 
@@ -35,8 +33,6 @@ const useRecentProject = (token: string) => {
         if (project?.id) {
           dispatch(setProjectId({ id: project.id }));
         }
-      } else {
-        Toast.error("Unexpected response format");
       }
     } catch (error) {
       Toast.error(renderErrorMessageResponse(String(error)));
@@ -48,13 +44,11 @@ const useRecentProject = (token: string) => {
     fetchRecentProject();
   }, [fetchRecentProject]);
 
-  return { data, isLoading };
+  return { data, isLoading, fetchRecentProject };
 };
 
 export const useProjectMembers = (projectID: number | null, token: string) => {
-  const [listMember, setListMember] = useState<GetMemOfProjectResponse | null>(
-    null
-  );
+  const [listMember, setListMember] = useState<GetMemOfProjectResponse | null>(null);
   const [getMemOfProject] = useGetMemOfProjectMutation();
 
   useEffect(() => {
@@ -81,12 +75,19 @@ export const useProjectMembers = (projectID: number | null, token: string) => {
 
 export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
   const token = useSelector((state: RootState) => state.profile.token);
-  const { data, isLoading } = useRecentProject(token);
+  const { data, isLoading, fetchRecentProject } = useRecentProject(token);
   const [projectID, setProjectID] = useState<number | null>(null);
   const listMember = useProjectMembers(projectID, token);
+  const [refreshing, setRefreshing] = useState(false);
 
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchRecentProject();
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -103,8 +104,8 @@ export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
     );
   } else if (!data) {
     return (
-      <View className="flex justify-center items-center h-full text-center">
-        <Text className="p-16 ">
+      <View className="flex justify-center items-center h-full">
+        <Text className="p-16 text-center">
           Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇
         </Text>
         <TouchableOpacity
@@ -118,11 +119,18 @@ export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
   }
 
   return (
-    <Home
-      onNavigate={onNavigate}
-      listMember={listMember}
-      data={data}
-      isLoading={isLoading}
-    />
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <Home
+        onNavigate={onNavigate}
+        listMember={listMember}
+        data={data}
+        isLoading={isLoading}
+      />
+    </ScrollView>
   );
 };

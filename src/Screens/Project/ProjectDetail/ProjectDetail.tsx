@@ -11,31 +11,33 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { FC, memo, useEffect } from "react";
-import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { FC, memo, useEffect, useState } from "react";
+import { Pressable, ScrollView, Text, TouchableOpacity, View, RefreshControl } from "react-native";
 import { useDispatch } from "react-redux";
+
 interface IProjectDetailProps {
   listMember: GetMemOfProjectResponse;
   onNavigate: (screen: RootScreens) => void;
   project: Project;
   taskList: Task[];
+  onRefresh: () => void;
+  refreshing: boolean;
 }
 
 const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
-  const navigation = useNavigation();
+  const { listMember, onNavigate, project, taskList, onRefresh, refreshing } = props;
+  const flatGroupsList = listMember.map((member) => member.name).join(", ");
+  const [openModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
-  const flatGroupsList = props.listMember
-    .map((member) => member.name)
-    .join(", ");
-  const [openModal, setOpenModal] = React.useState(false);
+
   useEffect(() => {
-    dispatch(setCurProject(props.project));
-  }, []);
+    dispatch(setCurProject(project));
+  }, [project]);
+
   return (
     <View className="bg-white h-full mt-8 px-4">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => onNavigate(RootScreens.MAIN)}>
           <MaterialCommunityIcons
             name="arrow-left-circle-outline"
             size={32}
@@ -45,8 +47,8 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         <Text className="text-heading4 font-bold">Chi tiết Dự án</Text>
         <TouchableOpacity
           onPress={() => {
-            dispatch(setProjectId({ id: props.project.id }));
-            props.onNavigate(RootScreens.PROJECTEDIT);
+            dispatch(setProjectId({ id: project.id }));
+            onNavigate(RootScreens.PROJECTEDIT);
           }}
         >
           <MaterialCommunityIcons
@@ -57,69 +59,58 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="p-4">
+      <ScrollView
+        className="p-4"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
         <View className="flex-row justify-between items-center mb-2">
           <View className="flex-col">
-            <Text className="text-body-small-regular text-neutral-500">
-              Tên dự án
-            </Text>
-            <Text className="text-heading4 font-bold text-center mt-2">
-              {props.project.name}
-            </Text>
+            <Text className="text-body-small-regular text-neutral-500">Tên dự án</Text>
+            <Text className="text-heading4 font-bold text-center mt-2">{project.name}</Text>
           </View>
 
-          {renderStatusLabel(props.project.status)}
+          {renderStatusLabel(project.status)}
         </View>
         <View className="flex-row justify-end">
           <TouchableOpacity
             className="flex-row items-center bg-primary-500 p-2 w-28 text-neutral-100 text-body-small-regular rounded-lg mt-4"
-            onPress={() => props.onNavigate(RootScreens.STATISTIC)}
+            onPress={() => onNavigate(RootScreens.STATISTIC)}
           >
             <Foundation name="graph-bar" size={24} color="black" />
             <Text> Thống kê</Text>
           </TouchableOpacity>
         </View>
-        <Text className="text-body-small-regular text-neutral-500  mt-4">
-          Thành viên
-        </Text>
+        <Text className="text-body-small-regular text-neutral-500 mt-4">Thành viên</Text>
         <TouchableOpacity onPress={() => setOpenModal(true)}>
           <AvatarStack users={flatGroupsList.split(",")} display="row" />
         </TouchableOpacity>
         {openModal && (
           <MembersModal
-            projectName={props.project.name}
-            members={props.listMember}
+            projectName={project.name}
+            members={listMember}
             closeModal={() => setOpenModal(false)}
           />
         )}
 
-        <Text className="text-body-small-regular text-neutral-500 mt-4">
-          Mô tả dự án
-        </Text>
-        <Text className="text-body-large-regular text-neutral-900">
-          {props.project.description}
-        </Text>
+        <Text className="text-body-small-regular text-neutral-500 mt-4">Mô tả dự án</Text>
+        <Text className="text-body-large-regular text-neutral-900">{project.description}</Text>
 
         <View className="mt-6">
           <View className="flex-row justify-between items-center mb-2">
-            <Text className="text-body-small-regular text-neutral-500">
-              Tasks
-            </Text>
-            <TouchableOpacity onPress={()=>props.onNavigate(RootScreens.ADD_TASK)}>
-              <Text className="text-body-small-regular text-neutral-500">
-                Thêm nhiệm vụ
-              </Text>
+            <Text className="text-body-small-regular text-neutral-500">Tasks</Text>
+            <TouchableOpacity onPress={() => onNavigate(RootScreens.ADD_TASK)}>
+              <Text className="text-body-small-regular text-neutral-500">Thêm nhiệm vụ</Text>
             </TouchableOpacity>
           </View>
 
           <ScrollView className="p-4">
-            {props.taskList.map((task) => (
+            {taskList.map((task) => (
               <Pressable
                 key={task.id}
                 className="flex-row items-center bg-neutral-100 py-3 rounded-lg mb-2"
-                onPress={()=> {
+                onPress={() => {
                   dispatch(setCurTask(task));
-                  props.onNavigate(RootScreens.TASK_DETAIL);
+                  onNavigate(RootScreens.TASK_DETAIL);
                 }}
               >
                 <View
@@ -135,16 +126,12 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
 
                 <View className="flex-1">
                   <View className="flex-col">
-                    <Text className="font-medium text-neutral-900">
-                      {task.title}
-                    </Text>
+                    <Text className="font-medium text-neutral-900">{task.title}</Text>
                     <Text className="text-sm text-neutral-500">#{task.id}</Text>
                   </View>
                   <View className="flex-row items-center">
                     <Ionicons name="flag-outline" size={20} color="black" />
-                    <Text className="text-sm text-neutral-500">
-                      {task.dueDate}
-                    </Text>
+                    <Text className="text-sm text-neutral-500">{task.dueDate}</Text>
                   </View>
                 </View>
                 <AvatarStack
@@ -162,4 +149,5 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
     </View>
   );
 };
+
 export default memo(ProjectDetail);

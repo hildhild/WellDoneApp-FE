@@ -1,12 +1,13 @@
 import { i18n, LocalizationKey } from "@/Localization";
-import { GetProjectList, GetProjectListResponse } from "@/Services/projects";
+import { GetProjectListResponse } from "@/Services/projects";
 import { generatePastelColor } from "@/Utils/Funtions/generate";
 import { AntDesign } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { Heading, HStack, Spinner } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
+  RefreshControl,
   ScrollView,
   Text,
   TextInput,
@@ -15,16 +16,25 @@ import {
 } from "react-native";
 import { RootScreens } from "..";
 import ProjectCardContainer from "./ProjectCard/ProjectCardContainer";
+
 export interface IProjectProps {
   data: GetProjectListResponse[] | undefined;
   isLoading: boolean;
   search: string;
   setSearch: (value: string) => void;
   onNavigate: (screen: RootScreens) => void;
+  fetchRecentProject: () => void; 
 }
 
 export const Project = (props: IProjectProps) => {
-  const { data, isLoading } = props;
+  const { data, isLoading, search, setSearch, onNavigate, fetchRecentProject } = props;
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchRecentProject();
+    setRefreshing(false);
+  };
 
   return (
     <View className="flex align-center justify-center bg-neutral-100 relative h-full">
@@ -54,27 +64,40 @@ export const Project = (props: IProjectProps) => {
               <TextInput
                 placeholder="Tìm kiếm dự án của bạn"
                 className="text-neutral-800 text-body-base-bold flex-1"
-                value={props.search}
-                onChangeText={props.setSearch}
+                value={search}
+                onChangeText={setSearch}
               />
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} className="mb-20">
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              showsVerticalScrollIndicator={false}
+              className="mb-20"
+            >
               <Text className="text-heading3 font-bold text-neutral-800 mb-4">
                 Danh sách Dự án ({data?.length})
               </Text>
-              {data?.map((project) => (
-                <ProjectCardContainer
-                  key={project.id}
-                  project={project}
-                  bgColor={generatePastelColor()}
-                  onNavigate={props.onNavigate}
-                />
-              ))}
+              {data?.length === 0 ? (
+                <Text className="text-body-base text-neutral-500">
+                  Không có dự án nào để hiển thị
+                </Text>
+              ) : (
+                data?.map((project) => (
+                  <ProjectCardContainer
+                    key={project.id}
+                    project={project}
+                    bgColor={generatePastelColor()}
+                    onNavigate={onNavigate}
+                  />
+                ))
+              )}
             </ScrollView>
+
             <TouchableOpacity
               className="w-16 h-16 absolute bottom-[100px] right-5 bg-primary-600 rounded-full p-2 flex justify-center items-center"
-              onPress={() => props.onNavigate(RootScreens.PROJECTCREATE)}
+              onPress={() => onNavigate(RootScreens.PROJECTCREATE)}
             >
               <AntDesign name="plus" size={30} color="#fff" />
             </TouchableOpacity>

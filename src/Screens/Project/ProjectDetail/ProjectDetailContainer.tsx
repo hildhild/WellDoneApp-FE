@@ -24,13 +24,14 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
   const { id: projectId } = useSelector((state: RootState) => state.project);
   const { token } = useSelector((state: RootState) => state.profile);
 
-  const [projectInfo, setProjectInfo] =
-  useState<GetDetailProjectResponse | null>(null);
+  const [projectInfo, setProjectInfo] = useState<GetDetailProjectResponse | null>(null);
   const [taskList, setTaskList] = useState<Task[] | null>(null);
   const [getDetailProject, { isLoading }] = useGetDetailProjectMutation();
-  const [getTaskList, {isLoading: isTaskFetchingLoading}] = useGetProjectTaskMutation();
+  const [getTaskList, { isLoading: isTaskFetchingLoading }] = useGetProjectTaskMutation();
   const listMember = useProjectMembers(projectId, token);
   const onNavigate = (screen: RootScreens) => navigation.navigate(screen);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchProjectInfo = useCallback(async () => {
     if (projectId && token) {
@@ -55,35 +56,37 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
     fetchTaskList();
   }, [projectId, token, fetchProjectInfo, fetchTaskList]);
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchProjectInfo();
+    fetchTaskList();
+    setRefreshing(false);
+  }, [fetchProjectInfo, fetchTaskList]);
+
   const renderContent = () => {
     if (isLoading || isTaskFetchingLoading)
       return (
-        <>
-          <View className="flex justify-center items-center h-full">
-            <Text className="p-16 text-center ">Loading...</Text>
-          </View>
-        </>
+        <View className="flex justify-center items-center h-full">
+          <Text className="p-16 text-center">Loading...</Text>
+        </View>
       );
-    console.log(123, projectInfo, listMember, taskList);
-    if (projectInfo && listMember && taskList) {
+    if (projectInfo && listMember) {
       return (
         <ProjectDetail
-        taskList={taskList}
+          taskList={taskList ? taskList : []}
           listMember={listMember}
           onNavigate={onNavigate}
           project={projectInfo}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
         />
       );
     }
 
     return (
-      <>
-        <View className="flex justify-center items-center h-full">
-          <Text className="p-16 text-center ">
-            Không tìm thấy dự án. Vui lòng thử lại.
-          </Text>
-        </View>
-      </>
+      <View className="flex justify-center items-center h-full">
+        <Text className="p-16 text-center">Không tìm thấy dự án. Vui lòng thử lại.</Text>
+      </View>
     );
   };
 

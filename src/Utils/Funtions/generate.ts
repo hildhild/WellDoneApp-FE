@@ -23,6 +23,15 @@ export const generateDateTime = (date: string) => {
 
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
+
+export const generateTime = (date: string) => {
+  const dateObj = new Date(date);
+  const hours = String(dateObj.getHours()).padStart(2, "0");
+  const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+  const seconds = String(dateObj.getSeconds()).padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}`;
+}
 export const generateStatusText = (status: string) => {
   switch (status) {
     case "NOT_STARTED":

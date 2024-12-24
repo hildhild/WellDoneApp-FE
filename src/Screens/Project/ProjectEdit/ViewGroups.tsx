@@ -3,7 +3,7 @@ import { RootScreens } from "@/Screens";
 import { Group } from "@/Services/group";
 import { RootState } from "@/Store";
 import { AntDesign } from "@expo/vector-icons";
-import React, { FC, memo, useCallback, useState } from "react";
+import React, { FC, memo, useState } from "react";
 import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 interface IViewGroupsProps {
