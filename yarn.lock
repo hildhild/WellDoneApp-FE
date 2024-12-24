@@ -1326,10 +1326,10 @@
     dotenv-expand "~11.0.6"
     getenv "^1.0.0"
 
-"@expo/fingerprint@0.11.5":
-  version "0.11.5"
-  resolved "https://registry.yarnpkg.com/@expo/fingerprint/-/fingerprint-0.11.5.tgz#7ddb91cdd1ffcff488bc6ca0fbf9232643058846"
-  integrity sha512-GORGt2VUgeNUZkE7BXH+2w7jtuSGsZjKkX8E1q9msVNdz7WH/lf45wshGTTFHhFDFvPMpu/GGnYeflk/2OvOIw==
+"@expo/fingerprint@0.11.6":
+  version "0.11.6"
+  resolved "https://registry.yarnpkg.com/@expo/fingerprint/-/fingerprint-0.11.6.tgz#7e01d436c1610c7dc1fc6898b2d90adaa19a39a0"
+  integrity sha512-hlVIfMEJYZIqIFMjeGRN5GhK/h6vJ3M4QVc1ZD8F0Bh7gMeI+jZkEyZdL5XT29jergQrksP638e2qFwgrGTw/w==
   dependencies:
     "@expo/spawn-async" "^1.7.2"
     arg "^5.0.2"
@@ -6249,11 +6249,6 @@ expo-image-picker@~16.0.3:
   dependencies:
     expo-image-loader "~5.0.0"
 
-expo-intent-launcher@^12.0.1:
-  version "12.0.1"
-  resolved "https://registry.yarnpkg.com/expo-intent-launcher/-/expo-intent-launcher-12.0.1.tgz#fe7853d7175c2998ebaf40b553248570301b7324"
-  integrity sha512-1jRurUwuJvCbzL0Dxrh9DlXkt0aDJsvN8NtENkfKiTeqHgkBvuFljdOzGVsBUil+umZAzPNPwnfo4cg4HewKsg==
-
 expo-json-utils@~0.14.0:
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/expo-json-utils/-/expo-json-utils-0.14.0.tgz#ad3cbbcb4fb22e4d23bf9fb19b611e36758861d2"
@@ -6278,11 +6273,6 @@ expo-manifests@~0.15.0:
   dependencies:
     "@expo/config" "~10.0.4"
     expo-json-utils "~0.14.0"
-
-expo-media-library@^17.0.4:
-  version "17.0.4"
-  resolved "https://registry.yarnpkg.com/expo-media-library/-/expo-media-library-17.0.4.tgz#428db62aa21777ab3cc2859cd8c7c147666dc531"
-  integrity sha512-5Fbv3dTlswO6ZcSYDF7zrCzsGly14rA0uKo+wyn3H4gEVgmLOZEzvAkLT4ELFq4RfT+zEuYCKPG1Sb1Q41e5kg==
 
 expo-module-scripts@^4.0.2:
   version "4.0.2"
@@ -6329,11 +6319,6 @@ expo-modules-core@2.1.2:
   integrity sha512-0OhMU5S8zf9c/CRh1MwiXfOInI9wzz6yiIh5RuR/9J7N6xHRum68hInsPbaSc1UQpo08ZZLM4MPsbpoNRUoqIg==
   dependencies:
     invariant "^2.2.4"
-
-expo-permissions@^14.4.0:
-  version "14.4.0"
-  resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-14.4.0.tgz#d7bb2f0026b87e1294ee551969c35306193f4ad3"
-  integrity sha512-oAcnJ7dlZhpBydK73cwomA2xofizayVUz+FW5REl7dMu7MYyeN/3aqhlpZ3mYddrxvG161bqu97MQr01UixUnw==
 
 expo-pwa@0.0.126:
   version "0.0.126"
@@ -6385,16 +6370,16 @@ expo-updates@^0.26.10:
     ignore "^5.3.1"
     resolve-from "^5.0.0"
 
-expo@~52.0.19:
-  version "52.0.22"
-  resolved "https://registry.yarnpkg.com/expo/-/expo-52.0.22.tgz#2e579d17aca36cb5cc2252d1c0bc1d337d24a1d6"
-  integrity sha512-Y8Y9cLH0lzsRU2E9c90XHwpGBIHtGgyUiev07Ts1KGhWgZheH9Hu2+pvobrpWEw1JJ63ushHL3E7YauamPTd8w==
+expo@^52.0.23:
+  version "52.0.23"
+  resolved "https://registry.yarnpkg.com/expo/-/expo-52.0.23.tgz#68b79da2206afdce9c68f45f519f812bab9a2cfe"
+  integrity sha512-DR36Vkpz/ZLPci4fxDBG/pLk26nGK63vcZ+X4RZJfNBzi14DXZ939loP8YzWGV78Qp23qdPINczpo2727tqLxg==
   dependencies:
     "@babel/runtime" "^7.20.0"
     "@expo/cli" "0.22.7"
     "@expo/config" "~10.0.6"
     "@expo/config-plugins" "~9.0.12"
-    "@expo/fingerprint" "0.11.5"
+    "@expo/fingerprint" "0.11.6"
     "@expo/metro-config" "0.19.8"
     "@expo/vector-icons" "^14.0.0"
     babel-preset-expo "~12.0.4"
