@@ -81,7 +81,6 @@ const Document: React.FC<DocumentProps> = ({
       >
         <MyIcon name="chevron-left" size={15} color="#000" />
       </TouchableOpacity>
-
       <TouchableOpacity
         className="z-50 absolute right-5 bottom-10 w-16 h-16 flex justify-center items-center rounded-full bg-lime-900"
         onPress={() => setIsUpload(true)}

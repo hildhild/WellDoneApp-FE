@@ -16,7 +16,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Group, Member, useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { LoadingProcess } from "@/Components";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Project, useGetMemOfProjectMutation } from "@/Services/projects";
+import { Project, useGetMemOfProjectMutation, useGetProjectListMutation } from "@/Services/projects";
 import { useAddTaskMutation } from "@/Services/task";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
@@ -29,14 +29,15 @@ export const AddTask = (props: {
   const dispatch = useDispatch();
   const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>([]);
   const [userList, setUserList] = useState<any>([])
-  const projectList = useSelector((state: any) => state.project.projectList).map((project: Project) => {
-    return {
-      label: project.name,
-      value: project.id
-    };
-  });
+  // const projectList = useSelector((state: any) => state.project.projectList).map((project: Project) => {
+  //   return {
+  //     label: project.name,
+  //     value: project.id
+  //   };
+  // });
+  const [projectList, setProjectList] = useState<any>([]);
   const [addTaskApi, {isLoading: addLoading}] = useAddTaskMutation();
-  const [getGroups, {isLoading: getLoading}] = useGetGroupsMutation();
+  const [getProjectsApi, {isLoading: getLoading}] = useGetProjectListMutation();
   const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
   const curGroupProjectId = useSelector((state: any) => state.group.curGroupProjectId);
   const [formData, setFormData] = useState<any>({
@@ -50,6 +51,31 @@ export const AddTask = (props: {
   }
   )
   const [getProjectMemberApi, {isLoading: getMemberLoading}] = useGetMemOfProjectMutation();
+
+  const getProjectList = async () => {
+    try {
+      const response = await getProjectsApi({
+        token: accessToken
+      }).unwrap();
+      if (Array.isArray(response)) {
+        setProjectList(response.map((user: any) => {
+          return {
+            label: user.name,
+            value: user.id
+          };
+        }));
+      }
+    } catch (err) {
+      if (err && typeof err === "object" && "data" in err) {
+        const errorData = err as ErrorHandle;
+        Toast.error(
+          String(errorData.data.message),
+          "top"
+        );
+      }
+    }
+  }
+  
 
   const handleCreateTask = async () => {
     try {
@@ -108,6 +134,7 @@ export const AddTask = (props: {
   }
 
   useEffect(()=> {
+    getProjectList();
     if (curGroupProjectId) {
       getProjectMember(curGroupProjectId);
     }

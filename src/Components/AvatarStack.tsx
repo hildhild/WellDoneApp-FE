@@ -24,14 +24,15 @@ const AvatarStack: React.FC<AvatarStackProps> = ({
         display === "col"
           ? "flex-col items-center space-y-[-7]"
           : "flex-row items-center space-x-[-7]"
-      }`}
+      } 
+      `}
     >
       {visibleUsers.map((user, index) => (
         <View
           key={index}
           style={{
             zIndex: visibleUsers.length + index,
-            marginTop: -7,
+            marginTop: display === "col" ? index === 0 ? 0 : -7 : 0,
           }}
         >
           <Avatar name={user} />
@@ -44,7 +45,7 @@ const AvatarStack: React.FC<AvatarStackProps> = ({
             <Text className="text-neutral-900 text-caption-regular">...</Text>
           </View>
 
-          <View className="bg-neutral-900 border-white rounded-full flex items-center justify-center w-8 h-8 mt-[-7]">
+          <View className={`bg-neutral-900 border-white rounded-full flex items-center justify-center w-8 h-8 ${display === "col" && "mt-[-7]"}`}>
             <Text className="text-neutral-100 text-caption-regular">{`${remainingCount}+`}</Text>
           </View>
         </>

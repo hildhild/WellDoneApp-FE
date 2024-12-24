@@ -14,7 +14,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import React, { memo, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 
 interface ProjectCardProps {
   isDeleteProjectLoading: boolean;
@@ -23,6 +23,16 @@ interface ProjectCardProps {
   bgColor: string;
   onNavigate: () => void;
   onDelete: (id: number) => void;
+}
+
+const widthOfListMember = (length : number) => {
+  if (length === 1) return "w-[46px]"
+  else if (length === 2) return "w-[78px]";
+  else if (length === 3) return "w-[110px]";
+  else if (length === 4) return "w-[142px]";
+  else if (length === 5) return "w-[174px]";
+  else return "w-[230px]";
+
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -35,6 +45,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   const flatMembersList = listMember.map((member) => member.name).join(", ");
   const [openModal, setOpenModal] = useState(false);
+
   return (
     <View
       style={{ backgroundColor: bgColor }}
@@ -61,10 +72,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </View>
       </View>
 
-      <View className="flex-row items-center mb-1">
+      <View className="flex-row items-center justify-between mb-1">
         <Text className="text-heading4 font-bold text-neutral-800">
           {project.name}
         </Text>
+        {renderStatusLabel(project.status)}
       </View>
 
       <View className="flex-row items-center justify-between mb-1">
@@ -75,22 +87,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             {generateDate(project.endDate)}
           </Text>
         </View>
-        {renderStatusLabel(project.status)}
       </View>
 
       <Text className="text-body-large-regular text-gray-700 mb-2">
         {project.description}
       </Text>
 
-      <View className="w-[170px]">
-        <TouchableOpacity onPress={() => setOpenModal(true)}>
-          <AvatarStack
-            users={flatMembersList.split(",")}
-            maxVisible={5}
-            display="row"
-          />
-        </TouchableOpacity>
-      </View>
+      <Pressable onPress={() => setOpenModal(true)} className={`${widthOfListMember(listMember.length)}`}>
+        <AvatarStack
+          users={flatMembersList.split(",")}
+          maxVisible={5}
+          display="row"
+        />
+      </Pressable>
       {openModal && (
         <MembersModal
           projectName={project.name}
