@@ -11,7 +11,13 @@ import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { AntDesign } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, ScrollView, RefreshControl } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
@@ -20,7 +26,9 @@ import { Home } from "./Home";
 type HomeScreenNavigatorProps = NativeStackScreenProps<RootStackParamList>;
 
 const useRecentProject = (token: string) => {
-  const [data, setData] = useState<CreateProjectResponse | undefined>(undefined);
+  const [data, setData] = useState<CreateProjectResponse | undefined>(
+    undefined
+  );
   const [getProjectList, { isLoading }] = useGetProjectListMutation();
   const dispatch = useDispatch();
 
@@ -48,7 +56,9 @@ const useRecentProject = (token: string) => {
 };
 
 export const useProjectMembers = (projectID: number | null, token: string) => {
-  const [listMember, setListMember] = useState<GetMemOfProjectResponse | null>(null);
+  const [listMember, setListMember] = useState<GetMemOfProjectResponse | null>(
+    null
+  );
   const [getMemOfProject] = useGetMemOfProjectMutation();
 
   useEffect(() => {
@@ -102,22 +112,7 @@ export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
         <Text>Loading...</Text>
       </View>
     );
-  } else if (!data) {
-    return (
-      <View className="flex justify-center items-center h-full">
-        <Text className="p-16 text-center">
-          Hiện tại bạn không có dự án nào. Tạo dự án ngay~!🔥🌸👇👇
-        </Text>
-        <TouchableOpacity
-          className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
-          onPress={() => onNavigate(RootScreens.PROJECTCREATE)}
-        >
-          <AntDesign name="plus" size={30} color="#fff" />
-        </TouchableOpacity>
-      </View>
-    );
   }
-
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
