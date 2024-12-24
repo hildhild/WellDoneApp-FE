@@ -10,19 +10,16 @@ import {
 } from "@/Services/document";
 import { RootState } from "@/Store";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
-import { getMimeType } from "@/Utils/Funtions/utils";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import * as IntentLauncher from "expo-intent-launcher";
-import * as Sharing from "expo-sharing";
+import { shareAsync } from "expo-sharing";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
 import Document from "./Document";
-
 type DocumentScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
   RootScreens.DOCUMENT
@@ -48,6 +45,10 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
       if (blob.size === 0) {
         throw new Error("Empty file received");
       }
+      const mimeType = blob.type || "application/octet-stream";
+
+      const extension = mimeType.split("/")[1];
+      const newFileName = `${filename}.${extension}`;
 
       const reader = new FileReader();
       const base64 = await new Promise<string>((resolve, reject) => {
@@ -62,33 +63,44 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
         reader.onerror = () => reject(new Error("Failed to read file"));
         reader.readAsDataURL(blob);
       });
-
-      const cacheFilePath = `${FileSystem.cacheDirectory}${filename}`;
-
-      try {
-        const fileInfo = await FileSystem.getInfoAsync(cacheFilePath);
-        if (fileInfo.exists) {
-          await FileSystem.deleteAsync(cacheFilePath);
-        }
-      } catch (e) {
-        console.log("No existing file to clean up");
-      }
-
+      const cacheFilePath = `${FileSystem.documentDirectory}${newFileName}`;
       await FileSystem.writeAsStringAsync(cacheFilePath, base64, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
       if (Platform.OS === "android") {
-        const contentUri = await FileSystem.getContentUriAsync(cacheFilePath);
-        await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
-          data: contentUri,
-          flags: 1,
-          type: blob.type || getMimeType(filename),
-        });
-        Toast.success("File downloaded successfully");
+        const permissions =
+          await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (permissions.granted) {
+          try {
+            const base64Data = await FileSystem.readAsStringAsync(
+              cacheFilePath,
+              { encoding: FileSystem.EncodingType.Base64 }
+            );
+            const fileUri =
+              await FileSystem.StorageAccessFramework.createFileAsync(
+                permissions.directoryUri,
+                newFileName,
+                mimeType
+              );
+            await FileSystem.writeAsStringAsync(fileUri, base64Data, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+            Toast.success("File saved successfully");
+          } catch (error) {
+            console.error("Error saving file on Android:", error);
+            Toast.error("Failed to save file");
+          }
+        } else {
+          await shareAsync(cacheFilePath, {
+            mimeType: mimeType,
+            dialogTitle: "Save your file",
+            UTI: "public.item",
+          });
+        }
       } else {
-        await Sharing.shareAsync(cacheFilePath, {
-          mimeType: blob.type || getMimeType(filename),
+        await shareAsync(cacheFilePath, {
+          mimeType: mimeType,
           dialogTitle: "Save your file",
           UTI: "public.item",
         });
@@ -98,7 +110,7 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
         try {
           await FileSystem.deleteAsync(cacheFilePath);
         } catch (error) {
-          console.log("Error cleaning up cache file:", error);
+          Toast.error("Dọn dẹp bộ nhớ thất bại");
         }
       }, 1000);
     } catch (error) {
@@ -120,13 +132,10 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
         const file = result.assets[0];
         const validTypes = [
           "application/pdf",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "text/plain",
         ];
 
         if (file.mimeType && !validTypes.includes(file.mimeType)) {
-          Toast.error("Only PDF, DOC, and TXT files are accepted");
+          Toast.error("Chỉ hỗ trợ tài liệu PDF");
           return;
         }
 
@@ -169,12 +178,12 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
 
   const handleUploadFile = useCallback(async () => {
     if (!fileUpload) {
-      Toast.error("Please upload a file");
+      Toast.error("Hãy chọn tài liệu cần tải lên");
       return;
     }
 
     if (!curTask) {
-      Toast.error("No task selected");
+      Toast.error("Không tìm thấy nhiệm vụ!");
       return;
     }
 

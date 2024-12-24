@@ -220,7 +220,6 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                         setOpenViewGroups(false);
                         onChange(listGroupName);
                         setGroupDisplay(listGroupName);
-                        console.log(listGroupName);
                       }}
                     />
                   )}
