@@ -1,3 +1,4 @@
+import { UserStatus } from "@/Utils/constant";
 import { API } from "../base";
 export interface Geo {
   lat: string;
@@ -77,7 +78,7 @@ export interface UserSignUpInformation {
   createdAt: string
   updatedAt: string
   isActive: boolean
-  status: string
+  status: UserStatus
 }
 export interface VerifyEmailResponse {
   message: string

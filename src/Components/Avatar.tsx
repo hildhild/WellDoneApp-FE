@@ -21,7 +21,7 @@ const Avatar: React.FC<AvatarProps> = ({ name, width = 32, height = 32 }) => {
 
   return (
     <View
-      className="rounded-full flex items-center justify-center"
+      className="rounded-full flex items-center justify-center border-[0.5px] border-neutral-300"
       style={{
         width: width ?? 32,
         height: height ?? 32,

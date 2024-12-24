@@ -9,7 +9,7 @@ import Xls from "assets/documentType/xls";
 import Zip from "assets/documentType/zip";
 import { Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Priority, Role, Status } from "../constant";
+import { Priority, Role, Status, UserStatus } from "../constant";
 
 export const renderErrorMessageResponse = (
   responseString: string | string[]
@@ -93,7 +93,11 @@ export const renderErrorMessageResponse = (
     "You must be a leader in at least one of the specified groups"
   ) {
     return "Chức vụ của bạn không phù hợp để thực hiện tác vụ này!";
-  } else {
+  }
+  else if (responseString === "One or more groups not found") {
+    return "Một hoặc nhiều nhóm không tồn tại. Vui lòng kiểm tra lại!";
+  }
+  else {
     return "Đã xảy ra lỗi, vui lòng thử lại!";
   }
 };
@@ -184,18 +188,18 @@ export const renderPriorityIcon = (priority: Priority) => {
   }
 };
 
-export const renderRoleLabel = (role: Role) => {
-  if (role === "Leader") {
+export const renderRoleLabel = (role: Role | UserStatus) => {
+  if (role === "Leader" || role === "ONLINE") {
     return (
       <View className="flex-row items-center bg-primary-100 px-2 py-1 rounded-full">
-        <Text className="text-body-small-bold text-primary-500">Leader</Text>
+        <Text className="text-body-small-bold text-primary-500">{role}</Text>
       </View>
     );
   }
-  if (role === "Member") {
+  if (role === "Member" || role === "OFFLINE") {
     return (
       <View className="flex-row items-center bg-secondary-200 px-2 py-1 rounded-full">
-        <Text className="text-body-small-bold text-secondary-500">Member</Text>
+        <Text className="text-body-small-bold text-secondary-500">{role}</Text>
       </View>
     );
   }
