@@ -141,7 +141,7 @@ export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <LoadingProcess isVisible={isLoading}/>
+      {/* <LoadingProcess isVisible={isLoading}/> */}
       <Home
         onNavigate={onNavigate}
         listMember={listMember}

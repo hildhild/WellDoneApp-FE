@@ -75,7 +75,7 @@ export const Home = (props: IHomeProps) => {
             <View className="flex-row justify-between">
               <FeedItemContainer onNavigate={onNavigate} />
             </View>
-          </View>{" "}
+          </View>
           <View className="rounded-lg mb-8">
             <Text className="text-heading4 font-bold p-4">Dự án gần đây</Text>
             {
