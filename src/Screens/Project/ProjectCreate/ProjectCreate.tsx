@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 import ViewGroups from "../ProjectEdit/ViewGroups";
 import { ProjectCreateForm } from "./ProjectCreateContainer";
 import { LoadingProcess } from "@/Components";
+import { Toast } from "native-base";
 
 interface IProjectCreateProps {
   onNavigate: (screen: RootScreens) => void;
@@ -75,6 +76,16 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
   const [openViewGroups, setOpenViewGroups] = useState(false);
   const [groupDisplay, setGroupDisplay] = useState<number[]>([]);
   const onSubmit = (data: ProjectCreateForm) => {
+    if (new Date(startDate) > new Date(endDate)) {
+      Toast.show({
+        title: "Ngày kết thúc không thể trước ngày bắt đầu",
+        variant: "error",
+        duration: 4000,
+        placement: "top",
+        padding: 4,
+      });
+      return;
+    }
     const transformedData: ProjectCreateForm = {
       project_name: data.project_name,
       project_description: data.project_description,
@@ -302,14 +313,14 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                 <>
                   <Text className="text-body-base-regular text-neutral-900 flex-1">
                     {startDate
-                      ? startDate.toLocaleDateString()
-                      : "Chọn ngày kết thúc"}
+                      ? startDate.toLocaleDateString("en-GB")
+                      : "Chọn ngày bắt đầu"}
                   </Text>
                   {showStartDatePicker && (
                     <DateTimePicker
                       value={startDate}
                       mode="date"
-                      display="spinner"
+                      display="default"
                       onChange={(event, selectedDate) => {
                         if (selectedDate) {
                           setStartDate(selectedDate);
@@ -318,6 +329,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                         setShowStartDatePicker(false);
                       }}
                       themeVariant="light"
+                      minimumDate={new Date()}
                     />
                   )}
                 </>
@@ -355,14 +367,14 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                 <>
                   <Text className="text-body-base-regular text-neutral-900 flex-1">
                     {endDate
-                      ? endDate.toLocaleDateString()
+                      ? endDate.toLocaleDateString("en-GB")
                       : "Chọn ngày kết thúc"}
                   </Text>
                   {showEndDatePicker && (
                     <DateTimePicker
                       value={endDate}
                       mode="date"
-                      display="spinner"
+                      display="default"
                       onChange={(event, selectedDate) => {
                         if (selectedDate) {
                           setEndDate(selectedDate);
@@ -371,6 +383,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                         setShowEndDatePicker(false);
                       }}
                       themeVariant="light"
+                      minimumDate={new Date()}
                     />
                   )}
                 </>

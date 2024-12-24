@@ -45,10 +45,6 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
       if (blob.size === 0) {
         throw new Error("Empty file received");
       }
-      const mimeType = blob.type || "application/octet-stream";
-
-      const extension = mimeType.split("/")[1];
-      const newFileName = `${filename}.${extension}`;
 
       const reader = new FileReader();
       const base64 = await new Promise<string>((resolve, reject) => {
@@ -63,7 +59,8 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
         reader.onerror = () => reject(new Error("Failed to read file"));
         reader.readAsDataURL(blob);
       });
-      const cacheFilePath = `${FileSystem.documentDirectory}${newFileName}`;
+      const mimeType = "application/pdf";
+      const cacheFilePath = `${FileSystem.documentDirectory}${filename}`;
       await FileSystem.writeAsStringAsync(cacheFilePath, base64, {
         encoding: FileSystem.EncodingType.Base64,
       });
@@ -80,13 +77,13 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
             const fileUri =
               await FileSystem.StorageAccessFramework.createFileAsync(
                 permissions.directoryUri,
-                newFileName,
+                filename,
                 mimeType
               );
             await FileSystem.writeAsStringAsync(fileUri, base64Data, {
               encoding: FileSystem.EncodingType.Base64,
             });
-            Toast.success("File saved successfully");
+            Toast.success("Lưu tài liệu thành công");
           } catch (error) {
             console.error("Error saving file on Android:", error);
             Toast.error("Failed to save file");
@@ -130,9 +127,7 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
 
       if (!result.canceled) {
         const file = result.assets[0];
-        const validTypes = [
-          "application/pdf",
-        ];
+        const validTypes = ["application/pdf"];
 
         if (file.mimeType && !validTypes.includes(file.mimeType)) {
           Toast.error("Chỉ hỗ trợ tài liệu PDF");
