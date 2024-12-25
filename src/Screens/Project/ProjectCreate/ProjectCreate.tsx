@@ -132,9 +132,11 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
 
       <View>
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
-          <Text className="text-caption-regular text-neutral-500">
-            Tên dự án
-          </Text>
+          <View className="flex-row items-center">
+            <Text className="text-caption-regular text-neutral-500">
+              Tên dự án <Text className="text-danger-600"> *</Text>
+            </Text>
+          </View>
           <Controller
             control={control}
             name="project_name"
@@ -158,10 +160,13 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
         </View>
 
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
-          <Text className="text-caption-regular text-neutral-500">Mô tả</Text>
+          <View className="flex-row items-left">
+            <Text className="text-caption-regular text-neutral-500">Mô tả<Text className="text-danger-600"> *</Text></Text>
+          </View>
           <Controller
             control={control}
             name="project_description"
+            rules={{ required: "Mô tả dự án là bắt buộc" }}
             render={({ field: { onChange, value } }) => (
               <TextInput
                 className="text-body-base-regular text-neutral-900 w-full "
@@ -196,6 +201,9 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
             <Controller
               control={control}
               name="project_group_member"
+              rules={{
+                required: "Vui lòng chọn ít nhất một nhóm cho dự án của bạn!",
+              }}
               render={({ field: { onChange } }) => (
                 <View className="flex-row flex-wrap mb-4">
                   {convertIDToName(groupDisplay)
@@ -214,7 +222,6 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                   {openViewGroups && (
                     <ViewGroups
                       onNavigate={onNavigate}
-                      listGroupId={group.map((item) => item.id)}
                       closeModal={() => setOpenViewGroups(false)}
                       handleSave={(listGroupName) => {
                         setOpenViewGroups(false);

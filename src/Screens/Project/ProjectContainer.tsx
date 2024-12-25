@@ -14,7 +14,7 @@ import { Project } from "./Project";
 
 type ProjectScreenNavigatorProps = NativeStackScreenProps<RootStackParamList>;
 
-const useProjectList = (token: string) => {
+export const useProjectList = (token: string) => {
   const [data, setData] = useState<GetProjectListResponse[] | undefined>(undefined);
   const [getProjectList, { isLoading }] = useGetProjectListMutation();
   const dispatch = useDispatch();
