@@ -172,8 +172,8 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   Trạng thái
                 </Text>
                 <Dropdown
-                  labelField={""}
-                  valueField={""}
+                  labelField={"label"}
+                  valueField={"value"}
                   style={styles.dropdown}
                   data={[
                     { label: "Mới", value: "TODO" },
@@ -200,8 +200,8 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   Độ ưu tiên
                 </Text>
                 <Dropdown
-                  labelField={""}
-                  valueField={""}
+                  labelField={"label"}
+                  valueField={"value"}
                   style={styles.dropdown}
                   data={[
                     { label: "Cao", value: "HIGH" },

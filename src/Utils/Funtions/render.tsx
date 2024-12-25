@@ -100,6 +100,8 @@ export const renderErrorMessageResponse = (
     responseString === "File not found"
   ) {
     return "Tệp không tồn tại hoặc không còn khả dụng";
+  } else if (responseString === "Not authorized to modify this task") {
+    return "Bạn không có quyền chỉnh sửa nhiệm vụ này";
   } else {
     return "Đã xảy ra lỗi, vui lòng thử lại!";
   }

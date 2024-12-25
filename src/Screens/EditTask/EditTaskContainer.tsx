@@ -19,6 +19,7 @@ import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
 import { EditTask } from "./EditTask";
 import { FormData } from "./EditTask";
+import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 
 type EditTaskScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
@@ -143,7 +144,7 @@ export const EditTaskContainer = ({
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as ErrorHandle;
-        Toast.error(String(errorData.data.message), "top");
+        Toast.error(renderErrorMessageResponse(errorData.data.message), "top");
       }
     }
   };
