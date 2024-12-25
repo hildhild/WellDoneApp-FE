@@ -3,9 +3,25 @@ import { RootScreens } from "@/Screens";
 import { Group } from "@/Services/group";
 import { RootState } from "@/Store";
 import { AntDesign } from "@expo/vector-icons";
-import React, { FC, memo, useState } from "react";
-import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
-import { useSelector } from "react-redux";
+import React, { FC, memo, useCallback, useEffect, useState } from "react";
+import {
+  ScrollView,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+  RefreshControl,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  GetProjectListItem,
+  GetProjectListResponse,
+  useGetProjectListMutation,
+} from "@/Services/projects";
+import { Toast } from "toastify-react-native";
+import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
+import { useProjectList } from "../ProjectContainer";
+
 interface IViewGroupsProps {
   listGroupId: number[];
   closeModal: () => void;
@@ -13,22 +29,37 @@ interface IViewGroupsProps {
   onNavigate: (screen: RootScreens) => void;
 }
 
+interface GroupWithSelected extends Group {
+  selected: boolean;
+}
+
 const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
   const groupList = useSelector((state: RootState) => state.group.groupList);
   const filteredGroupList = groupList.filter(
     (group: Group) => group.role === "Leader"
   );
+
+  const project = useSelector((state: RootState) => state.project.projectList);
+  const [data, setData] = useState<GetProjectListItem[] | undefined>(project);
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.profile.token);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const groupsInProjects = project.flatMap((p) => p.groups.map((g) => g.id));
+  const availableGroups = filteredGroupList.filter(
+    (group) => !groupsInProjects.includes(group.id)
+  );
   const checkGroup = (groupId: number) => {
     return props.listGroupId.includes(groupId);
   };
+  const transformedGroups: GroupWithSelected[] = availableGroups.map(
+    (group) => ({
+      ...group,
+      selected: checkGroup(group.id),
+    })
+  );
 
-  const transformedGroupList = filteredGroupList.map((group: Group) => ({
-    id: group.id,
-    name: group.name,
-    selected: checkGroup(group.id),
-  }));
-
-  const [groups, setGroups] = useState(transformedGroupList);
+  const [groups, setGroups] = useState<GroupWithSelected[]>(transformedGroups);
 
   const toggleSelection = (id: number) => {
     setGroups((prevGroups) =>
@@ -38,25 +69,36 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
     );
   };
 
-  if (!groups || groups.length === 0) {
-    return (
-      <>
-        <Modal animationType="slide" transparent={false} visible={true}>
-          <View className="flex justify-center items-center h-full">
-            <Text className="p-16 text-center ">
-              Hiện tại bạn chưa thuộc nhóm nào. Tạo nhóm ngay~!🔥🌸👇👇
-            </Text>
-            <TouchableOpacity
-              className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
-              onPress={() => props.onNavigate(RootScreens.ADD_GROUP)}
-            >
-              <AntDesign name="plus" size={30} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      </>
-    );
-  }
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const response = await useProjectList(token);
+      if (response) {
+        setData(response.data);
+        setRefreshing(false);
+      }
+    } catch (error) {
+      Toast.error(renderErrorMessageResponse(String(error)));
+    }
+  }, []);
+
+  // if (!groups || groups.length === 0) {
+  //   return (
+  //     <Modal animationType="slide" transparent={false} visible={true}>
+  //       <View className="flex justify-center items-center h-full">
+  //         <Text className="p-16 text-center">
+  //           Hiện tại bạn chưa thuộc nhóm nào. Tạo nhóm ngay~!🔥🌸👇👇
+  //         </Text>
+  //         <TouchableOpacity
+  //           className=" w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
+  //           onPress={() => props.onNavigate(RootScreens.ADD_GROUP)}
+  //         >
+  //           <AntDesign name="plus" size={30} color="#fff" />
+  //         </TouchableOpacity>
+  //       </View>
+  //     </Modal>
+  //   );
+  // }
 
   return (
     <Modal animationType="slide" transparent={true} visible={true}>
@@ -67,20 +109,22 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
               Chọn nhóm
             </Text>
           </View>
-          <FlatList
-            data={groups}
-            keyExtractor={(item) => item.id.toString()}
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             className="mb-3"
-            renderItem={({ item }) => (
-              <View className="p-3 bg-[#FBFCFB]">
+          >
+            {groups.map((item) => (
+              <View key={item.id} className="p-3 bg-[#FBFCFB]">
                 <CheckBox
                   isChecked={item.selected}
                   onPress={() => toggleSelection(item.id)}
-                  title={item.name + " " + "#" + item.id + ""}
+                  title={item.name + " " + "#" + item.id}
                 />
               </View>
-            )}
-          />
+            ))}
+          </ScrollView>
           <View className="flex-row justify-between mt-4">
             <TouchableOpacity
               className="bg-neutral-100 border-neutral-300 border rounded-lg w-28 h-11 items-center justify-center"
@@ -93,7 +137,7 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className=" w-28 h-11 rounded-lg items-center justify-center bg-primary-600"
+              className="w-28 h-11 rounded-lg items-center justify-center bg-primary-600"
               onPress={() => {
                 props.handleSave(
                   groups
