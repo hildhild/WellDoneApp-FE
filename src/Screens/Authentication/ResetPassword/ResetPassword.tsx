@@ -128,9 +128,9 @@ const ResetPassword: FC<ResetPasswordProps> = ({
         )}
       />
 
-      <View className="flex-row mt-6 w-full">
+      <View className="flex-row mt-6 w-full gap-[3%]">
         <TouchableOpacity
-          className="bg-neutral-100 border-neutral-400 rounded-lg px-6 py-3 flex-1 mr-3 max-w-[112px] !border"
+          className="bg-neutral-100 border-neutral-400 rounded-lg px-2 py-3 !border w-[30%]"
           onPress={() => onNavigate(RootScreens.LOGIN)}
         >
           <Text className="text-gray-400 text-body-base-bold text-center">
@@ -139,7 +139,7 @@ const ResetPassword: FC<ResetPasswordProps> = ({
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="bg-primary-600 rounded-lg px-6 py-3 flex-1 max-w-[225px]"
+          className="bg-primary-600 rounded-lg px-6 py-3 w-[67%]"
           onPress={handleSubmit(onSubmit)}
           disabled={isLoading}
         >
