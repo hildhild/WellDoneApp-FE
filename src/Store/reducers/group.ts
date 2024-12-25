@@ -7,7 +7,8 @@ const slice = createSlice({
     curGroup: null as Group | null,
     groupList: [] as Group[],
     refetch: false as boolean,
-    curGroupProjectId: null as number | null
+    curGroupProjectId: null as number | null,
+    refetchDoc: false as boolean
   },
   reducers: {
     setGroupList: (state, action: PayloadAction<Group[]>) => {
@@ -22,9 +23,12 @@ const slice = createSlice({
     setCurGroupProjectId: (state, action: PayloadAction<number | null>) => {
       state.curGroupProjectId = action.payload;
     },
+    toggleRefetchDoc: (state) => {
+      state.refetchDoc = !state.refetchDoc;
+    },
   },
 });
 
-export const { setGroupList, setCurGroup, toggleRefetch, setCurGroupProjectId } = slice.actions;
+export const { setGroupList, setCurGroup, toggleRefetch, setCurGroupProjectId, toggleRefetchDoc } = slice.actions;
 
 export const groupReducers = slice.reducer;

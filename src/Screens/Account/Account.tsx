@@ -55,7 +55,7 @@ export const Account = (props: {
         }).unwrap();
         if ("name" in response) {
           Toast.success("Chỉnh sửa thành công")
-          dispatch(setProfile({name: profileData.name, dateOfBirth: profileData.dateOfBirth.toISOString(), email: profileData.email}));
+          dispatch(setProfile({id: profile.id, name: profileData.name, dateOfBirth: profileData.dateOfBirth.toISOString(), email: profileData.email}));
           setEditable(false);
         }
       } catch (err) {
