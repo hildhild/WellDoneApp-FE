@@ -1,21 +1,21 @@
+import { LoadingProcess } from "@/Components";
+import { generateDateTime } from "@/Utils/Funtions/generate";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useNavigation } from "@react-navigation/native";
 import React, { FC } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  View,
-  Text,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TextInput,
   StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Controller, useForm } from "react-hook-form";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
-import { LoadingProcess } from "@/Components";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Dropdown } from "react-native-element-dropdown";
-import { generateDateTime } from "@/Utils/Funtions/generate";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
 

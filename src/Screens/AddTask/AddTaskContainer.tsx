@@ -1,26 +1,26 @@
-import React, { FC, useEffect, useState } from "react";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/Navigation";
 import { RootScreens } from "@/Screens";
-import { useDispatch, useSelector } from "react-redux";
+import { ErrorHandle } from "@/Services";
+import {
+  useGetMemOfProjectMutation,
+  useGetProjectListMutation,
+} from "@/Services/projects";
+import { useAddTaskMutation } from "@/Services/task";
+import { RootState } from "@/Store";
 import {
   setCurGroupProjectId,
   toggleRefetch,
   toggleRefetchProject,
 } from "@/Store/reducers";
-import { Toast } from "toastify-react-native";
-import { ErrorHandle } from "@/Services";
-import AddTask, { AddTaskForm } from "./AddTask";
-import { useAddTaskMutation } from "@/Services/task";
-import {
-  useGetMemOfProjectMutation,
-  useGetProjectListMutation,
-} from "@/Services/projects";
 import {
   renderErrorMessageResponse,
   renderSuccessMessageResponse,
 } from "@/Utils/Funtions/render";
-import { RootState } from "@/Store";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { FC, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Toast } from "toastify-react-native";
+import AddTask, { AddTaskForm } from "./AddTask";
 
 type AddTaskScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
@@ -42,9 +42,11 @@ export const AddTaskContainer: FC<AddTaskScreenNavigatorProps> = ({
   const [userList, setUserList] = useState<any>([]);
   const [projectList, setProjectList] = useState<any>([]);
 
-  const [addTaskApi] = useAddTaskMutation();
-  const [getProjectsApi] = useGetProjectListMutation();
-  const [getProjectMemberApi] = useGetMemOfProjectMutation();
+  const [addTaskApi, { isLoading: isAddTaskLoading }] = useAddTaskMutation();
+  const [getProjectsApi, { isLoading: isGetProjectListLoading }] =
+    useGetProjectListMutation();
+  const [getProjectMemberApi, { isLoading: isGetMemOfProjectLoading }] =
+    useGetMemOfProjectMutation();
   const projectId = useSelector((state: RootState) => state.project.id);
 
   const handleCreateTask = async (formData: AddTaskForm) => {
@@ -160,7 +162,7 @@ export const AddTaskContainer: FC<AddTaskScreenNavigatorProps> = ({
       selectedUsers={selectedUsers}
       setSelectedUsers={setSelectedUsers}
       onCreateTask={handleCreateTask}
-      isLoading={false}
+      isLoading={isAddTaskLoading || isGetProjectListLoading || isGetMemOfProjectLoading}
       initialProjectId={curGroupProjectId}
       handleProjectChange={handleProjectChange}
       initialProjectID={projectId}
