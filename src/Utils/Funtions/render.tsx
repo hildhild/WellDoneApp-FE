@@ -87,7 +87,7 @@ export const renderErrorMessageResponse = (
   } else if (responseString === "At least one group must be specified") {
     return "Hãy chọn ít nhất một nhóm để thêm vào dự án bạn nhé!";
   } else if (typeof responseString === "string" && regex.test(responseString)) {
-    return "Một trong các nhóm được chọn đã được gán cho dự án khác!";
+    return "Nhóm bạn chọn đã được gán cho dự án khác!";
   } else if (
     responseString ===
     "You must be a leader in at least one of the specified groups"
