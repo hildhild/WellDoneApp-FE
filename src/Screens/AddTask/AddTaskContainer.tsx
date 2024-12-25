@@ -76,7 +76,7 @@ export const AddTaskContainer: FC<AddTaskScreenNavigatorProps> = ({
           dispatch(toggleRefetchProject());
         }
         dispatch(setCurGroupProjectId(null));
-        dispatch(setProjectId({id: null}));
+        // dispatch(setProjectId({id: null}));
         navigation.goBack();
       }
     } catch (err) {
@@ -167,9 +167,9 @@ export const AddTaskContainer: FC<AddTaskScreenNavigatorProps> = ({
       setSelectedUsers={setSelectedUsers}
       onCreateTask={handleCreateTask}
       isLoading={isAddTaskLoading || isGetProjectListLoading || isGetMemOfProjectLoading}
-      initialProjectId={curGroupProjectId}
+      groupProjectId={curGroupProjectId}
       handleProjectChange={handleProjectChange}
-      initialProjectID={projectId}
+      projectId={projectId}
     />
   );
 };
