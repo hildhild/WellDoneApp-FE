@@ -69,6 +69,7 @@
     "rn-pdf-reader-js": "^4.1.1",
     "tailwindcss": "^3.4.14",
     "toastify-react-native": "^5.0.3",
+    "use-debounce": "^10.0.4",
     "yarn": "^1.22.22"
   },
   "devDependencies": {
