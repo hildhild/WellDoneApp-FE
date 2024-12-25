@@ -114,7 +114,8 @@ export const Account = (props: {
 
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <Modal
+
+      {/* <Modal
         animationType="fade"
         transparent={true}
         visible={openDatePicker}
@@ -135,7 +136,7 @@ export const Account = (props: {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Tài khoản</Text>
       </View>
@@ -163,18 +164,31 @@ export const Account = (props: {
                 />
               </View>
               <Text className="mb-3 font-semibold text-neutral-500">Ngày sinh:</Text>
-              <View className="flex-row items-center bg-lime-100 rounded-lg p-4 mb-4" >
+              <View className={`flex-row items-center justify-between bg-lime-100 rounded-lg ${editable ? "py-2" : "py-4"} px-4 mb-4`} >
+                {
+                  editable
+                  ?
+                  <DateTimePicker
+                    value={profileData.dateOfBirth}
+                    mode="date" 
+                    display="default"
+                    onChange={handleChangeDateOfBirth}
+                    themeVariant="light"
+                    minimumDate={new Date()}
+                    className="ml-[-550px]"
+                  />
+                  :
                   <TextInput
                     placeholder="Ngày sinh"
                     editable={false}
                     className="flex-1 text-neutral-700 text-body-base-regular"
                     value={profileData.dateOfBirth.toLocaleDateString()}
-                    onPress={() => {if(editable) {setOpenDatePicker(true)}}}
                   />
-                <Pressable onPress={() => {if(editable) {setOpenDatePicker(true)}}}>
-                  <MyIcon name="calendar" size={20}/>
-                </Pressable>
+                }
+                
+                <MyIcon name="calendar" size={20}/>
               </View>
+              
               <Text className="mb-3 font-semibold text-neutral-500">Email:</Text>
               <View className="flex-row items-center bg-lime-100 rounded-lg p-4 mb-4">
                 <TextInput
