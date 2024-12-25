@@ -3,7 +3,7 @@ import { RootScreens } from "@/Screens";
 import { ErrorHandle } from "@/Services";
 import { useCreateProjectMutation } from "@/Services/projects";
 import { RootState } from "@/Store";
-import { setProjectId } from "@/Store/reducers";
+import { setProjectId, toggleRefetchProject } from "@/Store/reducers";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { FC, memo, useCallback } from "react";
@@ -45,6 +45,7 @@ const ProjectCreateContainer: FC<ProjectCreateScreenNavigatorProps> = ({
         if (response && "id" in response) {
           dispatch(setProjectId({ id: response.id }));
           onNavigate(RootScreens.PROJECTDETAIL);
+          dispatch(toggleRefetchProject());
         }
       } catch (err) {
         if (err && typeof err === "object" && "data" in err) {

@@ -103,18 +103,18 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
             </TouchableOpacity>
           </View>
 
-          <ScrollView className="p-4">
+          <ScrollView className="py-4">
             {taskList.map((task) => (
               <Pressable
                 key={task.id}
-                className="flex-row items-center bg-neutral-100 py-3 rounded-lg mb-2"
+                className="flex-row items-center bg-lime-100 py-3 px-1 rounded-xl mb-2"
                 onPress={() => {
                   dispatch(setCurTask(task));
                   onNavigate(RootScreens.TASK_DETAIL);
                 }}
               >
                 <View
-                  className={`w-10 h-10 rounded-full items-center justify-center mr-4`}
+                  className={`w-10 h-10 rounded-full items-center justify-center mr-2`}
                 >
                   {task.status === "DONE" && (
                     <AntDesign name="checkcircle" size={25} color="green" />
@@ -131,7 +131,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                   </View>
                   <View className="flex-row items-center">
                     <Ionicons name="flag-outline" size={20} color="black" />
-                    <Text className="text-sm text-neutral-500">{task.dueDate}</Text>
+                    <Text className="text-sm text-neutral-500">{new Date(task.dueDate).toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh",})}</Text>
                   </View>
                 </View>
                 <AvatarStack
@@ -142,6 +142,11 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                 {renderPriorityIcon(task.priority)}
               </Pressable>
             ))}
+            {
+              taskList.length === 0 
+              &&
+              <Text className="text-center text-lg text-gray-500 font-semibold">Không có nhiệm vụ</Text>
+            }
             <View className="mb-16"></View>
           </ScrollView>
         </View>

@@ -18,6 +18,7 @@ const useProjectList = (token: string) => {
   const [data, setData] = useState<GetProjectListResponse[] | undefined>(undefined);
   const [getProjectList, { isLoading }] = useGetProjectListMutation();
   const dispatch = useDispatch();
+  const refetch = useSelector((state: any) => state.project.refetch);
 
   const fetchRecentProject = useCallback(async () => {
     try {
@@ -34,7 +35,7 @@ const useProjectList = (token: string) => {
 
   useEffect(() => {
     fetchRecentProject();
-  }, [fetchRecentProject]);
+  }, [fetchRecentProject, refetch]);
 
   return { data, isLoading, fetchRecentProject };
 };

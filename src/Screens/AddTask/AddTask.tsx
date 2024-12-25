@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurGroupProjectId, setProjectList, toggleRefetch } from "@/Store/reducers";
+import { setCurGroupProjectId, setProjectList, toggleRefetch, toggleRefetchProject } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { TextInput } from "react-native";
@@ -85,9 +85,14 @@ export const AddTask = (props: {
       }).unwrap();
       if ("id" in response) {
         Toast.success("Thêm thành công");
-        dispatch(
-          toggleRefetch()
-        );
+        if (curGroupProjectId) {
+          dispatch(
+            toggleRefetch()
+          );
+        } else {
+          dispatch(toggleRefetchProject());
+        }
+        
         dispatch(setCurGroupProjectId(null));
         navigation.goBack();
       }

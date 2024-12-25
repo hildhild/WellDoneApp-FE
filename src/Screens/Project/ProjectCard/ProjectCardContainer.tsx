@@ -9,7 +9,7 @@ import {
   useGetMemOfProjectMutation,
 } from "@/Services/projects";
 import { RootState } from "@/Store";
-import { setProjectId } from "@/Store/reducers";
+import { setProjectId, toggleRefetchProject } from "@/Store/reducers";
 import React, { FC, memo, useCallback, useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,6 +37,8 @@ const ProjectCardContainer: FC<IProjectCardContainerProps> = ({
       const response = await deleteProject({ projectId, token });
       if ("data" in response && response.data === null) {
         Toast.success("Xóa dự án thành công!");
+        dispatch(toggleRefetchProject());
+
       }
     },
     [deleteProject, token]

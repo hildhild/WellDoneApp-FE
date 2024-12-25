@@ -7,7 +7,7 @@ import {
   useGetDetailProjectMutation,
 } from "@/Services/projects";
 import { RootState } from "@/Store";
-import { setProjectId } from "@/Store/reducers";
+import { setProjectId, toggleRefetchProject } from "@/Store/reducers";
 import { Status } from "@/Utils/constant";
 import {
   renderErrorMessageResponse,
@@ -68,6 +68,7 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
         Toast.success(renderSuccessMessageResponse(), "top");
         dispatch(setProjectId({ id: projectId! }));
         navigation.navigate(RootScreens.PROJECTDETAIL);
+        dispatch(toggleRefetchProject());
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
@@ -94,7 +95,9 @@ const ProjectEditContainer: FC<ProjectEditScreenNavigatorProps> = ({
   }, [projectId, token]);
 
   const renderContent = () => {
-    if (isGetDetailProjectLoading) return <Text>Loading...</Text>;
+    if (isGetDetailProjectLoading) return <View className="w-full h-full flex justify-center items-center">
+        <Text className="text-center font-semibold text-lg text-gray-500">Loading...</Text>
+    </View> ;
 
     if (!projectId || !projectInfo) {
       return (
