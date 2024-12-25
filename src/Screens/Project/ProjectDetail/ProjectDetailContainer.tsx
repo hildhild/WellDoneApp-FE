@@ -30,6 +30,7 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
   const [getTaskList, { isLoading: isTaskFetchingLoading }] = useGetProjectTaskMutation();
   const listMember = useProjectMembers(projectId, token);
   const onNavigate = (screen: RootScreens) => navigation.navigate(screen);
+  const refetch = useSelector((state: any) => state.project.refetch);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -54,7 +55,7 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
   useEffect(() => {
     fetchProjectInfo();
     fetchTaskList();
-  }, [projectId, token, fetchProjectInfo, fetchTaskList]);
+  }, [projectId, token, fetchProjectInfo, fetchTaskList, refetch]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -67,10 +68,10 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
     if (isLoading || isTaskFetchingLoading)
       return (
         <View className="flex justify-center items-center h-full">
-          <Text className="p-16 text-center">Loading...</Text>
+          <Text className="p-16 text-center text-gray-500 font-semibold text-lg">Loading...</Text>
         </View>
       );
-    if (projectInfo && listMember) {
+    else if (projectInfo && listMember) {
       return (
         <ProjectDetail
           taskList={taskList ? taskList : []}
@@ -82,12 +83,14 @@ const ProjectDetailContainer: FC<ProjectDetailScreenNavigatorProps> = ({
         />
       );
     }
-
-    return (
-      <View className="flex justify-center items-center h-full">
-        <Text className="p-16 text-center">Không tìm thấy dự án. Vui lòng thử lại.</Text>
-      </View>
-    );
+    // else {
+    //   return (
+    //     <View className="flex justify-center items-center h-full">
+    //       <Text className="p-16 text-center">Không tìm thấy dự án. Vui lòng thử lại.</Text>
+    //     </View>
+    //   );
+    // }
+    
   };
 
   return <>{renderContent()}</>;

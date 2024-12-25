@@ -132,19 +132,19 @@ export const renderSuccessMessageResponse = (
 export const renderStatusLabel = (status: Status) => {
   if (status === "COMPLETED") {
     return (
-      <Text className="text-caption-bold font-medium text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
+      <Text className="text-caption-bold font-medium text-neutral-500 bg-primary-100 px-5 py-1 rounded-full">
         Hoàn thành
       </Text>
     );
   } else if (status === "IN_PROGRESS") {
     return (
-      <Text className="text-caption-bold font-medium text-neutral-500 bg-secondary-200 px-2 py-1 rounded-full">
+      <Text className="text-caption-bold font-medium text-neutral-500 bg-secondary-200 px-5 py-1 rounded-full">
         Đang thực hiện
       </Text>
     );
   } else {
     return (
-      <Text className="text-caption-bold font-medium text-neutral-500 bg-warning-100 px-2 py-1 rounded-full">
+      <Text className="text-caption-bold font-medium text-neutral-500 bg-warning-100 px-5 py-1 rounded-full">
         Mới
       </Text>
     );

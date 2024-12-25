@@ -160,7 +160,7 @@ export const AddGroup = (props: {
               </View>
             )
           }
-          <Pressable className="mt-5 w-full flex justify-center items-center bg-lime-600 p-3 rounded-xl" onPress={handleCreateGroup}><Text className="text-white text-lg font-semibold">Xác nhận</Text></Pressable>
+          <Pressable className="mt-5 w-full flex justify-center items-center bg-lime-600 p-3 rounded-xl mb-16" onPress={handleCreateGroup}><Text className="text-white text-lg font-semibold">Xác nhận</Text></Pressable>
         </View>
 
       </ScrollView>

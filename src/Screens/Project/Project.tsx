@@ -54,16 +54,16 @@ export const Project = (props: IProjectProps) => {
                 className="w-28 h-28"
                 source={require("assets/dark-logo.png")}
               />
-              <Text className="text-body-large-bold font-bold text-neutral-800 ml-2">
-                WELLDONE
+              <Text className="text-body-large-bold font-bold text-neutral-800 ml-[-20px]">
+                WellDone
               </Text>
             </View>
 
-            <View className="flex-row items-center bg-lime-100 p-2 rounded-lg mb-4">
+            <View className="flex-row items-center bg-lime-100 py-3 px-5 rounded-full mb-4">
               <AntDesign name="search1" size={16} color="gray" />
               <TextInput
                 placeholder="Tìm kiếm dự án của bạn"
-                className="text-neutral-800 text-body-base-bold flex-1"
+                className="text-neutral-800 text-body-base-bold flex-1 ml-3"
                 value={search}
                 onChangeText={setSearch}
               />
@@ -76,7 +76,7 @@ export const Project = (props: IProjectProps) => {
               showsVerticalScrollIndicator={false}
               className="mb-20"
             >
-              <Text className="text-heading3 font-bold text-neutral-800 mb-4">
+              <Text className="text-2xl font-bold text-neutral-800 mb-4">
                 Danh sách Dự án ({data?.length})
               </Text>
               {data?.length === 0 ? (
