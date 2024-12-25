@@ -107,7 +107,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         <View className="mt-6">
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-body-small-regular text-neutral-500">Tasks</Text>
-            <TouchableOpacity onPress={() => onNavigate(RootScreens.ADD_TASK)}>
+            <TouchableOpacity onPress={() => {onNavigate(RootScreens.ADD_TASK); dispatch(setProjectId({ id: project.id }));}}>
               <Text className="text-body-small-regular text-neutral-500">Thêm nhiệm vụ</Text>
             </TouchableOpacity>
           </View>

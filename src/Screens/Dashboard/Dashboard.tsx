@@ -28,6 +28,7 @@ export const Dashboard = (props: IDashboardProps) => {
   const [myTaskList, setMyTaskList] = useState<any>([]);
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getProjectList = async () => {
     const res = await getProjectsApi({
@@ -49,11 +50,17 @@ export const Dashboard = (props: IDashboardProps) => {
       Toast.error("Lỗi")
     }
   }
+  const refetch = async () => {
+    setLoading(true);
+    await getProjectList();
+    await getMyTasks();
+    setLoading(false);
+  }
 
   useEffect(() => {
-    getProjectList();
-    getMyTasks();
+    refetch();
   }, [])
+
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -66,6 +73,7 @@ export const Dashboard = (props: IDashboardProps) => {
 
   return (
     <View style={styles.container}>
+      <LoadingProcess isVisible={loading}/>
       <StatusBar style="auto" />
         <View className="bg-[#F8FBF6] w-full h-full relative">
           <View className="w-full h-24 pb-4 flex justify-end items-center">

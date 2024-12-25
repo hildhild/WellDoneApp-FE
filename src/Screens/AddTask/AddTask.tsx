@@ -38,9 +38,9 @@ interface IAddTaskProps {
   setSelectedUsers: (users: { name: string; id: number }[]) => void;
   onCreateTask: (data: AddTaskForm) => void;
   isLoading: boolean;
-  initialProjectId: number | null;
+  groupProjectId: number | null;
   handleProjectChange: (projectId: number) => void;
-  initialProjectID: number | null;
+  projectId: number | null;
 }
 
 const AddTask: FC<IAddTaskProps> = ({
@@ -50,9 +50,9 @@ const AddTask: FC<IAddTaskProps> = ({
   setSelectedUsers,
   onCreateTask,
   isLoading,
-  initialProjectId,
+  groupProjectId,
   handleProjectChange,
-  initialProjectID,
+  projectId,
 }) => {
   const navigation = useNavigation();
   const [showDueDatePicker, setShowDueDatePicker] = React.useState(false);
@@ -73,7 +73,7 @@ const AddTask: FC<IAddTaskProps> = ({
       priority: "HIGH",
       status: "TODO",
       assigneeIds: [],
-      projectId: initialProjectId || undefined,
+      projectId: projectId ? projectId : groupProjectId ? groupProjectId : undefined,
     },
   });
 
@@ -90,7 +90,7 @@ const AddTask: FC<IAddTaskProps> = ({
       </View>
       <TouchableOpacity
         className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
-        onPress={() => { navigation.goBack(); dispatch(setProjectId({id: null}));}}
+        onPress={() => { navigation.goBack();}}
       >
         <MyIcon name="chevron-left" size={15} color="#000" />
       </TouchableOpacity>
@@ -161,7 +161,7 @@ const AddTask: FC<IAddTaskProps> = ({
                 inputSearchStyle={styles.inputSearchStyle}
                 iconStyle={styles.iconStyle}
                 data={projectList}
-                value={initialProjectID}
+                value={value}
                 search
                 maxHeight={300}
                 labelField="label"
