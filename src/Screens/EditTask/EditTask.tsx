@@ -1,374 +1,263 @@
-
-import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, Modal, KeyboardAvoidingView, Platform } from "react-native";
-import { Button, ScrollView } from "native-base";
-import { RootScreens } from "..";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from '@react-navigation/native';
-import { Toast } from "toastify-react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { setCurGroupProjectId, setCurTask, setProjectList, toggleRefetch, toggleRefetchProject } from "@/Store/reducers";
-import { ErrorHandle } from "@/Services";
-import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
-import { TextInput } from "react-native";
-import { StyleSheet } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { Group, Member, useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
 import { LoadingProcess } from "@/Components";
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Project, useGetMemOfProjectMutation, useGetProjectListMutation } from "@/Services/projects";
-import { useAddTaskMutation, useEditTaskMutation } from "@/Services/task";
+import { generateDateTime } from "@/Utils/Funtions/generate";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { ScrollView } from "native-base";
+import React from "react";
+import { Control, Controller } from "react-hook-form";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { RootScreens } from "..";
+import { Priority, TaskStatus } from "@/Utils/constant";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
 
-export const EditTask = (props: {
-  onNavigate: (string: RootScreens) => void;
+export interface EditTaskProps {
+  control: Control<any>;
+  onSubmit: () => void;
+  userList: Array<{ label: string; value: number }>;
+  projectList: Array<{ label: string; value: number }>;
+  selectedUsers: Array<{ id: number; name: string }>;
+  onUserSelection: (user: { label: string; value: number }) => void;
+  onUserRemove: (userId: number) => void;
+  isLoading: boolean;
+  onNavigate: (screen: RootScreens) => void;
+  onBack: () => void;
+}
+
+export const EditTask: React.FC<EditTaskProps> = ({
+  control,
+  onSubmit,
+  userList,
+  projectList,
+  selectedUsers,
+  onUserSelection,
+  onUserRemove,
+  isLoading,
+  onBack,
 }) => {
-  const navigation = useNavigation();
-  const accessToken = useSelector((state: any) => state.profile.token);
-  const dispatch = useDispatch();
-  const [userList, setUserList] = useState<any>([])
-  // const projectList = useSelector((state: any) => state.project.projectList).map((project: Project) => {
-  //   return {
-  //     label: project.name,
-  //     value: project.id
-  //   };
-  // });
-  const [projectList, setProjectList] = useState<any>([]);
-  const [editTaskApi, {isLoading: editLoading}] = useEditTaskMutation();
-  const [getProjectsApi, {isLoading: getLoading}] = useGetProjectListMutation();
-  const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
-  const curGroupProjectId = useSelector((state: any) => state.group.curGroupProjectId);
-  const task = useSelector((state: any) => state.task.curTask);
-  const [formData, setFormData] = useState<any>({
-    "title": task.title,
-    "description": task.description,
-    "dueDate": new Date(task.dueDate),
-    "priority": task.priority,
-    "status": task.status,
-    "assigneeIds": task.assignees.map((user: any) => user.id),
-    "projectId": curGroupProjectId ? curGroupProjectId : task ? task.projectId : curGroupProjectId
-  }
-  );
-  const [selectedUsers, setSelectedUsers] = useState<{name: string, id: number}[]>(task ? task.assignees.map((user: any) => {
-    return {
-      name: user.name,
-      id: user.id
-    };
-  }): []);
-  const [getProjectMemberApi, {isLoading: getMemberLoading}] = useGetMemOfProjectMutation();
-
-  const handleEditTask = async () => {
-    try {
-      const response = await editTaskApi({
-        data: formData,
-        token: accessToken,
-        taskId: task.id
-      }).unwrap();
-      if ("id" in response) {
-        Toast.success("Chỉnh sửa thành công");
-        if (curGroupProjectId) {
-          dispatch(
-            toggleRefetch()
-          );
-        } else {
-          dispatch(toggleRefetchProject());
-        }
-                
-        dispatch(setCurGroupProjectId(null));
-        dispatch(setCurTask(response));
-        navigation.goBack();
-      }
-    } catch (err) {
-      if (err && typeof err === "object" && "data" in err) {
-        const errorData = err as ErrorHandle;
-        Toast.error(
-          String(errorData.data.message),
-          "top"
-        );
-      }
-    }
-  }
-
-  const handleChangeDueDate = (event: DateTimePickerEvent, selectedDate: Date | undefined): void => {
-    if (selectedDate) {
-      setFormData({...formData, dueDate: selectedDate}); 
-    }
-  };
-
-  const getProjectMember = async (projectId: number) => {
-    try {
-      const response = await getProjectMemberApi({
-        projectId: projectId,
-        token: accessToken
-      }).unwrap();
-      if (Array.isArray(response)) {
-        setUserList(response.map((user: any) => {
-          return {
-            label: user.name,
-            value: user.id
-          };
-        }));
-      }
-    } catch (err) {
-      if (err && typeof err === "object" && "data" in err) {
-        const errorData = err as ErrorHandle;
-        Toast.error(
-          String(errorData.data.message),
-          "top"
-        );
-      }
-    }
-  }
-
-  const getProjectList = async () => {
-    try {
-      const response = await getProjectsApi({
-        token: accessToken
-      }).unwrap();
-      if (Array.isArray(response)) {
-        setProjectList(response.map((user: any) => {
-          return {
-            label: user.name,
-            value: user.id
-          };
-        }));
-      }
-    } catch (err) {
-      if (err && typeof err === "object" && "data" in err) {
-        const errorData = err as ErrorHandle;
-        Toast.error(
-          String(errorData.data.message),
-          "top"
-        );
-      }
-    }
-  }
-
-  useEffect(()=> {
-    getProjectList();
-    if (curGroupProjectId) {
-      getProjectMember(curGroupProjectId);
-    } else if (task) {
-      getProjectMember(task.projectId);
-    }
-  }, [])
-
-
+  const [showDueDatePicker, setShowDueDatePicker] = React.useState(false);
+  const [dueDate, setDueDate] = React.useState(new Date());
   return (
-    <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <LoadingProcess isVisible={getMemberLoading}/>
-      {/* <Modal
-        animationType="fade"
-        transparent={true}
-        visible={openDatePicker}
-        >
-        <View className="flex justify-center items-center w-full h-full bg-[#00000090]">
-          <View className="bg-white w-[90%] py-3">
-            <DateTimePicker
-              value={formData.dueDate}
-              mode="datetime" 
-              display="spinner"
-              onChange={handleChangeDueDate}
-              themeVariant="light"
-            />
-            <View className="w-full flex justify-center items-center">
-              <Button className="!rounded-full !bg-lime-300" onPress={()=>setOpenDatePicker(false)}>
-                <Text className="text-black font-semibold">Xong</Text>
-              </Button>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
-      <LoadingProcess isVisible={editLoading || getLoading}/>
+    <KeyboardAvoidingView
+      className="bg-[#F8FBF6] w-full h-full relative"
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <LoadingProcess isVisible={isLoading} />
       <View className="w-full h-24 pb-4 flex justify-end items-center">
-        <Text className="text-2xl font-bold px-10 text-center text-black">Chỉnh sửa nhiệm vụ</Text>
+        <Text className="text-2xl font-bold px-10 text-center text-black">
+          Chỉnh sửa nhiệm vụ
+        </Text>
       </View>
-      <Pressable className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={() => navigation.goBack()}>
+
+      <Pressable
+        className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
+        onPress={onBack}
+      >
         <MyIcon name="chevron-left" size={15} color="#000" />
       </Pressable>
-      <Pressable className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400" onPress={handleEditTask}>
+
+      <Pressable
+        className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
+        onPress={onSubmit}
+      >
         <MyIcon name="save" size={20} color="#000" />
       </Pressable>
+
       <ScrollView className="w-full p-6">
         <View className="mb-3">
-          <Text className="mb-2 font-semibold text-[#3F6212] text-lg">Tên nhiệm vụ</Text>
-          <TextInput
-            editable
-            placeholder="Nhập tên nhiệm vụ"
-            className=" text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-            value={formData.title}
-            onChangeText={(name) => setFormData({...formData, title: name})}
-          />
-          <Text className="mb-2 font-semibold text-[#3F6212] text-lg">Mô tả nhiệm vụ</Text>
-          <TextInput
-            editable
-            placeholder="Nhập mô tả nhiệm vụ"
-            multiline
-            className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
-            value={formData.description}
-            onChangeText={(description) => setFormData({...formData, description: description})}
-          />
-          <Text className="mb-2 font-semibold text-[#3F6212] text-lg">Dự án</Text>
-          <Dropdown
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={projectList}
-            value={formData.projectId}
-            search
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder="Chọn dự án"
-            searchPlaceholder="Tìm kiếm..."
-            onChange={item => {
-              setFormData({...formData, projectId: parseInt(item.value)});
-              getProjectMember(parseInt(item.value));
-            }}
-            renderLeftIcon={() => (
-              <MyIcon name="folder" size={20} color="#84cc16"/>
+          <Controller
+            control={control}
+            name="title"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Text className="mb-2 font-semibold text-[#3F6212] text-lg">
+                  Tên nhiệm vụ
+                </Text>
+                <TextInput
+                  placeholder="Nhập tên nhiệm vụ"
+                  className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              </>
             )}
           />
-          <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">Thành viên</Text>
+
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Text className="mb-2 font-semibold text-[#3F6212] text-lg">
+                  Mô tả nhiệm vụ
+                </Text>
+                <TextInput
+                  placeholder="Nhập mô tả nhiệm vụ"
+                  multiline
+                  className="text-neutral-700 text-body-base-regular rounded-xl p-4 mb-2 border-[1px] border-gray-300 bg-white"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              </>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="projectId"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Text className="mb-2 font-semibold text-[#3F6212] text-lg">
+                  Dự án
+                </Text>
+                <Dropdown
+                  style={styles.dropdown}
+                  data={projectList}
+                  value={value}
+                  labelField="label"
+                  valueField="value"
+                  onChange={(item) => onChange(item.value)}
+                  renderLeftIcon={() => (
+                    <MyIcon name="folder" size={20} color="#84cc16" />
+                  )}
+                  {...dropdownProps}
+                />
+              </>
+            )}
+          />
+
+          <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">
+            Thành viên
+          </Text>
           <Dropdown
             style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
             data={userList}
-            search
-            maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder="Chọn thành viên"
-            searchPlaceholder="Tìm kiếm..."
-            onChange={item => {
-              if (selectedUsers.filter((user: any) => user.id === item.value).length > 0) {
-                Toast.error("Thành viên đã được chọn")
-              } else {
-                setSelectedUsers([...selectedUsers, {name: item.label, id: item.value}]);
-                setFormData({...formData, assigneeIds: [...formData.assigneeIds, item.value]});
-            }}}
+            onChange={onUserSelection}
             renderLeftIcon={() => (
-              <MyIcon name="users" size={20} color="#84cc16"/>
+              <MyIcon name="users" size={20} color="#84cc16" />
+            )}
+            {...dropdownProps}
+          />
+
+          {selectedUsers.map((user) => (
+            <View
+              key={user.id}
+              className="flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3"
+            >
+              <Text className="font-semibold">{user.name}</Text>
+              <Pressable onPress={() => onUserRemove(user.id)}>
+                <MyIcon name="trash" size={20} />
+              </Pressable>
+            </View>
+          ))}
+
+          <Controller
+            control={control}
+            name="status"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">
+                  Trạng thái
+                </Text>
+                <Dropdown
+                  labelField={""}
+                  valueField={""}
+                  style={styles.dropdown}
+                  data={[
+                    { label: "Mới", value: "TODO" },
+                    { label: "Đang làm", value: "IN_PROGRESS" },
+                    { label: "Xong", value: "DONE" },
+                  ]}
+                  value={value}
+                  onChange={(item) => onChange(item.value)}
+                  renderLeftIcon={() => (
+                    <MyIcon color="#84cc16" name="line-chart" size={20} />
+                  )}
+                  {...dropdownProps}
+                />
+              </>
             )}
           />
-          {
-            selectedUsers.map((user: any) => 
-              <View key={user.id} className="flex-row items-center justify-between rounded-xl px-4 py-3 mb-2 border-[1px] border-gray-300 bg-white mt-3">
-                <Text className="font-semibold">{user.name}</Text>
-                <View className="flex-row gap-3 items-center">
-                  <Pressable onPress={() => { 
-                    setSelectedUsers((prevUsers) => prevUsers.filter((userItem: any) => userItem.id !== user.id));
-                    setFormData({...formData, assigneeIds: formData.assigneeIds.filter((id: number) => id !== user.id)});
-                  }}>
-                    <MyIcon name="trash" size={20}/>
-                  </Pressable>
-                </View>
-              </View>
-            )
-          }
-          <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">Trạng thái</Text>
-          <Dropdown
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={[
-              {
-                label: "Mới",
-                value: "TODO"
-              },
-              {
-                label: "Đang làm",
-                value: "IN_PROGRESS"
-              },
-              {
-                label: "Xong",
-                value: "DONE"
-              }
-            ]}
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder="Chọn trạng thái"
-            onChange={item => {
-              setFormData({...formData, status: item.value});
-            }}
-            renderLeftIcon={() => (
-              <MyIcon color="#84cc16" name="line-chart" size={20} />
+
+          <Controller
+            control={control}
+            name="priority"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">
+                  Độ ưu tiên
+                </Text>
+                <Dropdown
+                  labelField={""}
+                  valueField={""}
+                  style={styles.dropdown}
+                  data={[
+                    { label: "Cao", value: "HIGH" },
+                    { label: "Trung bình", value: "MEDIUM" },
+                    { label: "Thấp", value: "LOW" },
+                  ]}
+                  value={value}
+                  onChange={(item) => onChange(item.value)}
+                  renderLeftIcon={() => (
+                    <MyIcon color="#84cc16" name="sort-amount-desc" size={20} />
+                  )}
+                  {...dropdownProps}
+                />
+              </>
             )}
-            value={formData.status}
           />
-          <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">Độ ưu tiên</Text>
-          <Dropdown
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={[
-              {
-                label: "Cao",
-                value: "HIGH"
-              },
-              {
-                label: "Trung bình",
-                value: "MEDIUM"
-              },
-              {
-                label: "Thấp",
-                value: "LOW"
-              }
-            ]}
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder="Chọn độ ưu tiên"
-            onChange={item => {
-              setFormData({...formData, priority: item.value});
-            }}
-            renderLeftIcon={() => (
-              <MyIcon color="#84cc16" name="sort-amount-desc" size={20} />
+
+          <Controller
+            control={control}
+            name="dueDate"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">
+                  Hạn
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setShowDueDatePicker(true)}
+                  className="mb-16 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center"
+                >
+                  <Text className="text-body-base-regular text-neutral-900 flex-1">
+                    {generateDateTime(value)}
+                  </Text>
+                  {showDueDatePicker && (
+                    <DateTimePicker
+                      value={dueDate}
+                      mode="date"
+                      display="default"
+                      onChange={(event, selectedDate) => {
+                        if (event.type === "set" && selectedDate) {
+                          setDueDate(selectedDate);
+                          onChange(selectedDate.toISOString());
+                          setShowDueDatePicker(false);
+                        } else if (event.type === "dismissed") {
+                          setShowDueDatePicker(false);
+                        }
+                      }}
+                    />
+                  )}
+                  <MyIcon name="calendar" size={20} />
+                </TouchableOpacity>
+              </>
             )}
-            value={formData.priority}
           />
-          <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">Hạn</Text>
-          <View className="items-center justify-between mb-16 text-neutral-700 text-body-base-regular rounded-xl py-2 px-4 border-[1px] border-gray-300 bg-white flex-row" >
-            <DateTimePicker
-              value={formData.dueDate}
-              mode="datetime" 
-              display="default"
-              onChange={handleChangeDueDate}
-              themeVariant="light"
-            />
-            {/* <TextInput
-              placeholder="Ngày sinh"
-              editable={false}
-              className="flex-1 text-neutral-700 text-body-base-regular"
-              value={formData.dueDate.toLocaleString('vi-VN', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false, // Sử dụng định dạng 24 giờ
-              })}
-              onPress={() => {setOpenDatePicker(true)}}
-            /> */}
-            <Pressable onPress={() => {setOpenDatePicker(true)}}>
-              <MyIcon name="calendar" size={20}/>
-            </Pressable>
-          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
-    
   );
 };
 
@@ -376,7 +265,7 @@ const styles = StyleSheet.create({
   dropdown: {
     height: 50,
     padding: 15,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
     borderWidth: 1,
     backgroundColor: "white",
     borderRadius: 10,
@@ -386,11 +275,11 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 16,
-    marginLeft: 10
+    marginLeft: 10,
   },
   selectedTextStyle: {
     fontSize: 16,
-    marginLeft: 10
+    marginLeft: 10,
   },
   iconStyle: {
     width: 20,
@@ -401,3 +290,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+const dropdownProps = {
+  placeholderStyle: styles.placeholderStyle,
+  selectedTextStyle: styles.selectedTextStyle,
+  inputSearchStyle: styles.inputSearchStyle,
+  iconStyle: styles.iconStyle,
+  search: true,
+  maxHeight: 300,
+  placeholder: "Chọn...",
+  searchPlaceholder: "Tìm kiếm...",
+};
+
+export interface FormData {
+  title: string;
+  description: string;
+  dueDate: string;
+  priority: Priority;
+  status: TaskStatus  ;
+  assigneeIds: number[];
+  projectId: number;
+}
+
+export interface User {
+  id: number;
+  name: string;
+}
+
+export interface DropdownItem {
+  label: string;
+  value: number | string;
+}
