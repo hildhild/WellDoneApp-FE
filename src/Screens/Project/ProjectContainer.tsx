@@ -11,18 +11,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
 import { Project } from "./Project";
+import { useDebounce } from "use-debounce";
 
 type ProjectScreenNavigatorProps = NativeStackScreenProps<RootStackParamList>;
 
-export const useProjectList = (token: string) => {
-  const [data, setData] = useState<GetProjectListResponse[] | undefined>(undefined);
+export const useProjectList = (token: string, search?: string) => {
+  const [data, setData] = useState<GetProjectListResponse[] | undefined>(
+    undefined
+  );
   const [getProjectList, { isLoading }] = useGetProjectListMutation();
   const dispatch = useDispatch();
-  const refetch = useSelector((state: any) => state.project.refetch);
+  const refetch = useSelector((state: RootState) => state.project.refetch);
 
   const fetchRecentProject = useCallback(async () => {
     try {
-      const response = await getProjectList({ token });
+      const response = await getProjectList({
+        token,
+        searchProjectNameQuery: search,
+      });
+
       if ("data" in response && Array.isArray(response.data)) {
         const project: GetProjectListResponse[] = response.data;
         setData(project);
@@ -31,7 +38,7 @@ export const useProjectList = (token: string) => {
       Toast.error(renderErrorMessageResponse(String(error)));
       console.error(error);
     }
-  }, [getProjectList, token, dispatch]);
+  }, [getProjectList, token, search, dispatch]);
 
   useEffect(() => {
     fetchRecentProject();
@@ -39,16 +46,22 @@ export const useProjectList = (token: string) => {
 
   return { data, isLoading, fetchRecentProject };
 };
-
 export const ProjectContainer = ({
   navigation,
 }: ProjectScreenNavigatorProps) => {
   const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500);
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);
   };
+
   const token = useSelector((state: RootState) => state.profile.token);
-  const { data: ProjectList, isLoading, fetchRecentProject } = useProjectList(token);
+
+  const {
+    data: ProjectList,
+    isLoading,
+    fetchRecentProject,
+  } = useProjectList(token, debouncedSearch);
 
   return (
     <Project
@@ -57,7 +70,7 @@ export const ProjectContainer = ({
       search={search}
       setSearch={setSearch}
       onNavigate={onNavigate}
-      fetchRecentProject={fetchRecentProject}  
+      fetchRecentProject={fetchRecentProject}
     />
   );
 };
