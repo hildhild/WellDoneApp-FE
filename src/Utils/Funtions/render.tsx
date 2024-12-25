@@ -103,7 +103,11 @@ export const renderErrorMessageResponse = (
   } else if (responseString === "Not authorized to modify this task") {
     return "Bạn không có quyền chỉnh sửa nhiệm vụ này";
   } else {
-    return responseString;
+    if (Array.isArray(responseString)){
+      return responseString[0];
+    } else {
+      return responseString;
+    }
   }
 };
 
