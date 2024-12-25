@@ -90,6 +90,7 @@ export const HomeContainer = ({ navigation }: HomeScreenNavigatorProps) => {
   const [projectID, setProjectID] = useState<number | null>(null);
   const listMember = useProjectMembers(projectID, token);
   const [refreshing, setRefreshing] = useState(false);
+  const refetch = useSelector((state: any)=>state.project.refetch);
 
   const onNavigate = (screen: RootScreens) => {
     navigation.navigate(screen);

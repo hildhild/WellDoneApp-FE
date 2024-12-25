@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from "toastify-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurTask, setGroupList, toggleRefetch } from "@/Store/reducers";
+import { setCurTask, setGroupList, toggleRefetch, toggleRefetchProject } from "@/Store/reducers";
 import { ErrorHandle } from "@/Services";
 import { StyleSheet } from 'react-native';
 import { useAddGroupMutation, useGetGroupsMutation, User } from "@/Services/group";
@@ -51,7 +51,10 @@ export const TaskDetail = (props: {
       }).unwrap();
       if (!res) {
         Toast.success("Xóa thành công");
-        dispatch(toggleRefetch());
+        dispatch(
+          toggleRefetch()
+        );
+        dispatch(toggleRefetchProject());
         dispatch(setCurTask(null));
         navigation.goBack();
       } 
@@ -212,7 +215,7 @@ export const TaskDetail = (props: {
             <View className="bg-[#A0D683] rounded-xl py-2 px-4 mb-3" key={mem.id}>
               <View className="flex flex-row items-center justify-between">
                 <View>
-                  <Text className={`text-lg font-bold ${mem.id === task.createdById ? "text-red-500" : "text-[#30411A]"}`}>{mem.name}</Text>
+                  <Text className={`text-lg font-bold ${mem.id === task.createdById ? "text-red-500" : "text-[#30411A]"}`}>{mem.name.slice(0,20)}{mem.name.length > 20 && "..."}</Text>
                 </View>
                 <Pressable className="flex flex-row gap-1 justify-center items-center bg-[#4D7C0F] p-2 rounded-xl" onPress={()=>{setIsViewInfo(true); setCurMember(mem);}}>
                   <MyIonicons name="information-circle-outline" color="white" size={20}/>
