@@ -9,6 +9,7 @@ import { useAddTaskMutation } from "@/Services/task";
 import { RootState } from "@/Store";
 import {
   setCurGroupProjectId,
+  setProjectId,
   toggleRefetch,
   toggleRefetchProject,
 } from "@/Store/reducers";
@@ -75,6 +76,7 @@ export const AddTaskContainer: FC<AddTaskScreenNavigatorProps> = ({
           dispatch(toggleRefetchProject());
         }
         dispatch(setCurGroupProjectId(null));
+        dispatch(setProjectId({id: null}));
         navigation.goBack();
       }
     } catch (err) {
@@ -149,6 +151,8 @@ export const AddTaskContainer: FC<AddTaskScreenNavigatorProps> = ({
       await getProjectList();
       if (curGroupProjectId) {
         await getProjectMember(curGroupProjectId);
+      } else if (projectId) {
+        await getProjectMember(projectId);
       }
     };
 

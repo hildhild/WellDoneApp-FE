@@ -1,4 +1,5 @@
 import { LoadingProcess } from "@/Components";
+import { setProjectId } from "@/Store/reducers";
 import { generateDateTime } from "@/Utils/Funtions/generate";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
@@ -16,6 +17,7 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useDispatch } from "react-redux";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
 
@@ -55,6 +57,7 @@ const AddTask: FC<IAddTaskProps> = ({
   const navigation = useNavigation();
   const [showDueDatePicker, setShowDueDatePicker] = React.useState(false);
   const [dueDate, setDueDate] = React.useState(new Date());
+  const dispatch = useDispatch();
 
   const {
     control,
@@ -87,7 +90,7 @@ const AddTask: FC<IAddTaskProps> = ({
       </View>
       <TouchableOpacity
         className="absolute left-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
-        onPress={() => navigation.goBack()}
+        onPress={() => { navigation.goBack(); dispatch(setProjectId({id: null}));}}
       >
         <MyIcon name="chevron-left" size={15} color="#000" />
       </TouchableOpacity>

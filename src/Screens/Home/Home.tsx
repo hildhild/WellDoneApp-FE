@@ -49,13 +49,13 @@ export const Home = (props: IHomeProps) => {
                 className="w-28 h-28"
                 source={require("assets/dark-logo.png")}
               />
-              <Text className="text-body-large-bold font-bold text-neutral-800">
-                WELLDONE
+              <Text className="text-body-large-bold font-bold text-neutral-800 ml-[-20px]">
+                WellDone
               </Text>
             </View>
 
             <TouchableOpacity onPress={() => onNavigate(RootScreens.ACCOUNT)}>
-              <Avatar name={name} width={70} height={70} />
+              <Avatar name={name} width={60} height={60} />
             </TouchableOpacity>
           </View>
           <View className="bg-white rounded-lg mb-8">

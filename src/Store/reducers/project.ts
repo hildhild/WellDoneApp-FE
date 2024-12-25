@@ -18,7 +18,7 @@ const slice = createSlice({
   name: "project",
   initialState,
   reducers: {
-    setProjectId: (state, action: PayloadAction<{ id: number }>) => {
+    setProjectId: (state, action: PayloadAction<{ id: number | null }>) => {
       const { id } = action.payload;
       state.id = id;
     },

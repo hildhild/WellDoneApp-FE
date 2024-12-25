@@ -5,7 +5,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import React, { FC, memo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { ForgotPasswordForm } from "./ForgotPasswordContainer";
 interface ForgotPasswordProps {
@@ -69,25 +69,25 @@ const ForgotPassword: FC<ForgotPasswordProps> = ({
           <Text className="text-danger-400">{errors.email.message}</Text>
         )}
       </View>
-      <View className="flex-row mt-6 w-full">
-        <TouchableOpacity
-          className="bg-neutral-100 border-neutral-400 rounded-lg px-6 py-3 flex-1 mr-3 max-w-[112px] !border"
+      <View className="flex-row mt-6 w-full gap-[3%]">
+        <Pressable
+          className="bg-neutral-100 border-neutral-400 rounded-lg px-2 py-3 !border w-[30%]"
           onPress={() => onNavigate(RootScreens.LOGIN)}
         >
           <Text className="text-gray-400 text-body-base-bold text-center">
             Hủy
           </Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
-          className="bg-primary-600 rounded-lg px-6 py-3 flex-1 max-w-[225px]"
+        <Pressable
+          className="bg-primary-600 rounded-lg px-6 py-3 w-[67%]"
           onPress={handleSubmit(onSubmit)}
           disabled={isLoading}
         >
           <Text className="text-neutral-100 text-body-base-bold text-center">
             {isLoading ? "Đang gửi reset code..." : "Lấy lại mật khẩu"}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );

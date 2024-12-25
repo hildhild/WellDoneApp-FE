@@ -27,6 +27,9 @@ import ViewGroups from "../ProjectEdit/ViewGroups";
 import { ProjectCreateForm } from "./ProjectCreateContainer";
 import { LoadingProcess } from "@/Components";
 import { Toast } from "native-base";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
 
 interface IProjectCreateProps {
   onNavigate: (screen: RootScreens) => void;
@@ -107,12 +110,18 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
     <View className="px-4 pt-8">
       <LoadingProcess isVisible={isCreateProjectLoading} />
       <View className="flex-row justify-between items-center mb-6">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
             name="arrow-left-circle-outline"
             size={32}
             color="black"
           />
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          className="w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
+          onPress={() => navigation.goBack()}
+        >
+          <MyIcon name="chevron-left" size={15} color="#000" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-center">Thêm Dự án</Text>
         <TouchableOpacity onPress={handleSubmit(onSubmit)}>
