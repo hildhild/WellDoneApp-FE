@@ -7,15 +7,15 @@ import {
 } from "@/Services/users";
 import { RootState } from "@/Store";
 import { setUser } from "@/Store/reducers";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Verification from "./Verification";
-import { Toast } from "toastify-react-native";
 import {
   renderErrorMessageResponse,
   renderSuccessMessageResponse,
 } from "@/Utils/Funtions/render";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Toast } from "toastify-react-native";
+import Verification from "./Verification";
 
 type VerifyMailScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
@@ -56,16 +56,19 @@ const VerificationContainer: React.FC<VerifyMailScreenNavigatorProps> = ({
   }, [code]);
   const handleVerifyCode = async () => {
     try {
-      if (email) {
+      if (email && code.length === 6) {
         const response = await verifyEmail({
           email,
           code,
         }).unwrap();
+
         if ("user" in response) {
           dispatch(setUser({ email: "" }));
           Toast.success(renderSuccessMessageResponse(response.message), "top");
           onNavigate(RootScreens.LOGIN);
-        } else Toast.error(renderErrorMessageResponse(response.message), "top");
+        } else {
+          Toast.error(renderErrorMessageResponse(response.message), "top");
+        }
       }
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {

@@ -3,7 +3,7 @@ import { RootScreens } from "@/Screens";
 import { Response } from "@/Services";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import React from "react";
+import React, { useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface VerificationProps {
@@ -26,10 +26,9 @@ const Verification: React.FC<VerificationProps> = ({
   isError,
   error,
 }) => {
-
-  const handleCodeComplete = () => {
-    onSubmit(); 
-  };
+  const handleCodeComplete = useCallback(() => {
+    onSubmit();
+  }, [onSubmit]);
 
   return (
     <View className="flex-1 justify-center items-center bg-white p-6">
@@ -40,7 +39,11 @@ const Verification: React.FC<VerificationProps> = ({
         Enter the 6-digit verification code sent to your email.
       </Text>
 
-      <VerifyCodeInput code={code} setCode={setCode} onCodeComplete={handleCodeComplete} />
+      <VerifyCodeInput
+        code={code}
+        setCode={setCode}
+        onCodeComplete={handleCodeComplete}
+      />
 
       <TouchableOpacity
         onPress={onSubmit}

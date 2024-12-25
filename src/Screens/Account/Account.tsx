@@ -1,33 +1,32 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  Pressable,
-  TouchableOpacity,
-  TextInput,
-  Modal,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import { Button, ScrollView } from "native-base";
-import { RootScreens } from "..";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
-import Entypo from "react-native-vector-icons/Entypo";
-import { Toast } from "toastify-react-native";
-import { useDispatch, useSelector } from "react-redux";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+import Avatar from "@/Components/Avatar";
+import { ErrorHandle } from "@/Services";
 import {
   useChangePasswordMutation,
   useUpdateProfileMutation,
 } from "@/Services/profile";
 import { removeToken, setProfile } from "@/Store/reducers";
-import { ErrorHandle } from "@/Services";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
-import Avatar from "@/Components/Avatar";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { useNavigation } from "@react-navigation/native";
+import { Button, ScrollView } from "native-base";
+import React, { useState } from "react";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Entypo from "react-native-vector-icons/Entypo";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useDispatch, useSelector } from "react-redux";
+import { Toast } from "toastify-react-native";
+import { RootScreens } from "..";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
 const MyEntypo = Entypo as unknown as React.ComponentType<any>;
