@@ -135,7 +135,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       <View>
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
           <Text className="text-caption-regular text-neutral-500">
-            Tên dự án
+            Tên dự án <Text className="text-danger-600"> *</Text>
           </Text>
           <Controller
             control={control}
@@ -159,7 +159,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
         </View>
 
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
-          <Text className="text-caption-regular text-neutral-500">Mô tả</Text>
+          <Text className="text-caption-regular text-neutral-500">Mô tả <Text className="text-danger-600"> *</Text></Text>
           <Controller
             control={control}
             name="project_description"
