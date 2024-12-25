@@ -14,6 +14,9 @@ import {
 import React, { FC, memo, useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, TouchableOpacity, View, RefreshControl } from "react-native";
 import { useDispatch } from "react-redux";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
 
 interface IProjectDetailProps {
   listMember: GetMemOfProjectResponse;
@@ -37,12 +40,18 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
   return (
     <View className="bg-white h-full mt-8 px-4">
       <View className="flex-row justify-between items-center p-4 bg-neutral-100">
-        <TouchableOpacity onPress={() => onNavigate(RootScreens.MAIN)}>
+        {/* <TouchableOpacity onPress={() => {onNavigate(RootScreens.MAIN); dispatch(setProjectId({id: null}))}}>
           <MaterialCommunityIcons
             name="arrow-left-circle-outline"
             size={32}
             color="black"
           />
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          className="w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
+          onPress={() => {onNavigate(RootScreens.MAIN); dispatch(setProjectId({id: null}))}}
+        >
+          <MyIcon name="chevron-left" size={15} color="#000" />
         </TouchableOpacity>
         <Text className="text-heading4 font-bold">Chi tiết Dự án</Text>
         <TouchableOpacity

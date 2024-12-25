@@ -29,6 +29,9 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { useSelector } from "react-redux";
 import { ProjectEditForm } from "./ProjectEditContainer";
 import ViewGroups from "./ViewGroups";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
 
 interface IProjectEditProps {
   project: GetDetailProjectResponse;
@@ -109,12 +112,18 @@ const ProjectEdit: FC<IProjectEditProps> = ({
     <View className="px-4 pt-8">
       <LoadingProcess isVisible={isLoading} />
       <View className="flex-row justify-between items-center mb-6">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
             name="arrow-left-circle-outline"
             size={32}
             color="black"
           />
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          className="w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
+          onPress={() => navigation.goBack()}
+        >
+          <MyIcon name="chevron-left" size={15} color="#000" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-center">Chỉnh sửa Dự án</Text>
         <TouchableOpacity onPress={handleSubmit(onSubmit)}>

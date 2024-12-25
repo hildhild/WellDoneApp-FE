@@ -14,6 +14,9 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
 import { RootScreens } from "..";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
 interface NotificationProps {
   onNavigate: (screen: RootScreens) => void;
 }
@@ -53,14 +56,20 @@ const Notification = (props: NotificationProps) => {
 
   return (
     <View className="bg-neutral-100 h-full p-4 mt-8">
-      <View className="flex-row items-center mb-4 ">
-        <TouchableOpacity onPress={() => props.onNavigate(RootScreens.MAIN)}>
+      <View className="flex-row items-center justify-center mb-8 py-2">
+        {/* <TouchableOpacity onPress={() => props.onNavigate(RootScreens.MAIN)}>
           <MaterialCommunityIcons
             name="arrow-left-circle-outline"
             size={32}
             color="black"
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+            className="absolute left-5 top-0 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
+            onPress={() => {props.onNavigate(RootScreens.MAIN);}}
+          >
+            <MyIcon name="chevron-left" size={15} color="#000" />
+          </TouchableOpacity>
         <Text className="text-heading4 font-bold ml-auto mr-auto">
           Thông báo
         </Text>

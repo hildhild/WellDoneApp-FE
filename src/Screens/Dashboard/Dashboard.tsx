@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { useGetMyTaskMutation } from "@/Services/task";
 import { LoadingProcess } from "@/Components";
-import { setCurTask } from "@/Store/reducers";
+import { setCurTask, setProjectId } from "@/Store/reducers";
 
 export interface IDashboardProps {
   onNavigate: (screen: RootScreens) => void;
@@ -115,11 +115,14 @@ export const Dashboard = (props: IDashboardProps) => {
               </View>
               {
                 projectList.map((project: any) => 
-                <View key={project.id} className="flex flex-row items-center justify-center border-b-[0.5px] border-neutral-300 py-3">
+                <Pressable key={project.id} className="flex flex-row items-center justify-center border-b-[0.5px] border-neutral-300 py-3" onPress={()=>{
+                  dispatch(setProjectId({id: project.id}));
+                  props.onNavigate(RootScreens.PROJECTDETAIL);
+                }}>
                   <View className="w-[40%]"><Text className="font-semibold">{project.name}</Text></View>
                   <View className="w-[40%]"><Text>{project.userGroups.length > 1 ? project.userGroups[0].name + ",..." : project.userGroups[0].name}</Text></View>
                   <View className={`w-[20%] rounded-full flex-row justify-center ${project.status === "NOT_STARTED" ? "bg-gray-100" : "bg-blue-100"}`}><Text className={`text-sm font-semibold ${project.status === "NOT_STARTED" ? "text-gray-600" : "text-blue-600"}`}>{project.status === "NOT_STARTED" ? "Mới" : "Đang làm"}</Text></View>
-                </View>
+                </Pressable>
                 )
               }
               {
