@@ -89,8 +89,8 @@ const Document: React.FC<DocumentProps> = ({
       </TouchableOpacity>
 
       {documentList.length === 0 ? (
-        <View className="flex justify-center items-center h-full">
-          <Text className="text-body-base-regular text-center">
+        <View className="flex justify-center items-center h-full w-full">
+          <Text className="text-body-base-regular text-center text-lg text-gray-500 font-semibold">
             Không có tài liệu nào được tải lên
           </Text>
         </View>
@@ -111,7 +111,10 @@ const Document: React.FC<DocumentProps> = ({
                   </Text>
                 </View>
                 <View className="flex-row gap-6 items-center">
-                  <MyIcon name="info-circle" size={25} color="#fff" />
+                  {/* <MyIcon name="info-circle" size={25} color="#fff" /> */}
+                  <TouchableOpacity onPress={() => onGetFile(doc.id)}>
+                    <MyIcon name="download" size={25} color="#fff" />
+                  </TouchableOpacity>
                   <TouchableOpacity onPress={() => onDeleteFile(doc.id)}>
                     <MyIcon name="trash" size={25} color="#fff" />
                   </TouchableOpacity>
@@ -131,11 +134,6 @@ const Document: React.FC<DocumentProps> = ({
                       <Text className="text-primary-900 text-body-small-regular ml-3">
                         {generateTime(doc.createAt)}
                       </Text>
-                    </View>
-                    <View className="flex-row items-center">
-                      <TouchableOpacity onPress={() => onGetFile(doc.id)}>
-                        <MyIcon name="download" size={20} color="#65A30D" />
-                      </TouchableOpacity>
                     </View>
                   </View>
                   <View>

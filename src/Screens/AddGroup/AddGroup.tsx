@@ -141,7 +141,7 @@ export const AddGroup = (props: {
             <Text className="font-semibold">{user?.name}</Text>
             <View className="flex-row gap-3 items-center">
               <View className="rounded-full p-2 bg-lime-200">
-                <Text className="text-xs text-lime-800 font-semibold">Thành viên</Text>
+                <Text className="text-xs text-lime-800 font-semibold">Nhóm trưởng</Text>
               </View>
             </View>
           </View>

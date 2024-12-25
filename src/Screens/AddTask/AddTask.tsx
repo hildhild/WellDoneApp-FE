@@ -149,7 +149,7 @@ export const AddTask = (props: {
   return (
     <KeyboardAvoidingView className="bg-[#F8FBF6] w-full h-full relative" behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <LoadingProcess isVisible={getMemberLoading}/>
-      <Modal
+      {/* <Modal
         animationType="fade"
         transparent={true}
         visible={openDatePicker}
@@ -170,7 +170,7 @@ export const AddTask = (props: {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
       <LoadingProcess isVisible={addLoading || getLoading}/>
       <View className="w-full h-24 pb-4 flex justify-end items-center">
         <Text className="text-2xl font-bold px-10 text-center text-black">Thêm nhiệm vụ</Text>
@@ -327,24 +327,29 @@ export const AddTask = (props: {
             value={formData.priority}
           />
           <Text className="mb-2 font-semibold text-[#3F6212] text-lg mt-2">Hạn</Text>
-          <View className="mb-16 text-neutral-700 text-body-base-regular rounded-xl p-4 border-[1px] border-gray-300 bg-white flex-row" >
-              <TextInput
-                placeholder="Ngày sinh"
-                editable={false}
-                className="flex-1 text-neutral-700 text-body-base-regular"
-                value={formData.dueDate.toLocaleString('vi-VN', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false, // Sử dụng định dạng 24 giờ
-                })}
-                onPress={() => {setOpenDatePicker(true)}}
-              />
-            <Pressable onPress={() => {setOpenDatePicker(true)}}>
-              <MyIcon name="calendar" size={20}/>
-            </Pressable>
+          <View className="mb-16 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center" >
+            <DateTimePicker
+              value={formData.dueDate}
+              mode="datetime" 
+              display="default"
+              onChange={handleChangeDueDate}
+              themeVariant="light"
+            />
+            {/* <TextInput
+              placeholder="Ngày sinh"
+              editable={false}
+              className="flex-1 text-neutral-700 text-body-base-regular"
+              value={formData.dueDate.toLocaleString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false, // Sử dụng định dạng 24 giờ
+              })}
+              onPress={() => {setOpenDatePicker(true)}}
+            /> */}
+            <MyIcon name="calendar" size={20}/>
           </View>
         </View>
       </ScrollView>

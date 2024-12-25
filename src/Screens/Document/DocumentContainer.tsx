@@ -16,10 +16,11 @@ import * as FileSystem from "expo-file-system";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Platform } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import { RootScreens } from "..";
 import Document from "./Document";
+import { toggleRefetchDoc } from "@/Store/reducers";
 type DocumentScreenNavigatorProps = NativeStackScreenProps<
   RootStackParamList,
   RootScreens.DOCUMENT
@@ -39,6 +40,8 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
 
   const accessToken = useSelector((state: RootState) => state.profile.token);
   const curTask = useSelector((state: RootState) => state.task.curTask);
+  const refetch = useSelector((state: any) => state.group.refetchDoc);
+  const dispatch = useDispatch();
 
   const downloadFile = useCallback(async (blob: Blob, filename: string) => {
     try {
@@ -196,9 +199,10 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
       }).unwrap();
 
       if ("id" in response) {
-        Toast.success(`Upload successful ${response.id}`);
+        Toast.success(`Tải tài liệu lên thành công`);
         setIsUpload(false);
         setFileUpload(null);
+        dispatch(toggleRefetchDoc());
       } else {
         Toast.error(response.message);
       }
@@ -247,8 +251,9 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
           documentId: documentID,
           token: accessToken,
         }).unwrap();
-        if (response && "data" in response && response.data === null) {
+        if (!response) {
           Toast.success("Xóa tài liệu thành công");
+          dispatch(toggleRefetchDoc());
         }
       } catch (err) {
         console.error("Delete document error:", err);
@@ -285,7 +290,7 @@ const DocumentContainer = ({ navigation }: DocumentScreenNavigatorProps) => {
 
   useEffect(() => {
     fetchDocuments();
-  }, [curTask?.id]);
+  }, [curTask?.id, refetch]);
 
   return (
     <Document
