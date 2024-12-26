@@ -52,7 +52,7 @@ export const Group = (props: IGroupProps) => {
   const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [curGroup, setCurGroup] = useState<any>(null);
+  const [curGroupItem, setCurGroupItem] = useState<any>(null);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -141,8 +141,8 @@ export const Group = (props: IGroupProps) => {
     <View style={styles.container}>
       {openModal && (
         <MembersModal
-          projectName={curGroup.name}
-          members={curGroup.user}
+          projectName={curGroupItem.name}
+          members={curGroupItem.user}
           closeModal={() => setOpenModal(false)}
         />
       )}
@@ -259,7 +259,7 @@ export const Group = (props: IGroupProps) => {
                       <></>
                     }
                   </View> */}
-                  <Pressable onPress={() => {setOpenModal(true); setCurGroup(group);}} className={`${widthOfListMember(group.user.length)} mb-3`}>
+                  <Pressable onPress={() => {setOpenModal(true); setCurGroupItem(group);}} className={`${widthOfListMember(group.user.length)} mb-3`}>
                     <AvatarStack
                       users={group.user.map((member) => member.name).join(", ").split(",")}
                       maxVisible={5}

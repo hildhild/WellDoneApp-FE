@@ -228,16 +228,14 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   Hạn
                 </Text>
                 <TouchableOpacity
-                  onPress={() => setShowDueDatePicker(true)}
+                  onPress={() => setShowDueDatePicker(!showDueDatePicker)}
                   className="mb-16 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center"
                 >
-                  <Text className="text-body-base-regular text-neutral-900 flex-1">
-                    {generateDateTime(value)}
-                  </Text>
-                  {showDueDatePicker && (
+                  
+                  {showDueDatePicker ? (
                     <DateTimePicker
                       value={dueDate}
-                      mode="date"
+                      mode="datetime"
                       display="default"
                       onChange={(event, selectedDate) => {
                         if (event.type === "set" && selectedDate) {
@@ -249,7 +247,12 @@ export const EditTask: React.FC<EditTaskProps> = ({
                         }
                       }}
                     />
-                  )}
+                  )
+                  :
+                  <Text className="text-body-base-regular text-neutral-900 flex-1">
+                    {generateDateTime(value)}
+                  </Text>
+                }
                   <MyIcon name="calendar" size={20} />
                 </TouchableOpacity>
               </>

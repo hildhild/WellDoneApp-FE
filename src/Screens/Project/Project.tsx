@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { RootScreens } from "..";
 import ProjectCardContainer from "./ProjectCard/ProjectCardContainer";
+import { LoadingProcess } from "@/Components";
 
 export interface IProjectProps {
   data: GetProjectListResponse[] | undefined;
@@ -39,6 +40,7 @@ export const Project = (props: IProjectProps) => {
 
   return (
     <View className="flex align-center justify-center bg-neutral-100 relative h-full">
+      <LoadingProcess isVisible={isLoading} />
       <StatusBar style="auto" />
       <>
         <View className="bg-white h-full pt-8 px-5">
@@ -73,7 +75,7 @@ export const Project = (props: IProjectProps) => {
               Danh sách Dự án ({data?.length})
             </Text>
             {data?.length === 0 ? (
-              <Text className="text-body-base text-neutral-500">
+              <Text className="text-lg text-neutral-500 font-semibold py-5">
                 Không có dự án nào để hiển thị
               </Text>
             ) : (
