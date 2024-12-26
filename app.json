@@ -24,7 +24,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/dark-logo.png",
+        "foregroundImage": "./assets/lime-logo.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.hpcc.expo_redux_template"
