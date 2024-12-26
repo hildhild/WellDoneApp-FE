@@ -233,7 +233,13 @@ export const Account = (props: {
                     className="ml-[-550px]"
                   />
                 ) : (
-                  <Text>{profileData.dateOfBirth.toLocaleDateString()}</Text>
+                  <>
+                    <Text>{profileData.dateOfBirth.toLocaleDateString()}</Text>
+                    <TouchableOpacity onPress={() => setOpenDatePicker(true)}>
+                      <MyIcon name="calendar" size={20} />
+                    </TouchableOpacity>
+                  </>
+                  
                 )
               ) : (
                 <TextInput
@@ -243,9 +249,6 @@ export const Account = (props: {
                   value={profileData.dateOfBirth.toLocaleDateString()}
                 />
               )}
-              <TouchableOpacity onPress={() => setOpenDatePicker(true)}>
-                <MyIcon name="calendar" size={20} />
-              </TouchableOpacity>
             </View>
 
             <Text className="mb-3 font-semibold text-neutral-500">Email:</Text>

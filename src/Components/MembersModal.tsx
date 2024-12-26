@@ -46,7 +46,7 @@ const MembersModal: React.FC<ProjectModalProps> = ({
   return (
     <Modal
       transparent={true}
-      animationType="slide"
+      animationType="fade"
       visible={true}
       onRequestClose={closeModal}
     >
