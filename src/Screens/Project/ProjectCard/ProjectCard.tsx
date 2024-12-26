@@ -71,12 +71,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-
+      <View className="flex-row justify-end">
+        {renderStatusLabel(project.status)}
+      </View>
       <View className="flex-row items-center justify-between mb-1">
         <Text className="text-heading4 font-bold text-neutral-800">
           {project.name}
         </Text>
-        {renderStatusLabel(project.status)}
       </View>
 
       <View className="flex-row items-center justify-between mb-1">

@@ -201,14 +201,14 @@ export const renderRoleLabel = (role: Role | UserStatus) => {
   if (role === "Leader" || role === "ONLINE") {
     return (
       <View className="flex-row items-center bg-primary-100 px-2 py-1 rounded-full">
-        <Text className="text-body-small-bold text-primary-500">{role}</Text>
+        <Text className="text-body-small-bold text-primary-500">Nhóm trưởng</Text>
       </View>
     );
   }
   if (role === "Member" || role === "OFFLINE") {
     return (
       <View className="flex-row items-center bg-secondary-200 px-2 py-1 rounded-full">
-        <Text className="text-body-small-bold text-secondary-500">{role}</Text>
+        <Text className="text-body-small-bold text-secondary-500">Thành viên</Text>
       </View>
     );
   }

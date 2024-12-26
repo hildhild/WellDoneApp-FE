@@ -32,14 +32,21 @@ const ProjectCardContainer: FC<IProjectCardContainerProps> = ({
   const [deleteProject, { isLoading: isDeleteProjectLoading }] =
     useDeleteProjectMutation();
   const listMember = useProjectMembers(project.id, token);
+  const userId = useSelector((state: any)=> state.profile.id);
   const handleDeleteProject = useCallback(
     async (projectId: number) => {
-      const response = await deleteProject({ projectId, token });
-      if ("data" in response && response.data === null) {
-        Toast.success("Xóa dự án thành công!");
-        dispatch(toggleRefetchProject());
-
+      const isLeader = listMember?.filter((member: any)=> member.id === userId)[0].role === "Leader";
+      if (!isLeader) {
+        Toast.error("Bạn không phải nhóm trưởng")
+      } else {
+        const response = await deleteProject({ projectId, token });
+        if ("data" in response && response.data === null) {
+          Toast.success("Xóa dự án thành công!");
+          dispatch(toggleRefetchProject());
+  
+        }
       }
+      
     },
     [deleteProject, token]
   );
