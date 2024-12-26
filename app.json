@@ -7,7 +7,7 @@
     "icon": "./assets/dark-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/dark-logo.png",
+      "image": "./assets/lime-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

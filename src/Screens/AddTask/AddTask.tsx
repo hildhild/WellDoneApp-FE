@@ -73,7 +73,7 @@ const AddTask: FC<IAddTaskProps> = ({
       priority: "HIGH",
       status: "TODO",
       assigneeIds: [],
-      projectId: projectId ? projectId : groupProjectId ? groupProjectId : undefined,
+      projectId: groupProjectId ? groupProjectId : projectId ? projectId :  undefined,
     },
   });
 
@@ -325,16 +325,15 @@ const AddTask: FC<IAddTaskProps> = ({
             rules={{ required: "Hạn là bắt buộc" }}
             render={({ field: { onChange, value } }) => (
               <TouchableOpacity
-                onPress={() => setShowDueDatePicker(true)}
+                onPress={() => setShowDueDatePicker(!showDueDatePicker)}
                 className="mb-16 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center"
               >
-                <Text className="text-body-base-regular text-neutral-900 flex-1">
-                  {generateDateTime(value.toISOString())}
-                </Text>
-                {showDueDatePicker && (
+                
+                {
+                showDueDatePicker ? 
                   <DateTimePicker
                     value={dueDate}
-                    mode="date"
+                    mode="datetime"
                     display="default"
                     onChange={(event, selectedDate) => {
                       if (event.type === "set" && selectedDate) {
@@ -346,7 +345,11 @@ const AddTask: FC<IAddTaskProps> = ({
                       }
                     }}
                   />
-                )}
+                  : 
+                  <Text className="text-body-base-regular text-neutral-900 flex-1">
+                  {generateDateTime(value.toISOString())}
+                </Text>
+                }
 
                 <MyIcon name="calendar" size={20} />
               </TouchableOpacity>

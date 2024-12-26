@@ -21,9 +21,9 @@ const MembersModal: React.FC<ProjectModalProps> = ({
   closeModal,
 }) => {
   const renderItem = ({ item }: { item: Member }) => (
-    <View key={item.id} className="flex-row items-center mb-4">
+    <View key={item.id} className="flex-row gap-3 items-center mb-4">
       <Avatar name={item.name} width={40} height={40} />
-      <View className="ml-3 flex-1">
+      <View className="flex-1">
         <Text className="text-body-base-bold">{item.name}</Text>
         <Text className="text-body-small-regular text-neutral-600">
           {item.email}
@@ -71,9 +71,9 @@ const MembersModal: React.FC<ProjectModalProps> = ({
 
           {/* Render member if it's a single instance of UserSignUpInformation */}
           {isUserSignUpInformation(members) && (
-            <View key={members.id} className="flex-row items-center mb-4">
+            <View key={members.id} className="flex-row gap-3 items-center mb-4">
               <Avatar name={members.name} width={40} height={40} />
-              <View className="ml-3 flex-1">
+              <View className="flex-1">
                 <Text className="text-body-base-bold">{members.name}</Text>
                 <Text className="text-body-small-regular text-neutral-600">
                   {members.email}
