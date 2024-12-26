@@ -228,8 +228,8 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                         <AntDesign name="checkcircle" size={12} color="green" />
                       </View>
                     ))}
-                  {openViewGroups && (
                     <ViewGroups
+                      isVisible={openViewGroups}
                       onNavigate={onNavigate}
                       closeModal={() => setOpenViewGroups(false)}
                       handleSave={(listGroupName) => {
@@ -238,7 +238,6 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                         setGroupDisplay(listGroupName);
                       }}
                     />
-                  )}
                 </View>
               )}
             />

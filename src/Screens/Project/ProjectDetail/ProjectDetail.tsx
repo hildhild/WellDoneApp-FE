@@ -116,7 +116,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
             {taskList.map((task) => (
               <Pressable
                 key={task.id}
-                className="flex-row items-center bg-lime-100 py-3 px-1 rounded-xl mb-2"
+                className="flex-row items-center bg-lime-100 py-3 px-2 rounded-xl mb-2"
                 onPress={() => {
                   dispatch(setCurTask(task));
                   onNavigate(RootScreens.TASK_DETAIL);
@@ -148,6 +148,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                   maxVisible={2}
                   display="row"
                 />
+                <View className="mr-2"></View>
                 {renderPriorityIcon(task.priority)}
               </Pressable>
             ))}

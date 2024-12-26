@@ -90,11 +90,11 @@ const ProjectEdit: FC<IProjectEditProps> = ({
       value: StatusType.COMPLETED,
     },
   ]);
-  const [startDate, setStartDate] = useState(new Date(project.startDate));
-  const [endDate, setEndDate] = useState(new Date(project.endDate));
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [openViewGroups, setOpenViewGroups] = useState(false);
+  const [startDate, setStartDate] = useState<Date>(new Date(project.startDate));
+  const [endDate, setEndDate] = useState<Date>(new Date(project.endDate));
+  const [showStartDatePicker, setShowStartDatePicker] = useState<boolean>(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState<boolean>(false);
+  const [openViewGroups, setOpenViewGroups] = useState<boolean>(false);
 
   const onSubmit = (data: ProjectEditForm) => {
     const transformedData: ProjectEditForm = {
@@ -136,9 +136,9 @@ const ProjectEdit: FC<IProjectEditProps> = ({
           source={require("assets/dark-logo.png")}
           className="rounded-full w-32 h-32"
         />
-        <TouchableOpacity onPress={() => {}}>
+        {/* <TouchableOpacity onPress={() => {}}>
           <Text className="text-sm text-gray-600">Thay đổi ảnh</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <View>
@@ -206,9 +206,8 @@ const ProjectEdit: FC<IProjectEditProps> = ({
               control={control}
               name="project_group_member"
               render={({ field: { onChange } }) => (
-                <View className="flex-row flex-wrap mb-4">
+                <View className="flex-row flex-wrap mb-4 w-full">
                   {convertIDToName(groupDisplay)
-                    .slice(0, 3)
                     .map((member: string, index: number) => (
                       <View
                         key={index}
@@ -220,8 +219,8 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                         <AntDesign name="checkcircle" size={12} color="green" />
                       </View>
                     ))}
-                  {openViewGroups && (
                     <ViewGroups
+                      isVisible={openViewGroups}
                       onNavigate={onNavigate}
                       listGroupId={groupData}
                       closeModal={() => setOpenViewGroups(false)}
@@ -231,7 +230,6 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                         setGroupDisplay(listGroupName);
                       }}
                     />
-                  )}
                 </View>
               )}
             />

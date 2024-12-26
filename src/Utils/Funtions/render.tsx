@@ -10,6 +10,9 @@ import Zip from "assets/documentType/zip";
 import { Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Priority, Role, Status, UserStatus } from "../constant";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const MyIcon = Icon as unknown as React.ComponentType<any>;
 
 export const renderErrorMessageResponse = (
   responseString: string | string[]
@@ -186,14 +189,14 @@ export const renderDocumentTypeIcon = (
 export const renderPriorityIcon = (priority: Priority) => {
   if (priority === "HIGH") {
     return (
-      <MaterialIcons name="keyboard-double-arrow-up" size={25} color="red" />
+      <MyIcon name="angle-up" size={25} color="red" />
     );
   }
-  if (priority === "MEDIUM") {
-    return <MaterialIcons name="keyboard-arrow-up" size={25} color="red" />;
+  else if (priority === "MEDIUM") {
+    return <MyIcon name="minus" size={25} color="#fdc609" />;
   }
-  if (priority === "LOW") {
-    return <MaterialIcons name="arrow-drop-up" size={25} color="green" />;
+  else if (priority === "LOW") {
+    return <MyIcon name="angle-down" size={25} color="blue" />;
   }
 };
 
