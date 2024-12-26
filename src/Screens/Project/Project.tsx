@@ -88,6 +88,7 @@ export const Project = (props: IProjectProps) => {
                 />
               ))
             )}
+            <View className="mb-16"></View>
           </ScrollView>
 
           <TouchableOpacity

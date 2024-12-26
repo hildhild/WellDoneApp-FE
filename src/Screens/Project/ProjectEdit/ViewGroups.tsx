@@ -22,7 +22,6 @@ import { LoadingProcess } from "@/Components";
 interface IViewGroupsProps {
   isVisible: boolean;
   listGroupId?: number[];
-  projectGroup?: Group[];
   closeModal: () => void;
   handleSave: (listGroupName: number[]) => void;
   onNavigate: (screen: RootScreens) => void;
@@ -51,7 +50,7 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
   );
 
   const availableGroups = useMemo(() => 
-    filteredGroupList.filter(group => !groupsInProjects.includes(group.id)),
+    filteredGroupList.filter(group => !groupsInProjects.includes(group.id) ||(props.listGroupId && props.listGroupId.includes(group.id))),
     [filteredGroupList, groupsInProjects]
   );
 
@@ -106,6 +105,7 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
               <TouchableOpacity
                 className="w-16 h-16 bg-primary-600 rounded-lg p-2 flex justify-center items-center"
                 onPress={() => {
+                  props.closeModal();
                   props.onNavigate(RootScreens.ADD_GROUP);
                 }
                 }

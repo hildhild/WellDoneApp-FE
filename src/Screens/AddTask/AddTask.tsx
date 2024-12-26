@@ -326,7 +326,7 @@ const AddTask: FC<IAddTaskProps> = ({
             render={({ field: { onChange, value } }) => (
               <TouchableOpacity
                 onPress={() => setShowDueDatePicker(!showDueDatePicker)}
-                className="mb-16 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center"
+                className="mb-32 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center"
               >
                 
                 {

@@ -206,9 +206,8 @@ const ProjectEdit: FC<IProjectEditProps> = ({
               control={control}
               name="project_group_member"
               render={({ field: { onChange } }) => (
-                <View className="flex-row flex-wrap mb-4">
+                <View className="flex-row flex-wrap mb-4 w-full">
                   {convertIDToName(groupDisplay)
-                    .slice(0, 3)
                     .map((member: string, index: number) => (
                       <View
                         key={index}
@@ -224,7 +223,6 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                       isVisible={openViewGroups}
                       onNavigate={onNavigate}
                       listGroupId={groupData}
-                      projectGroup={project.groups}
                       closeModal={() => setOpenViewGroups(false)}
                       handleSave={(listGroupName: number[]) => {
                         setOpenViewGroups(false);
