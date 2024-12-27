@@ -160,14 +160,13 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
               />
             )}
           />
-          {errors.project_name && (
-            <Text className="text-danger-600 text-caption-bold mb-2">
-              {typeof errors.project_name.message === "string" &&
-                errors.project_name.message}
-            </Text>
-          )}
         </View>
-
+        {errors.project_name && (
+          <Text className="text-danger-600 text-caption-bold mb-2">
+            {typeof errors.project_name.message === "string" &&
+              errors.project_name.message}
+          </Text>
+        )}
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
           <View className="flex-row items-left">
             <Text className="text-caption-regular text-neutral-500">Mô tả<Text className="text-danger-600"> *</Text></Text>
