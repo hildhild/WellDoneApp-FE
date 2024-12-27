@@ -97,7 +97,7 @@ export const Home = (props: IHomeProps) => {
                 </View>
                 <View className="flex-row items-center space-x-4 p-2">
                   <TouchableOpacity
-                    className="bg-primary-200 w-[155px] px-4 py-2 rounded-3xl mb-4 flex-row justify-between"
+                    className="bg-primary-200 w-[155px] px-4 py-2 rounded-3xl mb-4 flex-row justify-between items-center"
                     onPress={() => {
                       if (data?.id) {
                         dispatch(setProjectId({ id: data.id }));
@@ -106,13 +106,12 @@ export const Home = (props: IHomeProps) => {
                     }}
                   >
                     <Text className="text-center text-neutral-900 text-body-base-regular ">
-                      Open Project
+                      Đi đến dự án
                     </Text>
                     <AntDesign
                       name="arrowright"
                       size={24}
                       color="black"
-                      style={{ marginLeft: -50 }}
                     />
                   </TouchableOpacity>
                 </View>
