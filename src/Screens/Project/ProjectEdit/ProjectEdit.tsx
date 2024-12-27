@@ -160,13 +160,12 @@ const ProjectEdit: FC<IProjectEditProps> = ({
               />
             )}
           />
-          {errors.project_name && (
+        </View>
+        {errors.project_name && (
             <Text className="text-danger-600 text-caption-bold mb-2">
               {errors.project_name.message}
             </Text>
           )}
-        </View>
-
         <View className="flex-col p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
           <Text className="text-caption-regular text-neutral-500">Mô tả <Text className="text-danger-600"> *</Text></Text>
           <Controller
@@ -247,11 +246,11 @@ const ProjectEdit: FC<IProjectEditProps> = ({
             <AntDesign name="edit" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        {/* {errors.project_group_member && (
+        {errors.project_group_member && (
           <Text className="text-danger-600 text-caption-bold mb-2">
             {errors.project_group_member.message}
           </Text>
-        )} */}
+        )}
         <View className="flex-row p-4 rounded-2xl items-left mb-2 shadow-lg bg-neutral-100">
           <View className="mr-2 justify-center">
             <StatusIcon />
