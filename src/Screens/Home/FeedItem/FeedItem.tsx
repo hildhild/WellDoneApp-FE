@@ -19,18 +19,20 @@ const FeedItem = (props: NotificationItem & IFeedItemParams) => {
       style={{
         backgroundColor: props.bgColor,
       }}
-      className="p-4 rounded-lg w-40 mr-4 relative border-solid border border-neutral-300 rounded-2xl"
+      className="p-4 w-40 mr-4 relative border-solid border border-neutral-300 rounded-2xl flex-col justify-between"
     >
       <Image
         source={require("assets/Group Rectangle.png")}
         className="absolute top-2 right-2 w-16 h-16"
       />
-      <Text className="text-neutral-900 font-bold mt-10 text-body-base-regular">
-        {props.task_name}
-      </Text>
-      <Text className="text-neutral-600 text-body-base-medium">
-        {props.project_parent_name}
-      </Text>
+      <>
+        <Text className="text-neutral-900 font-bold mt-10 text-body-base-regular">
+          {props.task_name}
+        </Text>
+        <Text className="text-neutral-600 text-body-base-medium">
+          {props.project_parent_name}
+        </Text>
+      </>
       <TouchableOpacity
         className="mt-2 flex-row items-center"
         onPress={() => dispatch(setId({ id: props.id })) && props.onNavigate(RootScreens.NOTIFICATION)}
