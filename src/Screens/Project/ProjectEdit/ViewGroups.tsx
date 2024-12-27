@@ -119,6 +119,15 @@ const ViewGroups: FC<IViewGroupsProps> = (props: IViewGroupsProps) => {
                 <Text className="text-body-small-bold text-neutral-500">
                   Chọn nhóm
                 </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    props.closeModal();
+                    props.onNavigate(RootScreens.ADD_GROUP);
+                  }
+                  }
+                >
+                  <Text className="font-semibold text-lime-600 text-sm">Thêm nhóm</Text>
+                </TouchableOpacity>
               </View>
               <ScrollView
                 refreshControl={

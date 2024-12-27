@@ -222,7 +222,7 @@ const ProjectEdit: FC<IProjectEditProps> = ({
                     <ViewGroups
                       isVisible={openViewGroups}
                       onNavigate={onNavigate}
-                      listGroupId={groupData}
+                      listGroupId={groupDisplay}
                       closeModal={() => setOpenViewGroups(false)}
                       handleSave={(listGroupName: number[]) => {
                         setOpenViewGroups(false);
