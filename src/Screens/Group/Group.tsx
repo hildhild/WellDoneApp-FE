@@ -14,12 +14,24 @@ import { Group as GroupType, useDeleteGroupMutation, useGetGroupsMutation, useUp
 import { Toast } from "toastify-react-native";
 import { setCurGroup, setGroupList, toggleRefetch } from "@/Store/reducers";
 import Avatar from "@/Components/Avatar";
+import AvatarStack from "@/Components/AvatarStack";
+import MembersModal from "@/Components/MembersModal";
 
 export interface IGroupProps {
   onNavigate: (screen: RootScreens) => void;
 }
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
+
+const widthOfListMember = (length : number) => {
+  if (length === 1) return "w-[46px]"
+  else if (length === 2) return "w-[78px]";
+  else if (length === 3) return "w-[110px]";
+  else if (length === 4) return "w-[142px]";
+  else if (length === 5) return "w-[174px]";
+  else return "w-[230px]";
+
+}
 
 
 export const Group = (props: IGroupProps) => {
@@ -38,7 +50,9 @@ export const Group = (props: IGroupProps) => {
   const accessToken = useSelector((state: RootState) => state.profile.token);
   const dispatch = useDispatch();
   const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [curGroupItem, setCurGroupItem] = useState<any>(null);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -125,6 +139,13 @@ export const Group = (props: IGroupProps) => {
 
   return (
     <View style={styles.container}>
+      {openModal && (
+        <MembersModal
+          projectName={curGroupItem.name}
+          members={curGroupItem.user}
+          closeModal={() => setOpenModal(false)}
+        />
+      )}
       <StatusBar style="auto" />
         <View className="bg-[#F8FBF6] w-full h-full relative">
           <LoadingProcess isVisible={updateLoading || getLoading || deleteLoading}/>
@@ -226,7 +247,7 @@ export const Group = (props: IGroupProps) => {
                   </View>
                   <Text className="font-semibold text-2xl mb-4">{group.name}</Text>
                   <Text className="text-xl font-extralight mb-3">{group.description}</Text>
-                  <View className="mb-4 flex-row">
+                  {/* <View className="mb-4 flex-row">
                     {
                       group.user.slice(0,2).map((user, index) => <Text key={user.id}>{index !== group.user.length-1 ? user.name + ", " : user.name}</Text>)
                     }
@@ -237,7 +258,14 @@ export const Group = (props: IGroupProps) => {
                       :
                       <></>
                     }
-                  </View>
+                  </View> */}
+                  <Pressable onPress={() => {setOpenModal(true); setCurGroupItem(group);}} className={`${widthOfListMember(group.user.length)} mb-3`}>
+                    <AvatarStack
+                      users={group.user.map((member) => member.name).join(", ").split(",")}
+                      maxVisible={5}
+                      display="row"
+                    />
+                  </Pressable>
                   <View className="flex flex-row gap-[3%] justify-end">
                     <Pressable className="w-[42%] flex justify-center items-center bg-[#A0D683] p-3 rounded-xl" onPress={()=>{props.onNavigate(RootScreens.GROUP_DETAIL); dispatch(setCurGroup(group))}}><Text className="text-[#2C6E35] text-lg font-semibold">Chi tiết</Text></Pressable>
                     {

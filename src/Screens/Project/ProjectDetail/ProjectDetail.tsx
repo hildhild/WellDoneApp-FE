@@ -13,8 +13,10 @@ import {
 } from "@expo/vector-icons";
 import React, { FC, memo, useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, TouchableOpacity, View, RefreshControl } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Toast } from "toastify-react-native";
+import { generateDate } from "@/Utils/Funtions/generate";
 
 const MyIcon = Icon as unknown as React.ComponentType<any>;
 
@@ -32,14 +34,15 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
   const flatGroupsList = listMember.map((member) => member.name).join(", ");
   const [openModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
+  const userId = useSelector((state: any)=> state.profile.id);
 
   useEffect(() => {
     dispatch(setCurProject(project));
   }, [project]);
 
   return (
-    <View className="bg-white h-full mt-8 px-4">
-      <View className="flex-row justify-between items-center p-4 bg-neutral-100">
+    <View className="bg-neutral-100 h-full px-4">
+      <View className="flex-row justify-between items-center p-4 bg-neutral-100 mt-8">
         {/* <TouchableOpacity onPress={() => {onNavigate(RootScreens.MAIN); dispatch(setProjectId({id: null}))}}>
           <MaterialCommunityIcons
             name="arrow-left-circle-outline"
@@ -56,8 +59,13 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         <Text className="text-heading4 font-bold">Chi tiết Dự án</Text>
         <TouchableOpacity
           onPress={() => {
-            dispatch(setProjectId({ id: project.id }));
-            onNavigate(RootScreens.PROJECTEDIT);
+            const isLeader = listMember?.filter((member: any)=> member.id === userId)[0].role === "Leader";
+            if (!isLeader) {
+              Toast.error("Bạn không phải nhóm trưởng")
+            } else {
+              dispatch(setProjectId({ id: project.id }));
+              onNavigate(RootScreens.PROJECTEDIT);
+            }
           }}
         >
           <MaterialCommunityIcons
@@ -74,11 +82,13 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
       >
         <View className="flex-row justify-between items-center mb-2">
           <View className="flex-col">
-            <Text className="text-body-small-regular text-neutral-500">Tên dự án</Text>
-            <Text className="text-heading4 font-bold text-center mt-2">{project.name}</Text>
+            <View className="flex-row items-center justify-between w-full">
+              <Text className="text-body-small-regular text-neutral-500">Tên dự án</Text>
+              {renderStatusLabel(project.status)}
+            </View>
+            <Text className="text-heading4 font-bold mt-2 text-start">{project.name}</Text>
           </View>
 
-          {renderStatusLabel(project.status)}
         </View>
         <View className="flex-row justify-end">
           <TouchableOpacity
@@ -104,11 +114,21 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
         <Text className="text-body-small-regular text-neutral-500 mt-4">Mô tả dự án</Text>
         <Text className="text-body-large-regular text-neutral-900">{project.description}</Text>
 
+        <View className="flex-row items-center justify-between mt-5">
+          <View className="flex-row items-center">
+            <AntDesign name="calendar" size={16} color="gray" />
+            <Text className="ml-2 text-body-base-bold text-gray-500">
+              Từ {generateDate(project.startDate)} đến{" "}
+              {generateDate(project.endDate)}
+            </Text>
+          </View>
+        </View>
+
         <View className="mt-6">
           <View className="flex-row justify-between items-center mb-2">
-            <Text className="text-body-small-regular text-neutral-500">Tasks</Text>
+            <Text className="text-body-small-regular text-neutral-500">Nhiệm vụ</Text>
             <TouchableOpacity onPress={() => {onNavigate(RootScreens.ADD_TASK); dispatch(setProjectId({ id: project.id }));}}>
-              <Text className="text-body-small-regular text-neutral-500">Thêm nhiệm vụ</Text>
+              <Text className="text-sm font-semibold text-lime-600">Thêm nhiệm vụ</Text>
             </TouchableOpacity>
           </View>
 
@@ -116,7 +136,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
             {taskList.map((task) => (
               <Pressable
                 key={task.id}
-                className="flex-row items-center bg-lime-100 py-3 px-1 rounded-xl mb-2"
+                className="flex-row items-center bg-lime-100 py-3 px-2 rounded-xl mb-2"
                 onPress={() => {
                   dispatch(setCurTask(task));
                   onNavigate(RootScreens.TASK_DETAIL);
@@ -148,6 +168,7 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                   maxVisible={2}
                   display="row"
                 />
+                <View className="mr-2"></View>
                 {renderPriorityIcon(task.priority)}
               </Pressable>
             ))}

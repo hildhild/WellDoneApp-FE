@@ -109,12 +109,12 @@ export const Onboarding2 = (props: {
             <View className="bg-neutral-300 rounded-3xl px-[40px] py-[30px]">
               <Text className="text-xl font-bold text-center mb-4">Bạn có muốn bỏ qua không?</Text>
               <View className="flex flex-row justify-between">
-                <Button className="w-[80px] !rounded-full !bg-[#DC2626]" onPress={() => setModalVisible(false)}>
-                  <Text className="text-white font-semibold">Không</Text>
-                </Button>
-                <Button className="w-[80px] !rounded-full !bg-lime-600" onPress={() => { setModalVisible(false); handleFinish(); }}>
-                  <Text className="text-white font-semibold">Có</Text>
-                </Button>
+                <Pressable className="w-[80px] !rounded-full !bg-[#DC2626] flex justify-center items-center px-3 py-5" onPress={() => setModalVisible(false)}>
+                  <Text className="text-white font-semibold text-center">Không</Text>
+                </Pressable>
+                <Pressable className="w-[80px] !rounded-full !bg-lime-600" onPress={() => { setModalVisible(false); handleFinish(); }}>
+                  <Text className="text-white font-semibold text-center">Có</Text>
+                </Pressable>
               </View>
             </View>
           </View>

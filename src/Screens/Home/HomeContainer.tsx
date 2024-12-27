@@ -61,6 +61,7 @@ export const useProjectMembers = (projectID: number | null, token: string) => {
     null
   );
   const [getMemOfProject] = useGetMemOfProjectMutation();
+  const refetch = useSelector((state: any) => state.project.refetch);
 
   useEffect(() => {
     const fetchMemOfProject = async () => {
@@ -79,7 +80,7 @@ export const useProjectMembers = (projectID: number | null, token: string) => {
     };
 
     fetchMemOfProject();
-  }, [getMemOfProject, projectID, token]);
+  }, [getMemOfProject, projectID, token, refetch]);
 
   return listMember;
 };

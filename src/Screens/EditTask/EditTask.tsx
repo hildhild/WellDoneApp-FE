@@ -175,6 +175,10 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   labelField={"label"}
                   valueField={"value"}
                   style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
                   data={[
                     { label: "Mới", value: "TODO" },
                     { label: "Đang làm", value: "IN_PROGRESS" },
@@ -185,7 +189,8 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   renderLeftIcon={() => (
                     <MyIcon color="#84cc16" name="line-chart" size={20} />
                   )}
-                  {...dropdownProps}
+                  maxHeight={300}
+                  placeholder="Chọn trạng thái"
                 />
               </>
             )}
@@ -203,6 +208,10 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   labelField={"label"}
                   valueField={"value"}
                   style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
                   data={[
                     { label: "Cao", value: "HIGH" },
                     { label: "Trung bình", value: "MEDIUM" },
@@ -213,7 +222,8 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   renderLeftIcon={() => (
                     <MyIcon color="#84cc16" name="sort-amount-desc" size={20} />
                   )}
-                  {...dropdownProps}
+                  placeholder="Chọn độ ưu tiên"
+                  maxHeight={300}
                 />
               </>
             )}
@@ -228,16 +238,14 @@ export const EditTask: React.FC<EditTaskProps> = ({
                   Hạn
                 </Text>
                 <TouchableOpacity
-                  onPress={() => setShowDueDatePicker(true)}
-                  className="mb-16 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center"
+                  onPress={() => setShowDueDatePicker(!showDueDatePicker)}
+                  className="mb-32 text-neutral-700 text-body-base-regular rounded-xl px-4 py-2 border-[1px] border-gray-300 bg-white flex-row justify-between items-center"
                 >
-                  <Text className="text-body-base-regular text-neutral-900 flex-1">
-                    {generateDateTime(value)}
-                  </Text>
-                  {showDueDatePicker && (
+                  
+                  {showDueDatePicker ? (
                     <DateTimePicker
                       value={dueDate}
-                      mode="date"
+                      mode="datetime"
                       display="default"
                       onChange={(event, selectedDate) => {
                         if (event.type === "set" && selectedDate) {
@@ -249,7 +257,12 @@ export const EditTask: React.FC<EditTaskProps> = ({
                         }
                       }}
                     />
-                  )}
+                  )
+                  :
+                  <Text className="text-body-base-regular text-neutral-900 flex-1">
+                    {generateDateTime(value)}
+                  </Text>
+                }
                   <MyIcon name="calendar" size={20} />
                 </TouchableOpacity>
               </>
