@@ -172,6 +172,9 @@ const ProjectEdit: FC<IProjectEditProps> = ({
           <Controller
             control={control}
             name="project_description"
+            rules={{
+              required: "Mô tả dự án là bắt buộc",
+            }}
             render={({ field: { onChange, value } }) => (
               <TextInput
                 className="text-body-base-regular text-neutral-900 w-full "
@@ -205,6 +208,9 @@ const ProjectEdit: FC<IProjectEditProps> = ({
             <Controller
               control={control}
               name="project_group_member"
+              rules={{
+                required: "Vui lòng chọn ít nhất một nhóm cho dự án của bạn!",
+              }}
               render={({ field: { onChange } }) => (
                 <View className="flex-row flex-wrap mb-4 w-full">
                   {convertIDToName(groupDisplay)
@@ -261,6 +267,9 @@ const ProjectEdit: FC<IProjectEditProps> = ({
               <Controller
                 control={control}
                 name="project_status"
+                rules={{
+                  required: "Trạng thái dự án là bắt buộc",
+                }}
                 render={({ field: { onChange, value } }) => (
                   <DropDownPicker
                     open={open}
