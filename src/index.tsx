@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { ApplicationNavigator } from "./Navigation";
 
-i18n.locale = Localization.locale;
+i18n.locale = Localization.getLocales()?.[0]?.languageTag ?? Language.ENGLISH;
 i18n.enableFallback = true;
 i18n.defaultLocale = Language.ENGLISH;
 

@@ -42,7 +42,9 @@
           "project": "welldone",
           "organization": "welldone-lx"
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker",
+      "@sentry/react-native"
     ],
     "runtimeVersion": {
       "policy": "sdkVersion"
