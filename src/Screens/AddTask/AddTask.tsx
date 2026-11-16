@@ -96,7 +96,7 @@ const AddTask: FC<IAddTaskProps> = ({
       </TouchableOpacity>
       <TouchableOpacity
         className="absolute right-5 top-10 w-12 h-12 flex justify-center items-center rounded-full border-[1px] border-neutral-400"
-        onPress={handleSubmit(onCreateTask)}
+        onPress={() => handleSubmit(onCreateTask)()}
       >
         <MyIcon name="save" size={20} color="#000" />
       </TouchableOpacity>

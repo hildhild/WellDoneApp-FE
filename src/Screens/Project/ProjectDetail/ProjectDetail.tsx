@@ -146,10 +146,10 @@ const ProjectDetail: FC<IProjectDetailProps> = (props: IProjectDetailProps) => {
                   className={`w-10 h-10 rounded-full items-center justify-center mr-2`}
                 >
                   {task.status === "DONE" && (
-                    <AntDesign name="checkcircle" size={25} color="green" />
+                    <MaterialCommunityIcons name="check-circle" size={25} color="green" />
                   )}
                   {(task.status === "IN_PROGRESS" || task.status === "TODO") && (
-                    <AntDesign name="checkcircleo" size={25} color="black" />
+                    <MaterialCommunityIcons name="check-circle-outline" size={25} color="black" />
                   )}
                 </View>
 

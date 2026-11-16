@@ -12,7 +12,7 @@ import { RootState } from "@/Store";
 import { renderErrorMessageResponse } from "@/Utils/Funtions/render";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Platform } from "react-native";

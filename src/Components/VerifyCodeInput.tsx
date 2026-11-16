@@ -8,7 +8,7 @@ interface VerifyCodeInputProps {
 }
 
 const VerifyCodeInput: FC<VerifyCodeInputProps> = ({ code, setCode, onCodeComplete }) => {
-  const inputRefs = useRef<Array<TextInput | null>>(new Array(6).fill(null));
+  const inputRefs = useRef<Array<React.ComponentRef<typeof TextInput> | null>>(new Array(6).fill(null));
 
   const handleChangeText = (value: string, index: number) => {
     const newCode = code.split("");
@@ -41,7 +41,7 @@ const VerifyCodeInput: FC<VerifyCodeInputProps> = ({ code, setCode, onCodeComple
           onKeyPress={(e) => handleKeyPress(e, index)}
           maxLength={1}
           keyboardType="numeric"
-          ref={(ref) => (inputRefs.current[index] = ref)}
+          ref={(ref) => { inputRefs.current[index] = ref; }}
           className="h-14 w-14 border-2 border-neutral-300 rounded-md text-center text-body-small-regular font-bold"
         />
       ))}

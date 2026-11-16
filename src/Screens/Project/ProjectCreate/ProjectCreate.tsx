@@ -124,7 +124,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
           <MyIcon name="chevron-left" size={15} color="#000" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-center">Thêm Dự án</Text>
-        <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+        <TouchableOpacity onPress={() => handleSubmit(onSubmit)()}>
           <Feather name="save" size={32} color="black" />
         </TouchableOpacity>
       </View>
@@ -224,7 +224,7 @@ const ProjectCreate: FC<IProjectCreateProps> = ({
                         <Text className="text-caption-bold mr-1">
                           {String(member)}
                         </Text>
-                        <AntDesign name="checkcircle" size={12} color="green" />
+                        <AntDesign name="check-circle" size={12} color="green" />
                       </View>
                     ))}
                     <ViewGroups
