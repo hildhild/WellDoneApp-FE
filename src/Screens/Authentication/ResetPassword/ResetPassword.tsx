@@ -140,7 +140,7 @@ const ResetPassword: FC<ResetPasswordProps> = ({
 
         <TouchableOpacity
           className="bg-primary-600 rounded-lg px-6 py-3 w-[67%]"
-          onPress={handleSubmit(onSubmit)}
+          onPress={() => handleSubmit(onSubmit)()}
           disabled={isLoading}
         >
           <Text className="text-neutral-100 text-body-base-bold text-center">

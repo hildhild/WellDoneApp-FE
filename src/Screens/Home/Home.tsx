@@ -109,7 +109,7 @@ export const Home = (props: IHomeProps) => {
                       Đi đến dự án
                     </Text>
                     <AntDesign
-                      name="arrowright"
+                      name="arrow-right"
                       size={24}
                       color="black"
                     />

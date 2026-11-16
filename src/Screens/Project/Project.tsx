@@ -55,7 +55,7 @@ export const Project = (props: IProjectProps) => {
           </View>
 
           <View className="flex-row items-center bg-lime-100 py-3 px-5 rounded-full mb-4">
-            <AntDesign name="search1" size={16} color="gray" />
+            <AntDesign name="search" size={16} color="gray" />
             <TextInput
               placeholder="Tìm kiếm dự án của bạn"
               className="text-neutral-800 text-body-base-bold flex-1 ml-3"

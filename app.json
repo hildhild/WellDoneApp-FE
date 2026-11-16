@@ -6,11 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/dark-logo.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/lime-logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/32bd0133-f43a-4920-b0e6-b320a5c5e805"
@@ -44,7 +39,16 @@
         }
       ],
       "@react-native-community/datetimepicker",
-      "@sentry/react-native"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/lime-logo.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "imageWidth": 200
+        }
+      ],
+      "expo-font"
     ],
     "runtimeVersion": {
       "policy": "sdkVersion"
@@ -53,7 +57,6 @@
       "eas": {
         "projectId": "32bd0133-f43a-4920-b0e6-b320a5c5e805"
       }
-    },
-    "newArchEnabled": true
+    }
   }
 }

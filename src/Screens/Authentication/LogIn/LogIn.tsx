@@ -142,7 +142,7 @@ const LogIn: FC<LogInProps> = ({
 
           <TouchableOpacity
             className="bg-primary-600 rounded-lg w-52 h-14 py-2 px-4 mb-5 justify-center"
-            onPress={handleSubmit(onSubmit)}
+            onPress={() => handleSubmit(onSubmit)()}
             disabled={isLoading}
           >
             <Text className="text-center text-neutral-100 font-bold text-body-base-bold">
